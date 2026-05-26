@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VisionPrep · Image Scaler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #0d0f11;
+    --surface:  #141719;
+    --border:   #252a2e;
+    --border2:  #1e2428;
+    --accent:   #00e5a0;
+    --accent2:  #00b87a;
+    --warn:     #f0a500;
+    --text:     #c8d0d8;
+    --muted:    #5a6470;
+    --mono:     'IBM Plex Mono', monospace;
+    --sans:     'IBM Plex Sans', sans-serif;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    overflow: hidden;
+  }
+
+  /* scanline overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgba(0,0,0,0.06) 3px,
+      rgba(0,0,0,0.06) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .shell {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100vh;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── Header ── */
+  header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 0 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-mark {
+    width: 28px; height: 28px;
+    border: 1.5px solid var(--accent);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    padding: 5px;
+  }
+  .logo-mark span {
+    background: var(--accent);
+    display: block;
+  }
+  .logo-mark span:nth-child(3) { opacity: 0.4; }
+  .logo-mark span:nth-child(4) { opacity: 0.15; }
+
+  h1 { font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+  .subtitle { font-size: 10px; color: var(--muted); letter-spacing: 0.08em; }
+  .badge {
+    margin-left: auto;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    padding: 3px 8px;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* ── Main ── */
+  main {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 20px;
+    padding: 20px 0;
+    overflow: hidden;
+  }
+
+  /* Drop zone */
+  .dropzone-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow: hidden;
+  }
+
+  #dropzone {
+    flex: 1;
+    border: 1.5px dashed var(--border2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.15s, background 0.15s;
+    background: var(--surface);
+    overflow: hidden;
+    min-height: 200px;
+  }
+  #dropzone.drag-over {
+    border-color: var(--accent);
+    background: rgba(0,229,160,0.04);
+  }
+  #dropzone.has-image { cursor: default; }
+
+  .drop-hint {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    pointer-events: none;
+    user-select: none;
+  }
+  .drop-icon {
+    width: 48px; height: 48px;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .drop-icon::before {
+    content: '';
+    position: absolute;
+    width: 16px; height: 16px;
+    border-top: 2px solid var(--muted);
+    border-left: 2px solid var(--muted);
+    top: 10px; left: 14px;
+  }
+  .drop-icon::after {
+    content: '';
+    position: absolute;
+    width: 6px; height: 14px;
+    border: 2px solid var(--muted);
+    border-top: none;
+    bottom: 8px; left: 19px;
+  }
+  .drop-label { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .drop-sub { font-size: 10px; color: #3a4248; }
+
+  #preview-canvas {
+    display: none;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+  #dropzone.has-image .drop-hint { display: none; }
+  #dropzone.has-image #preview-canvas { display: block; }
+
+  #file-input { display: none; }
+
+  /* Corner decorations */
+  .corner { position: absolute; width: 10px; height: 10px; }
+  .corner.tl { top: 6px; left: 6px; border-top: 1px solid var(--border); border-left: 1px solid var(--border); }
+  .corner.tr { top: 6px; right: 6px; border-top: 1px solid var(--border); border-right: 1px solid var(--border); }
+  .corner.bl { bottom: 6px; left: 6px; border-bottom: 1px solid var(--border); border-left: 1px solid var(--border); }
+  .corner.br { bottom: 6px; right: 6px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+
+  .panel {
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .panel-head {
+    padding: 8px 12px;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .panel-head::before {
+    content: '';
+    width: 5px; height: 5px;
+    background: var(--accent);
+    display: block;
+    flex-shrink: 0;
+  }
+  .panel-body { padding: 12px; }
+
+  /* Stat rows */
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border2);
+  }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-label { font-size: 10px; color: var(--muted); }
+  .stat-val { font-size: 11px; color: var(--text); font-weight: 500; }
+  .stat-val.accent { color: var(--accent); }
+  .stat-val.warn { color: var(--warn); }
+  .stat-val.dim { color: var(--muted); font-weight: 300; }
+
+  /* Token bar */
+  .token-bar-wrap { margin-top: 10px; }
+  .token-bar-label { font-size: 9px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 5px; display: flex; justify-content: space-between; }
+  .token-bar-track { height: 4px; background: var(--border); position: relative; }
+  .token-bar-fill { height: 100%; background: var(--accent); transition: width 0.3s ease; width: 0%; }
+  .token-bar-target { position: absolute; top: -3px; height: 10px; width: 1px; background: var(--warn); }
+
+  /* Format options */
+  .format-opts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .fmt-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 6px 4px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.1s;
+    text-transform: uppercase;
+  }
+  .fmt-btn:hover { border-color: var(--accent2); color: var(--text); }
+  .fmt-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,160,0.06); }
+
+  /* Quality slider */
+  .slider-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+  .slider-row label { font-size: 10px; color: var(--muted); white-space: nowrap; }
+  input[type=range] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 2px;
+    background: var(--border);
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px; height: 10px;
+    background: var(--accent);
+    cursor: pointer;
+  }
+  #quality-val { font-size: 10px; color: var(--accent); width: 28px; text-align: right; }
+  #quality-row { display: none; }
+
+  /* Buttons */
+  .action-btn {
+    width: 100%;
+    padding: 10px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+    font-weight: 600;
+  }
+  .btn-primary:hover { background: #00ffb3; }
+  .btn-primary:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+  .btn-secondary {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .btn-secondary:hover { border-color: var(--muted); color: var(--text); }
+
+  /* ── Footer ── */
+  footer {
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+  .status-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--muted);
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .status-dot.active { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+
+  /* ── Dialog ── */
+  .dialog-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+  }
+  .dialog-backdrop.open { display: flex; }
+
+  .dialog {
+    background: var(--bg);
+    border: 1px solid var(--accent);
+    width: 420px;
+    max-width: 94vw;
+    position: relative;
+    animation: dlg-in 0.15s ease;
+  }
+  @keyframes dlg-in { from { opacity:0; transform: translateY(-8px); } to { opacity:1; transform: none; } }
+
+  .dialog-head {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dialog-body { padding: 20px 16px; }
+  .dialog-footer { padding: 12px 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-end; }
+
+  .preview-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .compare-item { display: flex; flex-direction: column; gap: 6px; }
+  .compare-label { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .compare-img {
+    border: 1px solid var(--border);
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: contain;
+    background: #080a0c;
+    image-rendering: pixelated;
+  }
+  .compare-meta { font-size: 10px; color: var(--text); }
+  .compare-meta span { color: var(--muted); }
+
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .info-cell {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    padding: 8px 10px;
+  }
+  .info-cell-label { font-size: 9px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .info-cell-val { font-size: 12px; color: var(--accent); margin-top: 2px; font-weight: 500; }
+
+  .dlg-btn {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--muted);
+    transition: all 0.1s;
+  }
+  .dlg-btn:hover { border-color: var(--muted); color: var(--text); }
+  .dlg-btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+    font-weight: 600;
+  }
+  .dlg-btn.primary:hover { background: #00ffb3; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <header>
+    <div class="logo-mark">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div>
+      <h1>VisionPrep</h1>
+      <div class="subtitle">Image scaler for local vision LLMs</div>
+    </div>
+    <div class="badge">max 640 × 480 · ~400 tokens</div>
+  </header>
+
+  <main>
+    <!-- Left: Drop Zone -->
+    <div class="dropzone-wrap">
+      <div id="dropzone">
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="drop-hint">
+          <div class="drop-icon"></div>
+          <div class="drop-label">Bild hierher ziehen</div>
+          <div class="drop-sub">oder klicken zum Auswählen · JPG, PNG, WEBP, GIF</div>
+        </div>
+        <canvas id="preview-canvas"></canvas>
+        <input type="file" id="file-input" accept="image/*">
+      </div>
+      <button class="action-btn btn-secondary" id="clear-btn" style="display:none">↺ &nbsp;Bild entfernen</button>
+    </div>
+
+    <!-- Right: Sidebar -->
+    <div class="sidebar">
+
+      <!-- Original info -->
+      <div class="panel">
+        <div class="panel-head">Original</div>
+        <div class="panel-body">
+          <div class="stat-row">
+            <span class="stat-label">Auflösung</span>
+            <span class="stat-val dim" id="orig-res">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Seitenverhältnis</span>
+            <span class="stat-val dim" id="orig-ar">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Dateigröße</span>
+            <span class="stat-val dim" id="orig-size">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output info -->
+      <div class="panel">
+        <div class="panel-head">Ausgabe</div>
+        <div class="panel-body">
+          <div class="stat-row">
+            <span class="stat-label">Auflösung</span>
+            <span class="stat-val accent" id="out-res">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Skalierung</span>
+            <span class="stat-val dim" id="out-scale">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Vis. Tokens (est.)</span>
+            <span class="stat-val accent" id="out-tokens">—</span>
+          </div>
+
+          <div class="token-bar-wrap">
+            <div class="token-bar-label">
+              <span>Token-Auslastung</span>
+              <span id="token-pct">—</span>
+            </div>
+            <div class="token-bar-track">
+              <div class="token-bar-fill" id="token-fill"></div>
+              <div class="token-bar-target" style="left: 100%;" title="Ziel: 400 Tokens"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Format -->
+      <div class="panel">
+        <div class="panel-head">Format &amp; Qualität</div>
+        <div class="panel-body">
+          <div class="format-opts">
+            <button class="fmt-btn active" data-fmt="jpeg">JPEG</button>
+            <button class="fmt-btn" data-fmt="png">PNG</button>
+            <button class="fmt-btn" data-fmt="webp">WebP</button>
+          </div>
+          <div class="slider-row" id="quality-row" style="display:flex">
+            <label>Qualität</label>
+            <input type="range" id="quality-slider" min="60" max="100" value="85">
+            <span id="quality-val">85%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <button class="action-btn btn-primary" id="export-btn" disabled>
+        ↓ &nbsp;Exportieren &amp; speichern
+      </button>
+
+    </div>
+  </main>
+
+  <footer>
+    <div>
+      <span class="status-dot" id="status-dot"></span>
+      <span id="status-text">Warte auf Bild …</span>
+    </div>
+    <div>max 640 × 480 px · landscape &amp; portrait-aware</div>
+  </footer>
+
+</div>
+
+<!-- ── Vorschau-Dialog ── -->
+<div class="dialog-backdrop" id="dialog">
+  <div class="dialog">
+    <div class="dialog-head">▪ Export-Vorschau</div>
+    <div class="dialog-body">
+      <div class="preview-compare">
+        <div class="compare-item">
+          <div class="compare-label">Original</div>
+          <img id="dlg-orig" class="compare-img" src="" alt="">
+          <div class="compare-meta"><span>Größe: </span><span id="dlg-orig-res">—</span></div>
+        </div>
+        <div class="compare-item">
+          <div class="compare-label">Skaliert</div>
+          <img id="dlg-scaled" class="compare-img" src="" alt="">
+          <div class="compare-meta"><span>Größe: </span><span id="dlg-scaled-res">—</span></div>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-cell">
+          <div class="info-cell-label">Format</div>
+          <div class="info-cell-val" id="dlg-fmt">—</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-cell-label">Tokens (est.)</div>
+          <div class="info-cell-val" id="dlg-tokens">—</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-cell-label">Skalierung</div>
+          <div class="info-cell-val" id="dlg-scale">—</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-cell-label">Dateiname</div>
+          <div class="info-cell-val" id="dlg-name" style="font-size:10px;word-break:break-all">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button class="dlg-btn" id="dlg-cancel">Abbrechen</button>
+      <button class="dlg-btn primary" id="dlg-confirm">↓ Herunterladen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Config ──────────────────────────────────────────────────────
+const MAX_LONG  = 640;   // longest side
+const MAX_SHORT = 480;   // shortest side
+const TOKEN_TARGET = 400;
+
+// ── State ────────────────────────────────────────────────────────
+let origFile   = null;
+let origImg    = null;   // HTMLImageElement
+let outputW    = 0;
+let outputH    = 0;
+let selectedFmt = 'jpeg';
+let exportDataURL = '';
+
+// ── DOM ──────────────────────────────────────────────────────────
+const dropzone     = document.getElementById('dropzone');
+const fileInput    = document.getElementById('file-input');
+const previewCanvas= document.getElementById('preview-canvas');
+const clearBtn     = document.getElementById('clear-btn');
+const exportBtn    = document.getElementById('export-btn');
+const statusDot    = document.getElementById('status-dot');
+const statusText   = document.getElementById('status-text');
+
+const origResEl    = document.getElementById('orig-res');
+const origArEl     = document.getElementById('orig-ar');
+const origSizeEl   = document.getElementById('orig-size');
+const outResEl     = document.getElementById('out-res');
+const outScaleEl   = document.getElementById('out-scale');
+const outTokensEl  = document.getElementById('out-tokens');
+const tokenFill    = document.getElementById('token-fill');
+const tokenPct     = document.getElementById('token-pct');
+
+const qualitySlider= document.getElementById('quality-slider');
+const qualityVal   = document.getElementById('quality-val');
+const qualityRow   = document.getElementById('quality-row');
+
+const dialog       = document.getElementById('dialog');
+const dlgOrig      = document.getElementById('dlg-orig');
+const dlgScaled    = document.getElementById('dlg-scaled');
+const dlgOrigRes   = document.getElementById('dlg-orig-res');
+const dlgScaledRes = document.getElementById('dlg-scaled-res');
+const dlgFmt       = document.getElementById('dlg-fmt');
+const dlgTokens    = document.getElementById('dlg-tokens');
+const dlgScale     = document.getElementById('dlg-scale');
+const dlgName      = document.getElementById('dlg-name');
+const dlgCancel    = document.getElementById('dlg-cancel');
+const dlgConfirm   = document.getElementById('dlg-confirm');
+
+// ── Helpers ───────────────────────────────────────────────────────
+function gcd(a, b) { return b ? gcd(b, a % b) : a; }
+function aspectRatio(w, h) {
+  const g = gcd(w, h);
+  return `${w/g}:${h/g}`;
+}
+function fmtBytes(n) {
+  if (n < 1024) return n + ' B';
+  if (n < 1048576) return (n/1024).toFixed(1) + ' KB';
+  return (n/1048576).toFixed(2) + ' MB';
+}
+function estimateTokens(w, h) {
+  // Vision token estimation: ~(w * h) / 750 (rough for most models)
+  return Math.round((w * h) / 750);
+}
+
+// ── Scale logic ───────────────────────────────────────────────────
+function computeOutputSize(srcW, srcH) {
+  // Determine which axis is long and which is short
+  const isLandscape = srcW >= srcH;
+  let longSide  = isLandscape ? srcW : srcH;
+  let shortSide = isLandscape ? srcH : srcW;
+
+  let scaleL = longSide  > MAX_LONG  ? MAX_LONG  / longSide  : 1;
+  let scaleS = shortSide > MAX_SHORT ? MAX_SHORT / shortSide : 1;
+  const scale = Math.min(scaleL, scaleS);
+
+  let outW = Math.round(srcW * scale);
+  let outH = Math.round(srcH * scale);
+  return { outW, outH, scale };
+}
+
+// ── Render to canvas ──────────────────────────────────────────────
+function renderPreview(img) {
+  const { outW, outH } = computeOutputSize(img.naturalWidth, img.naturalHeight);
+  previewCanvas.width  = outW;
+  previewCanvas.height = outH;
+  const ctx = previewCanvas.getContext('2d');
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(img, 0, 0, outW, outH);
+}
+
+function updateStats() {
+  if (!origImg) return;
+  const srcW = origImg.naturalWidth;
+  const srcH = origImg.naturalHeight;
+  const { outW, outH, scale } = computeOutputSize(srcW, srcH);
+  outputW = outW;
+  outputH = outH;
+
+  origResEl.textContent  = `${srcW} × ${srcH} px`;
+  origArEl.textContent   = aspectRatio(srcW, srcH);
+  origSizeEl.textContent = origFile ? fmtBytes(origFile.size) : '—';
+
+  outResEl.textContent   = `${outW} × ${outH} px`;
+  outScaleEl.textContent = scale >= 1
+    ? '1:1 (bereits klein genug)'
+    : `${(scale * 100).toFixed(1)} %`;
+
+  const tokens = estimateTokens(outW, outH);
+  outTokensEl.textContent = `~${tokens}`;
+
+  const pct = Math.min(100, (tokens / TOKEN_TARGET) * 100);
+  tokenFill.style.width = pct + '%';
+  tokenFill.style.background = tokens <= TOKEN_TARGET ? 'var(--accent)' : 'var(--warn)';
+  tokenPct.textContent = `${Math.round(pct)}%`;
+}
+
+// ── Load image ────────────────────────────────────────────────────
+function loadFile(file) {
+  if (!file || !file.type.startsWith('image/')) {
+    setStatus('Ungültiger Dateityp — nur Bilder erlaubt.', false);
+    return;
+  }
+  origFile = file;
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    origImg = img;
+    dropzone.classList.add('has-image');
+    clearBtn.style.display = '';
+    exportBtn.disabled = false;
+    renderPreview(img);
+    updateStats();
+    setStatus(`Geladen: ${file.name}`, true);
+    URL.revokeObjectURL(url);
+  };
+  img.onerror = () => setStatus('Fehler beim Laden des Bildes.', false);
+  img.src = url;
+}
+
+function setStatus(msg, active) {
+  statusText.textContent = msg;
+  statusDot.className = 'status-dot' + (active ? ' active' : '');
+}
+
+// ── Clear ─────────────────────────────────────────────────────────
+function clearImage() {
+  origFile = origImg = null;
+  outputW = outputH = 0;
+  dropzone.classList.remove('has-image');
+  clearBtn.style.display = 'none';
+  exportBtn.disabled = true;
+  previewCanvas.width = 1;
+  previewCanvas.height = 1;
+  fileInput.value = '';
+  ['orig-res','orig-ar','orig-size','out-res','out-scale','out-tokens'].forEach(id => {
+    document.getElementById(id).textContent = '—';
+    document.getElementById(id).className = 'stat-val dim';
+  });
+  outResEl.className   = 'stat-val accent';
+  outTokensEl.className= 'stat-val accent';
+  tokenFill.style.width = '0%';
+  tokenPct.textContent  = '—';
+  setStatus('Warte auf Bild …', false);
+}
+
+// ── Export ────────────────────────────────────────────────────────
+function prepareExport() {
+  const canvas = document.createElement('canvas');
+  canvas.width  = outputW;
+  canvas.height = outputH;
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(origImg, 0, 0, outputW, outputH);
+
+  const mimeMap = { jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' };
+  const mime = mimeMap[selectedFmt];
+  const quality = selectedFmt === 'png' ? 1 : parseInt(qualitySlider.value) / 100;
+
+  return canvas.toDataURL(mime, quality);
+}
+
+function openDialog() {
+  if (!origImg) return;
+  exportDataURL = prepareExport();
+
+  // Fill dialog
+  dlgOrig.src  = origImg.src || URL.createObjectURL(origFile);
+  dlgScaled.src = exportDataURL;
+
+  dlgOrigRes.textContent   = `${origImg.naturalWidth} × ${origImg.naturalHeight} px`;
+  dlgScaledRes.textContent = `${outputW} × ${outputH} px`;
+
+  const { scale } = computeOutputSize(origImg.naturalWidth, origImg.naturalHeight);
+  dlgFmt.textContent   = selectedFmt.toUpperCase();
+  dlgTokens.textContent= `~${estimateTokens(outputW, outputH)}`;
+  dlgScale.textContent = scale >= 1 ? '100 % (unchanged)' : `${(scale*100).toFixed(1)} %`;
+
+  const ext  = selectedFmt === 'jpeg' ? 'jpg' : selectedFmt;
+  const base = origFile ? origFile.name.replace(/\.[^.]+$/, '') : 'image';
+  dlgName.textContent = `${base}_scaled.${ext}`;
+
+  dialog.classList.add('open');
+}
+
+function closeDialog() { dialog.classList.remove('open'); }
+
+function doDownload() {
+  const ext  = selectedFmt === 'jpeg' ? 'jpg' : selectedFmt;
+  const base = origFile ? origFile.name.replace(/\.[^.]+$/, '') : 'image';
+  const a = document.createElement('a');
+  a.href = exportDataURL;
+  a.download = `${base}_scaled.${ext}`;
+  a.click();
+  closeDialog();
+  setStatus(`Gespeichert: ${a.download}`, true);
+}
+
+// ── Event listeners ───────────────────────────────────────────────
+dropzone.addEventListener('click', e => {
+  if (!dropzone.classList.contains('has-image')) fileInput.click();
+});
+fileInput.addEventListener('change', e => {
+  if (e.target.files[0]) loadFile(e.target.files[0]);
+});
+
+dropzone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropzone.classList.add('drag-over');
+});
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f) loadFile(f);
+});
+
+clearBtn.addEventListener('click', clearImage);
+exportBtn.addEventListener('click', openDialog);
+
+dlgCancel.addEventListener('click', closeDialog);
+dlgConfirm.addEventListener('click', doDownload);
+dialog.addEventListener('click', e => { if (e.target === dialog) closeDialog(); });
+
+// Format buttons
+document.querySelectorAll('.fmt-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedFmt = btn.dataset.fmt;
+    qualityRow.style.display = selectedFmt === 'png' ? 'none' : 'flex';
+  });
+});
+
+qualitySlider.addEventListener('input', () => {
+  qualityVal.textContent = qualitySlider.value + '%';
+});
+
+// Paste support
+document.addEventListener('paste', e => {
+  const item = [...e.clipboardData.items].find(i => i.type.startsWith('image/'));
+  if (item) loadFile(item.getAsFile());
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>KI-Labor LISA Version 1.0</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="app-container">
+        <header>
+            <h2>KI-Labor: Vom Messen zum Modell</h2>
+            <strong>🍓 &nbsp;by Thomas Joerg & Gemini3, 17. Februar 2026 🍅</strong>
+        </header>
+
+        <strong>1. Modus wählen:</strong> 
+        <select id="mode-select">
+            <option value="A">Gewicht (g) & Vitamin C (mg)</option>
+            <option value="B">Zuckergehalt (%) & Gewicht (g)</option>
+            <option value="C">Vitamin C (mg) & Zuckergehalt (%)</option>
+        </select>
+
+        <h3>2. Messen: Ziehe Gegenstände in das Messfenster</h3>
+        <div id="collect-area">
+            <div id="label-popup">
+                <strong>Was hast du gemessen?</strong><br><br>
+                <button onclick="confirmLabel('Erdbeere')">🍓 Erdbeere</button>
+                <button onclick="confirmLabel('Cocktailtomate')">🍅 Cocktailtomate</button>
+                <button onclick="confirmLabel('Tomate')">🍅 Normale Tomate</button>
+            </div>
+        </div>
+
+        <div id="main-analysis">
+            <div class="pane">
+                <h3>3. Messdaten-Protokoll</h3>
+                <div class="scroll-table">
+                    <table>
+                        <thead><tr id="table-head"><th>ID</th><th id="th-f1">F1</th><th id="th-f2">F2</th><th>Label</th><th>Aktion</th></tr></thead>
+                        <tbody id="table-body"></tbody>
+                    </table>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:5px;">
+                    <button id="train-tree-btn" class="btn-train">Baum trainieren</button>
+                    <button id="train-neuron-btn" class="btn-train">Neuron trainieren</button>
+                    <button onclick="exportCSV()">💾 CSV exportieren</button>
+                </div>
+            </div>
+            <div class="pane">
+                <h3>4. Diagramm</h3>
+                <div id="scatterplot-container"></div>
+            </div>
+        </div>
+
+        <div id="tree-area">
+            <h3>5. Dein Modell: Der Entscheidungsbaum (CART)</h3>
+            <div id="tree-content">Bitte sammle Daten...</div>
+        </div>
+
+        <footer>
+            <strong>🧪 Testlauf:</strong>
+            <span id="test-f1-label">F1</span>: <input type="number" id="test-f1" style="width:50px">
+            <span id="test-f2-label">F2</span>: <input type="number" id="test-f2" style="width:50px">
+            <button onclick="predictTest()" style="background: var(--primary); color: white;">Vorhersage</button>
+            <span id="test-result" style="font-weight: bold; margin-left: 10px;"></span>
+        </footer>
+    </div>
+
+    <script src="js/collect-sketch.js"></script>
+    <script src="js/plot-sketch.js"></script>
+    <script src="js/ml-algorithms.js"></script>
+    <script src="js/model.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

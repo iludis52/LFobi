@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Entscheidungsbaum Visualisierer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-elevated: #1a1a25;
+            --border: #2a2a3a;
+            --text-primary: #e8e8f0;
+            --text-secondary: #8888a0;
+            --accent-cyan: #00d4ff;
+            --accent-magenta: #ff00aa;
+            --accent-yellow: #ffcc00;
+            --accent-green: #00ff88;
+            --class-a: #ff6b6b;
+            --class-b: #4ecdc4;
+            --class-c: #ffe66d;
+        }
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 0;
+        }
+        
+        .app-container {
+            width: 1000px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 
+                0 0 80px rgba(0, 212, 255, 0.05),
+                0 0 40px rgba(255, 0, 170, 0.03);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-card) 100%);
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .header-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 440px 1fr;
+            grid-template-rows: auto auto;
+            gap: 0;
+        }
+        
+        .section {
+            padding: 24px;
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .section:nth-child(2),
+        .section:nth-child(4) {
+            border-right: none;
+        }
+        
+        .section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent-cyan);
+            border-radius: 2px;
+        }
+        
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--bg-dark);
+        }
+        
+        .upload-area:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 212, 255, 0.03);
+        }
+        
+        .upload-area.dragover {
+            border-color: var(--accent-magenta);
+            background: rgba(255, 0, 170, 0.05);
+        }
+        
+        .upload-icon {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+        
+        .upload-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .upload-text strong {
+            color: var(--accent-cyan);
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        /* Status Message */
+        .status-box {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            display: none;
+        }
+        
+        .status-box.success {
+            display: block;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: var(--accent-green);
+        }
+        
+        .status-box.error {
+            display: block;
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            color: var(--class-a);
+        }
+        
+        /* Scatter Plot */
+        #scatterCanvas {
+            display: block;
+        }
+        
+        .plot-container {
+            background: var(--bg-dark);
+            border-radius: 12px;
+            padding: 16px;
+            display: inline-block;
+        }
+        
+        .legend {
+            margin-top: 16px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        /* Train Button */
+        .train-btn {
+            width: 100%;
+            padding: 16px 24px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .train-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 212, 255, 0.3);
+        }
+        
+        .train-btn:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Pseudocode */
+        .pseudocode-box {
+            background: var(--bg-dark);
+            border-radius: 12px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            line-height: 1.8;
+            max-height: 320px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        .pseudocode-box::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .pseudocode-box::-webkit-scrollbar-track {
+            background: var(--bg-elevated);
+            border-radius: 3px;
+        }
+        
+        .pseudocode-box::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+        
+        .node-keyword {
+            color: var(--accent-magenta);
+        }
+        
+        .node-condition {
+            color: var(--accent-cyan);
+        }
+        
+        .node-leaf {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+        
+        /* Prediction Section */
+        .prediction-section {
+            grid-column: 1 / -1;
+            border-bottom: none;
+        }
+        
+        .prediction-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 16px;
+            align-items: end;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .input-group label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .input-group input {
+            padding: 12px 16px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+        }
+        
+        .predict-btn {
+            padding: 12px 32px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 8px;
+            color: var(--accent-cyan);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .predict-btn:hover {
+            background: var(--accent-cyan);
+            color: var(--bg-dark);
+        }
+        
+        .predict-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .prediction-result {
+            margin-top: 16px;
+            padding: 16px 20px;
+            background: var(--bg-dark);
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .prediction-result.show {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .prediction-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .prediction-value {
+            font-size: 18px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 6px;
+        }
+        
+        .placeholder-text {
+            color: var(--text-secondary);
+            font-style: italic;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <div class="header-icon">🌳</div>
+            <div>
+                <h1>Entscheidungsbaum Visualisierer</h1>
+                <p>Klassifikation mit Decision Boundaries • Maximale Tiefe: 3</p>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <!-- Upload & Scatter Plot Section -->
+            <div class="section">
+                <div class="section-title">Daten & Visualisierung</div>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📊</div>
+                    <div class="upload-text">
+                        CSV-Datei hier ablegen oder <strong>klicken</strong><br>
+                        <small>Format: hoeheZuBreite, gewicht, target</small>
+                    </div>
+                </div>
+                <input type="file" id="fileInput" accept=".csv">
+                
+                <div class="status-box" id="statusBox"></div>
+                
+                <div class="plot-container" style="margin-top: 20px;">
+                    <div id="scatterPlot"></div>
+                </div>
+                
+                <div class="legend" id="legend"></div>
+                
+                <button class="train-btn" id="trainBtn" disabled>
+                    🧠 Entscheidungsbaum trainieren
+                </button>
+            </div>
+            
+            <!-- Pseudocode Section -->
+            <div class="section">
+                <div class="section-title">Entscheidungsbaum (Pseudocode)</div>
+                <div class="pseudocode-box" id="pseudocode">
+                    <span class="placeholder-text">Lade zuerst eine CSV-Datei und trainiere den Baum...</span>
+                </div>
+            </div>
+            
+            <!-- Prediction Section -->
+            <div class="section prediction-section">
+                <div class="section-title">Vorhersage für neuen Testpunkt</div>
+                <div class="prediction-grid">
+                    <div class="input-group">
+                        <label for="inputX">Höhe zu Breite (X)</label>
+                        <input type="number" id="inputX" step="0.01" placeholder="z.B. 0.75">
+                    </div>
+                    <div class="input-group">
+                        <label for="inputY">Gewicht (Y)</label>
+                        <input type="number" id="inputY" step="0.01" placeholder="z.B. 1.25">
+                    </div>
+                    <button class="predict-btn" id="predictBtn" disabled>Vorhersagen →</button>
+                </div>
+                <div class="prediction-result" id="predictionResult">
+                    <span class="prediction-label">Vorhergesagte Klasse:</span>
+                    <span class="prediction-value" id="predictionValue"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // GLOBAL STATE
+        // ============================================
+        let data = [];
+        let classes = [];
+        let classColors = {};
+        let tree = null;
+        let xMin, xMax, yMin, yMax;
+        let p5Instance = null;
+        
+        const colorPalette = ['#ff6b6b', '#4ecdc4', '#ffe66d'];
+        
+        // ============================================
+        // DECISION TREE IMPLEMENTATION
+        // ============================================
+        class DecisionTree {
+            constructor(maxDepth = 3) {
+                this.maxDepth = maxDepth;
+                this.root = null;
+            }
+            
+            fit(data) {
+                this.root = this.buildTree(data, 0);
+            }
+            
+            buildTree(data, depth) {
+                if (data.length === 0) return null;
+                
+                const classCounts = this.countClasses(data);
+                const classNames = Object.keys(classCounts);
+                
+                // Check if pure or max depth reached
+                if (classNames.length === 1 || depth >= this.maxDepth) {
+                    return {
+                        type: 'leaf',
+                        prediction: this.majorityClass(classCounts),
+                        samples: data.length
+                    };
+                }
+                
+                // Find best split
+                const bestSplit = this.findBestSplit(data);
+                
+                if (!bestSplit) {
+                    return {
+                        type: 'leaf',
+                        prediction: this.majorityClass(classCounts),
+                        samples: data.length
+                    };
+                }
+                
+                const { feature, threshold, leftData, rightData } = bestSplit;
+                
+                return {
+                    type: 'node',
+                    feature: feature,
+                    threshold: threshold,
+                    left: this.buildTree(leftData, depth + 1),
+                    right: this.buildTree(rightData, depth + 1),
+                    samples: data.length
+                };
+            }
+            
+            countClasses(data) {
+                const counts = {};
+                for (const point of data) {
+                    counts[point.target] = (counts[point.target] || 0) + 1;
+                }
+                return counts;
+            }
+            
+            majorityClass(counts) {
+                let maxCount = 0;
+                let majority = null;
+                for (const [cls, count] of Object.entries(counts)) {
+                    if (count > maxCount) {
+                        maxCount = count;
+                        majority = cls;
+                    }
+                }
+                return majority;
+            }
+            
+            giniImpurity(data) {
+                if (data.length === 0) return 0;
+                const counts = this.countClasses(data);
+                let impurity = 1;
+                for (const count of Object.values(counts)) {
+                    const p = count / data.length;
+                    impurity -= p * p;
+                }
+                return impurity;
+            }
+            
+            findBestSplit(data) {
+                let bestGain = -Infinity;
+                let bestSplit = null;
+                
+                const features = ['x', 'y'];
+                const parentGini = this.giniImpurity(data);
+                
+                for (const feature of features) {
+                    const values = [...new Set(data.map(d => d[feature]))].sort((a, b) => a - b);
+                    
+                    for (let i = 0; i < values.length - 1; i++) {
+                        const threshold = (values[i] + values[i + 1]) / 2;
+                        
+                        const leftData = data.filter(d => d[feature] < threshold);
+                        const rightData = data.filter(d => d[feature] >= threshold);
+                        
+                        if (leftData.length === 0 || rightData.length === 0) continue;
+                        
+                        const leftGini = this.giniImpurity(leftData);
+                        const rightGini = this.giniImpurity(rightData);
+                        
+                        const weightedGini = (leftData.length * leftGini + rightData.length * rightGini) / data.length;
+                        const gain = parentGini - weightedGini;
+                        
+                        if (gain > bestGain) {
+                            bestGain = gain;
+                            bestSplit = { feature, threshold, leftData, rightData };
+                        }
+                    }
+                }
+                
+                return bestSplit;
+            }
+            
+            predict(x, y) {
+                return this.traverseTree(this.root, x, y);
+            }
+            
+            traverseTree(node, x, y) {
+                if (node.type === 'leaf') {
+                    return node.prediction;
+                }
+                
+                const value = node.feature === 'x' ? x : y;
+                if (value < node.threshold) {
+                    return this.traverseTree(node.left, x, y);
+                } else {
+                    return this.traverseTree(node.right, x, y);
+                }
+            }
+            
+            toPseudocode() {
+                const featureNames = { x: 'hoeheZuBreite', y: 'gewicht' };
+                return this.nodeToString(this.root, 0, featureNames);
+            }
+            
+            nodeToString(node, indent, featureNames) {
+                const spaces = '    '.repeat(indent);
+                
+                if (node.type === 'leaf') {
+                    return `${spaces}<span class="node-keyword">→</span> <span class="node-leaf">Klasse: "${node.prediction}"</span>`;
+                }
+                
+                const featureName = featureNames[node.feature];
+                const thresholdStr = node.threshold.toFixed(3).replace('.', ',');
+                
+                let result = '';
+                result += `${spaces}<span class="node-keyword">WENN</span> <span class="node-condition">${featureName} < ${thresholdStr}</span>\n`;
+                result += this.nodeToString(node.left, indent + 1, featureNames) + '\n';
+                result += `${spaces}<span class="node-keyword">SONST</span>\n`;
+                result += this.nodeToString(node.right, indent + 1, featureNames);
+                
+                return result;
+            }
+        }
+        
+        // ============================================
+        // CSV PARSING
+        // ============================================
+        function parseCSV(text) {
+            const lines = text.trim().split('\n');
+            if (lines.length < 2) {
+                throw new Error('Die CSV-Datei muss mindestens eine Kopfzeile und eine Datenzeile enthalten.');
+            }
+            
+            const header = lines[0].split(',').map(h => h.trim().toLowerCase());
+            
+            // Find column indices
+            let xIdx = -1, yIdx = -1, targetIdx = -1;
+            
+            for (let i = 0; i < header.length; i++) {
+                const h = header[i];
+                if (h.includes('hoehe') || h.includes('breite') || h === 'x') xIdx = i;
+                else if (h.includes('gewicht') || h === 'y') yIdx = i;
+                else if (h.includes('target') || h.includes('klasse') || h.includes('class')) targetIdx = i;
+            }
+            
+            // Fallback to positional if not found
+            if (xIdx === -1) xIdx = 0;
+            if (yIdx === -1) yIdx = 1;
+            if (targetIdx === -1) targetIdx = 2;
+            
+            const parsedData = [];
+            const uniqueClasses = new Set();
+            
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                
+                const parts = line.split(',').map(p => p.trim());
+                
+                if (parts.length < 3) {
+                    throw new Error(`Zeile ${i + 1}: Erwartet 3 Spalten, gefunden ${parts.length}.`);
+                }
+                
+                const x = parseFloat(parts[xIdx].replace(',', '.'));
+                const y = parseFloat(parts[yIdx].replace(',', '.'));
+                const target = parts[targetIdx];
+                
+                if (isNaN(x) || isNaN(y)) {
+                    throw new Error(`Zeile ${i + 1}: Numerische Werte konnten nicht gelesen werden.`);
+                }
+                
+                parsedData.push({ x, y, target });
+                uniqueClasses.add(target);
+            }
+            
+            if (uniqueClasses.size < 2 || uniqueClasses.size > 3) {
+                throw new Error(`Es wurden ${uniqueClasses.size} Klassen gefunden. Erwartet: 2-3 Klassen.`);
+            }
+            
+            return { data: parsedData, classes: [...uniqueClasses] };
+        }
+        
+        // ============================================
+        // P5.JS SKETCH
+        // ============================================
+        function createSketch() {
+            return function(p) {
+                const canvasWidth = 400;
+                const canvasHeight = 400;
+                const padding = 50;
+                const plotWidth = canvasWidth - padding * 2;
+                const plotHeight = canvasHeight - padding * 2;
+                
+                p.setup = function() {
+                    p.createCanvas(canvasWidth, canvasHeight);
+                    p.textFont('JetBrains Mono');
+                    p.noLoop();
+                };
+                
+                p.draw = function() {
+                    p.background(10, 10, 15);
+                    
+                    if (data.length === 0) {
+                        p.fill(136, 136, 160);
+                        p.textAlign(p.CENTER, p.CENTER);
+                        p.textSize(12);
+                        p.text('Keine Daten geladen', canvasWidth / 2, canvasHeight / 2);
+                        return;
+                    }
+                    
+                    // Calculate bounds with margin
+                    const xValues = data.map(d => d.x);
+                    const yValues = data.map(d => d.y);
+                    const xMargin = (Math.max(...xValues) - Math.min(...xValues)) * 0.1 || 0.5;
+                    const yMargin = (Math.max(...yValues) - Math.min(...yValues)) * 0.1 || 0.5;
+                    
+                    xMin = Math.min(...xValues) - xMargin;
+                    xMax = Math.max(...xValues) + xMargin;
+                    yMin = Math.min(...yValues) - yMargin;
+                    yMax = Math.max(...yValues) + yMargin;
+                    
+                    // Draw decision boundaries
+                    if (tree && tree.root) {
+                        const resolution = 4;
+                        for (let px = padding; px < canvasWidth - padding; px += resolution) {
+                            for (let py = padding; py < canvasHeight - padding; py += resolution) {
+                                const dataX = p.map(px, padding, canvasWidth - padding, xMin, xMax);
+                                const dataY = p.map(py, padding, canvasHeight - padding, yMax, yMin);
+                                
+                                const prediction = tree.predict(dataX, dataY);
+                                const col = p.color(classColors[prediction] || '#888888');
+                                col.setAlpha(100);
+                                
+                                p.noStroke();
+                                p.fill(col);
+                                p.rect(px, py, resolution, resolution);
+                            }
+                        }
+                    }
+                    
+                    // Draw grid
+                    p.stroke(40, 40, 60);
+                    p.strokeWeight(1);
+                    
+                    // Vertical grid lines
+                    for (let i = 0; i <= 5; i++) {
+                        const x = padding + (plotWidth / 5) * i;
+                        p.line(x, padding, x, canvasHeight - padding);
+                    }
+                    
+                    // Horizontal grid lines
+                    for (let i = 0; i <= 5; i++) {
+                        const y = padding + (plotHeight / 5) * i;
+                        p.line(padding, y, canvasWidth - padding, y);
+                    }
+                    
+                    // Draw axes
+                    p.stroke(80, 80, 100);
+                    p.strokeWeight(2);
+                    p.line(padding, canvasHeight - padding, canvasWidth - padding, canvasHeight - padding);
+                    p.line(padding, padding, padding, canvasHeight - padding);
+                    
+                    // Axis labels
+                    p.fill(136, 136, 160);
+                    p.noStroke();
+                    p.textSize(10);
+                    p.textAlign(p.CENTER, p.TOP);
+                    
+                    // X-axis labels
+                    for (let i = 0; i <= 4; i++) {
+                        const x = padding + (plotWidth / 4) * i;
+                        const val = p.map(i, 0, 4, xMin, xMax).toFixed(2);
+                        p.text(val, x, canvasHeight - padding + 8);
+                    }
+                    
+                    // Y-axis labels
+                    p.textAlign(p.RIGHT, p.CENTER);
+                    for (let i = 0; i <= 4; i++) {
+                        const y = padding + (plotHeight / 4) * i;
+                        const val = p.map(i, 0, 4, yMax, yMin).toFixed(2);
+                        p.text(val, padding - 8, y);
+                    }
+                    
+                    // Axis titles
+                    p.textSize(11);
+                    p.fill(200, 200, 220);
+                    p.textAlign(p.CENTER, p.TOP);
+                    p.text('hoeheZuBreite', canvasWidth / 2, canvasHeight - 15);
+                    
+                    p.push();
+                    p.translate(12, canvasHeight / 2);
+                    p.rotate(-p.PI / 2);
+                    p.textAlign(p.CENTER, p.BOTTOM);
+                    p.text('gewicht', 0, 0);
+                    p.pop();
+                    
+                    // Draw data points
+                    for (const point of data) {
+                        const px = p.map(point.x, xMin, xMax, padding, canvasWidth - padding);
+                        const py = p.map(point.y, yMin, yMax, canvasHeight - padding, padding);
+                        
+                        const col = p.color(classColors[point.target] || '#888888');
+                        
+                        // Outer glow
+                        col.setAlpha(80);
+                        p.fill(col);
+                        p.noStroke();
+                        p.circle(px, py, 14);
+                        
+                        // Inner point
+                        col.setAlpha(255);
+                        p.fill(col);
+                        p.stroke(255, 255, 255, 100);
+                        p.strokeWeight(1);
+                        p.circle(px, py, 8);
+                    }
+                };
+                
+                p.drawTestPoint = function(testX, testY) {
+                    if (xMin === undefined) return;
+                    
+                    const px = p.map(testX, xMin, xMax, padding, canvasWidth - padding);
+                    const py = p.map(testY, yMin, yMax, canvasHeight - padding, padding);
+                    
+                    // Draw crosshair
+                    p.stroke(255, 255, 255, 150);
+                    p.strokeWeight(1);
+                    p.line(px - 15, py, px + 15, py);
+                    p.line(px, py - 15, px, py + 15);
+                    
+                    // Draw point
+                    p.fill(255, 255, 255);
+                    p.noStroke();
+                    p.circle(px, py, 10);
+                    p.fill(0);
+                    p.circle(px, py, 4);
+                };
+            };
+        }
+        
+        // ============================================
+        // UI EVENT HANDLERS
+        // ============================================
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const statusBox = document.getElementById('statusBox');
+        const trainBtn = document.getElementById('trainBtn');
+        const pseudocodeBox = document.getElementById('pseudocode');
+        const legendContainer = document.getElementById('legend');
+        const predictBtn = document.getElementById('predictBtn');
+        const inputX = document.getElementById('inputX');
+        const inputY = document.getElementById('inputY');
+        const predictionResult = document.getElementById('predictionResult');
+        const predictionValue = document.getElementById('predictionValue');
+        
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) handleFile(file);
+        });
+        
+        function handleFile(file) {
+            if (!file.name.endsWith('.csv')) {
+                showStatus('Bitte eine CSV-Datei hochladen.', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const result = parseCSV(e.target.result);
+                    data = result.data;
+                    classes = result.classes;
+                    
+                    // Assign colors
+                    classColors = {};
+                    classes.forEach((cls, i) => {
+                        classColors[cls] = colorPalette[i % colorPalette.length];
+                    });
+                    
+                    showStatus(`✓ ${data.length} Datenpunkte geladen, ${classes.length} Klassen: ${classes.join(', ')}`, 'success');
+                    trainBtn.disabled = false;
+                    tree = null;
+                    
+                    updateLegend();
+                    updatePlot();
+                    
+                    pseudocodeBox.innerHTML = '<span class="placeholder-text">Klicke auf "Entscheidungsbaum trainieren"...</span>';
+                    predictionResult.classList.remove('show');
+                    predictBtn.disabled = true;
+                    
+                } catch (error) {
+                    showStatus(`✗ Fehler: ${error.message}`, 'error');
+                    trainBtn.disabled = true;
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        function showStatus(message, type) {
+            statusBox.textContent = message;
+            statusBox.className = 'status-box ' + type;
+        }
+        
+        function updateLegend() {
+            legendContainer.innerHTML = '';
+            for (const cls of classes) {
+                const item = document.createElement('div');
+                item.className = 'legend-item';
+                item.innerHTML = `
+                    <div class="legend-dot" style="background: ${classColors[cls]}"></div>
+                    <span>${cls}</span>
+                `;
+                legendContainer.appendChild(item);
+            }
+        }
+        
+        function updatePlot() {
+            if (p5Instance) {
+                p5Instance.redraw();
+            }
+        }
+        
+        trainBtn.addEventListener('click', () => {
+            if (data.length === 0) return;
+            
+            tree = new DecisionTree(3);
+            tree.fit(data);
+            
+            pseudocodeBox.innerHTML = tree.toPseudocode();
+            predictBtn.disabled = false;
+            
+            updatePlot();
+        });
+        
+        predictBtn.addEventListener('click', () => {
+            const x = parseFloat(inputX.value);
+            const y = parseFloat(inputY.value);
+            
+            if (isNaN(x) || isNaN(y)) {
+                alert('Bitte gültige Zahlenwerte eingeben.');
+                return;
+            }
+            
+            if (!tree || !tree.root) {
+                alert('Bitte zuerst den Baum trainieren.');
+                return;
+            }
+            
+            const prediction = tree.predict(x, y);
+            
+            predictionValue.textContent = prediction;
+            predictionValue.style.background = classColors[prediction] + '40';
+            predictionValue.style.color = classColors[prediction];
+            predictionResult.classList.add('show');
+            
+            // Redraw with test point
+            if (p5Instance) {
+                p5Instance.redraw();
+                p5Instance.drawTestPoint(x, y);
+            }
+        });
+        
+        // Initialize p5.js
+        window.addEventListener('load', () => {
+            p5Instance = new p5(createSketch(), document.getElementById('scatterPlot'));
+        });
+    </script>
+</body>
+</html>

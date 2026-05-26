@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Decision Tree Visualizer (Monolith)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    
+    <style>
+        /* CSS RESET & BASIS */
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; }
+
+        /* HAUPTCONTAINER: Feste Breite 1000px */
+        #app-container {
+            width: 1000px;
+            margin: 20px auto;
+            background-color: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: 480px 520px; /* Spalten angepasst für etwas breiteren Canvas-Container */
+            grid-template-rows: auto auto auto;
+            grid-gap: 0;
+        }
+
+        /* HEADER */
+        header {
+            grid-column: 1 / -1;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* UPLOAD SECTION */
+        #upload-section {
+            grid-column: 1 / -1;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            background-color: #ecf0f1;
+        }
+
+        #status-msg {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .success { color: green; }
+        .error { color: red; }
+
+        /* LINKER BEREICH: SCATTERPLOT */
+        #canvas-container {
+            grid-column: 1 / 2;
+            padding: 10px;
+            border-right: 1px solid #eee;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            /* Canvas Hintergrund damit man die Ränder sieht */
+            background-color: #fafafa; 
+        }
+
+        /* RECHTER BEREICH: STEUERUNG & ERGEBNISSE */
+        #controls-container {
+            grid-column: 2 / 3;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* UI ELEMENTE STYLING */
+        button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        button:hover { background-color: #2980b9; }
+        button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+
+        .panel {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+
+        h3 { margin-top: 0; color: #2c3e50; }
+
+        /* PSEUDOCODE BOX */
+        #tree-display {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ccc;
+            max-height: 250px;
+            overflow-y: auto;
+            font-size: 13px;
+            white-space: pre-wrap;
+        }
+
+        /* PREDICTION BOX */
+        .input-group {
+            margin-bottom: 10px;
+        }
+        .input-group label { display: inline-block; width: 150px; }
+        .input-group input { padding: 5px; width: 100px; }
+        #prediction-result { font-weight: bold; margin-top: 10px; color: #e67e22; }
+
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+        <header>
+            <h1>ML Decision Tree Explorer</h1>
+        </header>
+
+        <section id="upload-section">
+            <label for="csv-file">CSV Upload (Struktur: hoeheZuBreite, gewicht, target): </label>
+            <input type="file" id="csv-file" accept=".csv">
+            <div id="status-msg">Bitte CSV laden.</div>
+        </section>
+
+        <div id="canvas-container">
+            </div>
+
+        <div id="controls-container">
+            <div class="panel">
+                <h3>1. Modell Training</h3>
+                <p>Algorithmus: CART (Max Tiefe: 3)</p>
+                <button id="btn-train" disabled>Entscheidungsbaum trainieren</button>
+            </div>
+
+            <div class="panel">
+                <h3>2. Baum-Struktur (Pseudocode)</h3>
+                <div id="tree-display">Noch kein Modell trainiert.</div>
+            </div>
+
+            <div class="panel">
+                <h3>3. Vorhersage Testen</h3>
+                <div class="input-group">
+                    <label>Höhe zu Breite:</label>
+                    <input type="number" step="0.01" id="pred-x">
+                </div>
+                <div class="input-group">
+                    <label>Gewicht:</label>
+                    <input type="number" step="0.1" id="pred-y">
+                </div>
+                <button id="btn-predict" disabled>Vorhersagen</button>
+                <div id="prediction-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- GLOBALE VARIABLEN ---
+        let rawData = [];
+        let classes = []; // Eindeutige Klassennamen
+        let featureMinMax = { xMin: 0, xMax: 1, yMin: 0, yMax: 1 };
+        let colorMap = {}; // Zuordnung Klasse -> p5 Color
+        let decisionTree = null;
+        let p5Canvas = null;
+
+        // UI Referenzen
+        const fileInput = document.getElementById('csv-file');
+        const statusMsg = document.getElementById('status-msg');
+        const btnTrain = document.getElementById('btn-train');
+        const treeDisplay = document.getElementById('tree-display');
+        const btnPredict = document.getElementById('btn-predict');
+        const predResult = document.getElementById('prediction-result');
+        const predXInput = document.getElementById('pred-x');
+        const predYInput = document.getElementById('pred-y');
+
+        // --- 1. CSV HANDLER ---
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const text = evt.target.result;
+                parseCSV(text);
+            };
+            reader.readAsText(file);
+        });
+
+        function parseCSV(text) {
+            try {
+                const lines = text.trim().split('\n');
+                if (lines.length < 2) throw new Error("Datei ist leer oder hat keine Daten.");
+
+                // Header prüfen (einfacher Check)
+                const header = lines[0].toLowerCase();
+                if (!header.includes("hoehe") || !header.includes("gewicht") || !header.includes("target")) {
+                    throw new Error("CSV Header passt nicht zur erwarteten Struktur.");
+                }
+
+                const parsedData = [];
+                const tempClasses = new Set();
+                
+                let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
+
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+                    
+                    const parts = line.split(',');
+                    if (parts.length < 3) continue;
+
+                    const x = parseFloat(parts[0]);
+                    const y = parseFloat(parts[1]);
+                    const label = parts[2].trim();
+
+                    if (isNaN(x) || isNaN(y)) continue;
+
+                    parsedData.push({ x, y, label });
+                    tempClasses.add(label);
+
+                    if (x < xMin) xMin = x;
+                    if (x > xMax) xMax = x;
+                    if (y < yMin) yMin = y;
+                    if (y > yMax) yMax = y;
+                }
+
+                if (parsedData.length === 0) throw new Error("Keine validen Datenzeilen gefunden.");
+
+                // Padding für die Achsen (5%)
+                const xPad = (xMax - xMin) * 0.05;
+                const yPad = (yMax - yMin) * 0.05;
+
+                rawData = parsedData;
+                classes = Array.from(tempClasses);
+                featureMinMax = { 
+                    xMin: xMin - xPad, 
+                    xMax: xMax + xPad, 
+                    yMin: yMin - yPad, 
+                    yMax: yMax + yPad 
+                };
+
+                updateColorMap();
+
+                statusMsg.textContent = `Erfolg: ${parsedData.length} Datensätze geladen. Klassen: ${classes.join(', ')}`;
+                statusMsg.className = "success";
+                btnTrain.disabled = false;
+                decisionTree = null;
+                treeDisplay.textContent = "Daten geladen. Bitte trainieren.";
+                
+                if(p5Canvas) p5Canvas.redraw();
+
+            } catch (err) {
+                statusMsg.textContent = "Fehler: " + err.message;
+                statusMsg.className = "error";
+                btnTrain.disabled = true;
+            }
+        }
+
+        // --- 2. MACHINE LEARNING (Decision Tree - CART) ---
+        
+        class Node {
+            constructor() {
+                this.left = null;
+                this.right = null;
+                this.featureIndex = null; // 0 für x, 1 für y
+                this.threshold = null;
+                this.predictedClass = null;
+                this.isLeaf = false;
+            }
+        }
+
+        function trainDecisionTree(data, depth) {
+            const maxDepth = 3;
+            const node = new Node();
+
+            const uniqueClasses = [...new Set(data.map(d => d.label))];
+            
+            if (uniqueClasses.length === 1) {
+                node.isLeaf = true;
+                node.predictedClass = uniqueClasses[0];
+                return node;
+            }
+
+            if (depth >= maxDepth) {
+                node.isLeaf = true;
+                node.predictedClass = getMajorityClass(data);
+                return node;
+            }
+
+            let bestGini = Infinity;
+            let bestSplit = null;
+
+            const features = ['x', 'y'];
+            
+            for (let fIdx = 0; fIdx < features.length; fIdx++) {
+                const featureKey = features[fIdx];
+                data.sort((a, b) => a[featureKey] - b[featureKey]);
+
+                for (let i = 0; i < data.length - 1; i++) {
+                    const val1 = data[i][featureKey];
+                    const val2 = data[i+1][featureKey];
+                    
+                    if (val1 === val2) continue;
+
+                    const threshold = (val1 + val2) / 2;
+                    
+                    const leftSubset = data.filter(d => d[featureKey] <= threshold);
+                    const rightSubset = data.filter(d => d[featureKey] > threshold);
+
+                    const gini = calculateGini(leftSubset, rightSubset);
+
+                    if (gini < bestGini) {
+                        bestGini = gini;
+                        bestSplit = {
+                            featureIndex: fIdx,
+                            threshold: threshold,
+                            leftData: leftSubset,
+                            rightData: rightSubset
+                        };
+                    }
+                }
+            }
+
+            if (!bestSplit) {
+                node.isLeaf = true;
+                node.predictedClass = getMajorityClass(data);
+                return node;
+            }
+
+            node.featureIndex = bestSplit.featureIndex;
+            node.threshold = bestSplit.threshold;
+            node.left = trainDecisionTree(bestSplit.leftData, depth + 1);
+            node.right = trainDecisionTree(bestSplit.rightData, depth + 1);
+
+            return node;
+        }
+
+        function calculateGini(left, right) {
+            const total = left.length + right.length;
+            
+            const giniSubset = (subset) => {
+                if (subset.length === 0) return 0;
+                const counts = {};
+                subset.forEach(d => counts[d.label] = (counts[d.label] || 0) + 1);
+                let impurity = 1;
+                for (let c in counts) {
+                    const prob = counts[c] / subset.length;
+                    impurity -= prob * prob;
+                }
+                return impurity;
+            };
+
+            const gLeft = giniSubset(left);
+            const gRight = giniSubset(right);
+
+            return (left.length / total) * gLeft + (right.length / total) * gRight;
+        }
+
+        function getMajorityClass(data) {
+            const counts = {};
+            let maxCount = -1;
+            let maxClass = null;
+            data.forEach(d => {
+                counts[d.label] = (counts[d.label] || 0) + 1;
+                if (counts[d.label] > maxCount) {
+                    maxCount = counts[d.label];
+                    maxClass = d.label;
+                }
+            });
+            return maxClass;
+        }
+
+        function predictSingle(node, x, y) {
+            if (node.isLeaf) return node.predictedClass;
+            
+            const val = (node.featureIndex === 0) ? x : y;
+            if (val <= node.threshold) {
+                return predictSingle(node.left, x, y);
+            } else {
+                return predictSingle(node.right, x, y);
+            }
+        }
+
+        // --- 3. PSEUDOCODE GENERATOR ---
+        function generatePseudocode(node, indent = 0) {
+            if (!node) return "";
+            
+            const spaces = " ".repeat(indent * 4);
+            
+            if (node.isLeaf) {
+                return `${spaces}DANN Klasse: "${node.predictedClass}"\n`;
+            }
+
+            const featureName = (node.featureIndex === 0) ? "Höhe/Breite" : "Gewicht";
+            const val = node.threshold.toFixed(3);
+            
+            let text = `${spaces}WENN ${featureName} <= ${val} :\n`;
+            text += generatePseudocode(node.left, indent + 1);
+            text += `${spaces}SONST (${featureName} > ${val}) :\n`;
+            text += generatePseudocode(node.right, indent + 1);
+            
+            return text;
+        }
+
+
+        // --- 4. BUTTON LOGIK ---
+        btnTrain.addEventListener('click', () => {
+            if (rawData.length === 0) return;
+            
+            const dataCopy = JSON.parse(JSON.stringify(rawData));
+            decisionTree = trainDecisionTree(dataCopy, 0);
+
+            treeDisplay.textContent = generatePseudocode(decisionTree);
+            btnPredict.disabled = false;
+            p5Canvas.redraw();
+        });
+
+        btnPredict.addEventListener('click', () => {
+            const x = parseFloat(predXInput.value);
+            const y = parseFloat(predYInput.value);
+            if (isNaN(x) || isNaN(y)) {
+                predResult.textContent = "Bitte gültige Zahlen eingeben.";
+                return;
+            }
+            if (!decisionTree) return;
+
+            const res = predictSingle(decisionTree, x, y);
+            predResult.textContent = `Vorhersage: ${res}`;
+            predResult.style.color = colorMap[res] ? colorMap[res].toString() : '#000';
+        });
+
+        // --- 5. P5.JS VISUALISIERUNG (Update für Achsen) ---
+        
+        function updateColorMap() {
+            const palette = ['#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#f1c40f'];
+            classes.forEach((cls, i) => {
+                colorMap[cls] = palette[i % palette.length];
+            });
+        }
+
+        const sketch = (p) => {
+            // Konstanten für Layout mit Achsenbeschriftung
+            const plotSize = 400;
+            const marginLeft = 60;
+            const marginBottom = 50;
+            const marginTop = 10;
+            const marginRight = 10;
+            const canvasWidth = marginLeft + plotSize + marginRight;
+            const canvasHeight = marginTop + plotSize + marginBottom;
+
+            p.setup = () => {
+                // Canvas ist größer als 400x400 um Platz für Labels zu schaffen
+                const c = p.createCanvas(canvasWidth, canvasHeight);
+                c.parent('canvas-container');
+                p.noLoop(); 
+            };
+
+            p.draw = () => {
+                p.background(255);
+
+                // Verschiebe den Ursprung, damit (0,0) oben links im Plot-Bereich ist
+                p.push();
+                p.translate(marginLeft, marginTop);
+
+                // 0. Achsen und Gitter zeichnen (ruft jetzt die neue Funktion auf)
+                drawAxes();
+
+                p.textSize(10); // Reset Textgröße für Legende/Punkte falls nötig
+
+                // 1. Decision Boundaries zeichnen (nutzt nun fixe plotSize statt p.width/height)
+                if (decisionTree) {
+                    drawDecisionBoundaries(decisionTree, featureMinMax.xMin, featureMinMax.xMax, featureMinMax.yMin, featureMinMax.yMax);
+                }
+
+                // 2. Datenpunkte zeichnen
+                if (rawData.length > 0) {
+                    p.strokeWeight(1);
+                    p.stroke(0);
+                    
+                    rawData.forEach(pt => {
+                        // Mapping auf 0 bis plotSize (400)
+                        const px = p.map(pt.x, featureMinMax.xMin, featureMinMax.xMax, 0, plotSize);
+                        const py = p.map(pt.y, featureMinMax.yMin, featureMinMax.yMax, plotSize, 0); // Y invertiert
+                        
+                        const cCode = colorMap[pt.label] || '#000';
+                        p.fill(cCode);
+                        p.circle(px, py, 8);
+                    });
+                }
+
+                // 3. Legende zeichnen (innerhalb des Plotbereichs oben links)
+                drawLegend();
+
+                p.pop(); // Translation zurücksetzen
+            };
+
+            // NEUE FUNKTION: Zeichnet Achsen, Ticks und Labels
+            function drawAxes() {
+                p.stroke(0);
+                p.strokeWeight(1);
+                p.fill(0);
+                p.textSize(11);
+
+                // --- X-ACHSE (Unten) ---
+                // Hauptlinie
+                p.line(0, plotSize, plotSize, plotSize);
+
+                // Ticks und Zahlen
+                const xSteps = 5;
+                p.textAlign(p.CENTER, p.TOP);
+                for (let i = 0; i <= xSteps; i++) {
+                    const xPos = (plotSize / xSteps) * i;
+                    const val = p.map(i, 0, xSteps, featureMinMax.xMin, featureMinMax.xMax);
+                    
+                    p.stroke(0);
+                    p.line(xPos, plotSize, xPos, plotSize + 5); // Tick
+                    
+                    p.noStroke();
+                    // Nur zeichnen wenn Daten geladen (sonst unsinnige Werte)
+                    if(rawData.length > 0) {
+                         p.text(val.toFixed(2), xPos, plotSize + 8);
+                    }
+                }
+                // Achsentitel X
+                if(rawData.length > 0){
+                    p.textStyle(p.BOLD);
+                    p.text("hoeheZuBreite", plotSize / 2, plotSize + 30);
+                    p.textStyle(p.NORMAL);
+                }
+
+
+                // --- Y-ACHSE (Links) ---
+                // Hauptlinie
+                p.stroke(0);
+                p.line(0, 0, 0, plotSize);
+
+                // Ticks und Zahlen
+                const ySteps = 5;
+                p.textAlign(p.RIGHT, p.CENTER);
+                for (let i = 0; i <= ySteps; i++) {
+                    // yPos visuell von oben (0) nach unten (plotSize)
+                    const yPos = (plotSize / ySteps) * i;
+                    // Wert-Mapping: visuell 0 ist yMax, visuell plotSize ist yMin
+                    const val = p.map(yPos, 0, plotSize, featureMinMax.yMax, featureMinMax.yMin);
+
+                    p.stroke(0);
+                    p.line(0, yPos, -5, yPos); // Tick nach links
+
+                    p.noStroke();
+                    if(rawData.length > 0) {
+                        p.text(val.toFixed(1), -8, yPos);
+                    }
+                }
+
+                // Achsentitel Y (rotiert)
+                if(rawData.length > 0){
+                    p.push();
+                    // Positionieren links von den Zahlen
+                    p.translate(-45, plotSize / 2);
+                    p.rotate(-p.HALF_PI); // 90 Grad gegen Uhrzeigersinn
+                    p.textStyle(p.BOLD);
+                    p.textAlign(p.CENTER, p.CENTER);
+                    p.text("gewicht", 0, 0);
+                    p.pop();
+                    p.textStyle(p.NORMAL);
+                }
+
+                // Optional: Leichtes Gitter im Hintergrund
+                p.stroke(230);
+                for(let i=1; i<xSteps; i++) {
+                    const pos = (plotSize / xSteps) * i;
+                    p.line(pos, 0, pos, plotSize); // Vertikale
+                    p.line(0, pos, plotSize, pos); // Horizontale
+                }
+            }
+
+
+            function drawLegend() {
+                if (classes.length === 0) return;
+                let legendX = 10;
+                let legendY = 10;
+                const boxSize = 10;
+                p.noStroke();
+                p.fill(255, 255, 255, 220);
+                p.rect(5, 5, 100, classes.length * 20 + 10);
+
+                classes.forEach((cls, i) => {
+                    const cCode = colorMap[cls];
+                    p.fill(cCode);
+                    p.noStroke();
+                    p.rect(legendX, legendY + (i * 20), boxSize, boxSize);
+                    p.fill(0);
+                    p.textAlign(p.LEFT, p.TOP);
+                    p.text(cls, legendX + 15, legendY + (i * 20));
+                });
+            }
+
+            function drawDecisionBoundaries(node, minX, maxX, minY, maxY) {
+                if (node.isLeaf) {
+                    const cCode = colorMap[node.predictedClass];
+                    if (cCode) {
+                        const c = p.color(cCode);
+                        c.setAlpha(127); 
+                        p.fill(c);
+                        p.noStroke();
+
+                        // Mapping auf feste plotSize statt p.width/height
+                        const x1 = p.map(minX, featureMinMax.xMin, featureMinMax.xMax, 0, plotSize);
+                        const x2 = p.map(maxX, featureMinMax.xMin, featureMinMax.xMax, 0, plotSize);
+                        const y1 = p.map(maxY, featureMinMax.yMin, featureMinMax.yMax, plotSize, 0); 
+                        const y2 = p.map(minY, featureMinMax.yMin, featureMinMax.yMax, plotSize, 0); 
+
+                        p.rect(x1, y1, x2 - x1, y2 - y1);
+                    }
+                    return;
+                }
+
+                if (node.featureIndex === 0) { 
+                    drawDecisionBoundaries(node.left, minX, node.threshold, minY, maxY);
+                    drawDecisionBoundaries(node.right, node.threshold, maxX, minY, maxY);
+                } else {
+                    drawDecisionBoundaries(node.left, minX, maxX, minY, node.threshold);
+                    drawDecisionBoundaries(node.right, minX, maxX, node.threshold, maxY);
+                }
+            }
+        };
+
+        p5Canvas = new p5(sketch);
+
+    </script>
+</body>
+</html>
