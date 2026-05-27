@@ -1,0 +1,180 @@
+Abbildung
+Ableitung
+Abstand
+Abstandsmaße
+Abstiegsverfahren
+Accuracy
+Activation
+Agenten
+Aktivierungsfunktion
+Algorithmen
+Algorithmischer Bias
+Algorithmus
+Analyse
+Analysieren
+Annäherung
+Annotation
+Anpassung
+Anwendungen
+Architektur
+Backpropagation
+Batch
+Batchgröße
+Bias
+Biasparameter
+Biasvektor
+Binäre variablen
+Black-Box-Modelle
+Boxplot
+Chatbots
+Class
+Cluster
+Clustering
+CrossValidierung
+Daten
+Daten aufbereiten
+Datenanalyse
+Datenbank
+Datenmengen
+Datenpunkte
+Datensatz
+Datenschutz
+Datensicherheit
+Decoder
+Deep Neural Networks
+Determinationskoeffizient
+Dimension
+Distanz
+Distanzfunktionen
+DSGVO
+Dummy
+Dummykodierung
+Dummyvariablen
+Early Stopping
+Encoder
+Encoder-Decoder-Architektur
+Entropie
+Entscheidungsbaum
+Epoche
+Erklärbarkeit
+Error-Funktion
+Euklidische Distanz
+Evaluation
+Evaluationsmaß
+Features
+Feed Forward Networks
+Fehler
+Fehlerquadrat
+Flussdiagramm
+Fnn
+F-Score (F-Maß)
+Funktion
+Gate
+Gewichtungsfaktoren
+Gini-Index
+Gradient
+Gradient descent
+Gradientenabstiegsverfahren
+Greedy-Algorithmen
+Hidden Layers
+Hyperparameter
+Input
+Instanzbasiertes Lernen
+Irisdaten
+Iteration
+Kategoriale
+Klassifikation
+Klassifikationsbaum
+Klassifikator
+Kodierung
+Koeffizient
+Konfusionsmatrix
+Koordinatensystem
+Korrelation und Kausalität
+Korrelationskoeffizient
+Kreuzentropie
+Lernalgorithmus
+Lernen
+Lernrate
+Lineare Funktion
+Lineare regression
+Logistische gleichung
+Logit
+Long Short Term Memory-Netzwerke
+Loss
+Lstm
+Machine learning
+Manhattan-Distanz
+Maschinelles Lernen
+Matrixmultiplikation
+Mean Squared Error (MSE)
+Merkmal
+Mittelwert, Standardabweichung
+Modell
+Mse
+Multilayer perceptron
+Nächste-Nachbarn-Klassifikation/Regression
+Neuron
+Neuronale netze
+Neuronen
+Nicht überwachtes Lernen
+Normalisierung
+Overfitting
+Parameter bei Linearer Regression
+Parameter in neuronalen Netzen
+Personenbezogene Daten
+Perzeptron
+Prädiktive Faktoren
+Precision
+Pruning
+Recall
+Regression
+Regressionsbaum
+Regressionslinie
+Regressionsmodell
+Regressionsproblem
+Reinforcement Learning
+Rekurrente neuronale Netze
+Rekurrente neuronale netzwerke
+ReLU-Aktivierung
+Rmsprop
+Rnn
+Root Mean Squared Error (RMSE)
+Scatterplots/Streudiagramm
+Sequenz-zu-Sequenz-Probleme
+Sigmoidaktivierung
+Sigmoidfunktion
+Softmax-Aktivierung
+Standardabweichung
+Standardisierung
+Statistik
+Steigung
+Stochastisch
+Supervised
+Tanh-Aktivierung
+Teachable Machine
+Tensor
+Testdaten
+Trainieren
+Training
+Training und Test
+Trainingsdaten
+Überraschungswert
+Überwachtes Lernen
+Unsicherheit
+Unsupervised
+Ursprung
+Validierung
+Validierungsdaten
+Variable
+Variablen, abhängige und unabhängige
+Variablen, kategoriale
+Varianz
+Verlustfunktion
+Verzerrung
+Verzweigungen
+Wahrscheinlichkeit
+Wahrscheinlichkeitsverteilung
+Weight
+y-Achsenabschnitt
+z-Werte

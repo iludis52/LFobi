@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Übungsprüfung ZQ KI - LogiDrone GmbH</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0ebf8;
+            margin: 0;
+            padding: 20px;
+            color: #202124;
+        }
+
+        .container {
+            max-width: 770px;
+            margin: 0 auto;
+        }
+
+        .form-header {
+            background-color: #fff;
+            border-radius: 8px;
+            border-top: 10px solid #673ab7; /* Google Forms Purple */
+            padding: 24px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .form-header h1 {
+            font-size: 32px;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+
+        .form-header p {
+            font-size: 14px;
+            margin-top: 0;
+            color: #5f6368;
+        }
+
+        .section-header {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            background-color: #673ab7;
+            color: white;
+        }
+        
+        .section-header h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .question-card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .question-text {
+            font-size: 16px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .scenario-box {
+            background-color: #f8f9fa;
+            border-left: 5px solid #4285f4;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Inputs */
+        input[type="text"], textarea {
+            width: 100%; /* Full width */
+            border: none;
+            border-bottom: 1px solid #dadce0;
+            padding: 5px 0;
+            font-size: 14px;
+            outline: none;
+            transition: border-bottom 0.3s;
+            background-color: transparent;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 40px;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            border-bottom: 2px solid #673ab7;
+        }
+
+        /* Radio & Checkbox Customization to look like Google Forms */
+        .option-group label {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .option-group input {
+            margin-right: 15px;
+            margin-top: 3px;
+            transform: scale(1.2);
+            accent-color: #673ab7;
+        }
+
+        .image-placeholder {
+            border: 2px dashed #ccc;
+            background-color: #fafafa;
+            color: #666;
+            text-align: center;
+            padding: 40px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .required-star {
+            color: #d93025;
+        }
+
+        /* Table Styles for Matrices */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #dadce0;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f1f3f4;
+        }
+
+        /* Footer/Button */
+        .footer-action {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+
+        button.print-btn {
+            background-color: #673ab7;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        button.print-btn:hover {
+            background-color: #5e35b1;
+        }
+
+        @media print {
+            body {
+                background-color: #fff;
+            }
+            .print-btn {
+                display: none;
+            }
+            .container {
+                width: 100%;
+                max-width: 100%;
+            }
+            .question-card, .form-header, .section-header {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                page-break-inside: avoid;
+            }
+            textarea {
+                border: 1px solid #ccc; /* Visible box for handwriting if printed blank */
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="form-header">
+            <h1>Übungsprüfung ZQ KI</h1>
+            <p>Diese Prüfung deckt die Module A bis D der Zusatzqualifikation „Künstliche Intelligenz" ab.<br>
+            Diese Übungsprüfung ist struktur-analog zur echten Prüfung aufgebaut.</p>
+            <hr>
+            <p><strong>Hilfsmittel:</strong> Taschenrechner<br>
+            <strong>Zeit:</strong> 60 Minuten</p>
+            <p><span class="required-star">* Erforderlich</span></p>
+        </div>
+
+        <div class="question-card">
+            <div class="scenario-box">
+                <strong>Ausgangssituation:</strong><br>
+                Sie arbeiten bei der <strong>LogiDrone GmbH</strong>, einem Start-up, das autonome Lieferdrohnen für den Paketversand in ländlichen Gebieten entwickelt. Das Unternehmen möchte die Routenplanung optimieren, Wartungsbedarf der Drohnenakkus vorhersagen und Hindernisse (Vögel, Stromleitungen) automatisch erkennen.
+            </div>
+            <div class="question-text">Persönliche Daten</div>
+            <div style="margin-bottom: 15px;">
+                <label>Nachname <span class="required-star">*</span></label>
+                <input type="text">
+            </div>
+            <div>
+                <label>Vorname <span class="required-star">*</span></label>
+                <input type="text">
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2>Modul A - Grundbegriffe und Einordnung</h2>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">1. Die LogiDrone GmbH nutzt ein System, das basierend auf GPS-Daten und fest programmierten Regeln ("Wenn Windgeschwindigkeit > 50km/h, dann Landen") entscheidet, ob eine Drohne starten darf. Handelt es sich hierbei um eine KI im modernen Sinne (Maschinelles Lernen)? Begründen Sie kurz. <span class="required-star">*</span></div>
+            <textarea placeholder="Ihre Antwort"></textarea>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">2. Welche der folgenden Technologien im Umfeld von LogiDrone lassen sich als "Maschinelles Lernen" klassifizieren? (Wählen Sie alle zutreffenden Antworten aus) <span class="required-star">*</span></div>
+            <div class="option-group">
+                <label><input type="checkbox"> Ein neuronaler Algorithmus, der lernt, Vögel auf Kamerabildern von anderen Flugobjekten zu unterscheiden.</label>
+                <label><input type="checkbox"> Eine Datenbankabfrage, die alle Lieferungen des letzten Monats summiert.</label>
+                <label><input type="checkbox"> Ein System, das anhand historischer Verschleißdaten lernt, wann ein Propeller voraussichtlich brechen wird (Predictive Maintenance).</label>
+                <label><input type="checkbox"> Ein manuell programmierter Sensor, der bei unterschreiten von 10% Akku einen Warnton abgibt.</label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">3. Klassifikation oder Regression? Ordnen Sie die Anwendungsfälle zu. <span class="required-star">*</span></div>
+            <table>
+                <tr>
+                    <th>Anwendungsfall</th>
+                    <th>Klassifikation</th>
+                    <th>Regression</th>
+                </tr>
+                <tr>
+                    <td style="text-align: left;"><strong>Fall A:</strong> Vorhersage der genauen Flugzeit in Minuten basierend auf Paketgewicht und Wind.</td>
+                    <td><input type="radio" name="fallA"></td>
+                    <td><input type="radio" name="fallA"></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;"><strong>Fall B:</strong> Entscheidung, ob ein aufgenommenes Bild ein "Hindernis" oder "Freier Weg" zeigt.</td>
+                    <td><input type="radio" name="fallB"></td>
+                    <td><input type="radio" name="fallB"></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section-header">
+            <h2>Modul B - Datenmanagement & Sicherheit</h2>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">4. Für das Training der Hinderniserkennung werden Kameras verwendet, die auch Gärten von Privatpersonen überfliegen. Der Datenschutzbeauftragte fordert Maßnahmen (DSGVO). Nennen Sie eine konkrete technische Maßnahme bei der Datenaufbereitung (Preprocessing), um den Datenschutz zu wahren, bevor die Daten gespeichert werden. <span class="required-star">*</span></div>
+            <textarea placeholder="Ihre Antwort"></textarea>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">5. Sie teilen Ihre gesammelten Flugdaten in Trainingsdaten (80%) und Testdaten (20%). Ein Kollege fragt, warum man nicht 100% der Daten zum Trainieren nutzt, damit die KI "mehr weiß". Was ist das Hauptargument für die Testdaten? <span class="required-star">*</span></div>
+            <div class="option-group">
+                <label><input type="radio" name="q5"> Um Rechenzeit zu sparen.</label>
+                <label><input type="radio" name="q5"> Um zu überprüfen, ob das Modell auf unbekannte Daten generalisieren kann (Vermeidung von Overfitting).</label>
+                <label><input type="radio" name="q5"> Um fehlende Werte im Trainingsdatensatz aufzufüllen.</label>
+                <label><input type="radio" name="q5"> Um die Datenmenge künstlich zu vergrößern (Data Augmentation).</label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">6. In den Sensordaten der Drohnen fehlen bei einigen Flügen die Werte für die "Außentemperatur" (NaN - Not a Number). Nennen Sie zwei gängige Strategien im "Data Cleaning", wie Sie mit diesen fehlenden Werten umgehen können, damit der ML-Algorithmus nicht abstürzt. <span class="required-star">*</span></div>
+            <textarea placeholder="Ihre Antwort"></textarea>
+        </div>
+
+        <div class="section-header">
+            <h2>Modul C - Algorithmen & Mathe</h2>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">7. Analyse: Lineare Regression</div>
+            <p>Es wurde der Zusammenhang zwischen <strong>Paketgewicht (x in kg)</strong> und <strong>Energieverbrauch (y in Wh/km)</strong> untersucht.</p>
+            
+            <img src="output1.png" style="width:100%">
+
+            <div class="question-text">a) Beschreiben Sie die Korrelation zwischen Gewicht und Verbrauch (positiv/negativ, stark/schwach). <span class="required-star">*</span></div>
+            <input type="text" placeholder="Antwort">
+            
+            <div class="question-text" style="margin-top: 20px;">b) Berechnen Sie die Steigung (m) der Regressionsgeraden, die durch die Punkte P1(2|20) und P2(8|50) verläuft. <span class="required-star">*</span></div>
+            <textarea placeholder="Rechnung und Ergebnis"></textarea>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">8. Entscheidungsbaum (Decision Tree)</div>
+            <p>LogiDrone nutzt einen Entscheidungsbaum, um zu prüfen, ob eine Drohne <strong>Startbereit</strong> ist.</p>
+            
+            <div class="image-placeholder" style="text-align: left; padding: 20px; font-family: monospace;">
+                [Wurzel] Akku > 50% ?<br>
+                ├── JA: [Knoten] Wind < 40 km/h ?<br>
+                │    ├── JA: [Knoten] System-Check OK ?<br>
+                │    │    ├── JA:  ==> STARTEN<br>
+                │    │    └── NEIN: ==> WARTUNG<br>
+                │    └── NEIN: ==> VERSCHIEBEN<br>
+                └── NEIN: ==> LADEN
+            </div>
+
+            <div class="question-text">Fallbeispiel: Eine Drohne hat folgende Werte:</div>
+            <ul>
+                <li>Akku: 60%</li>
+                <li>Wind: 20 km/h</li>
+                <li>System-Check: Fehlercode 03 (Nicht OK)</li>
+            </ul>
+            <div class="question-text">Welche Entscheidung trifft der Baum? <span class="required-star">*</span></div>
+            <div class="option-group">
+                <label><input type="radio" name="q8"> Starten</label>
+                <label><input type="radio" name="q8"> Laden</label>
+                <label><input type="radio" name="q8"> Verschieben</label>
+                <label><input type="radio" name="q8"> Wartung</label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">9. Nach welchem Prinzip ("Mathematische Reinheit") wählt der Decision-Tree-Algorithmus aus, welches Merkmal (z.B. Akku oder Wind) an der Wurzel steht? <span class="required-star">*</span></div>
+            <div class="option-group">
+                <label><input type="radio" name="q9"> Es wird alphabetisch das erste Merkmal gewählt.</label>
+                <label><input type="radio" name="q9"> Es wird das Merkmal gewählt, das den größten Informationsgewinn liefert (Information Gain / Entropie-Reduktion).</label>
+                <label><input type="radio" name="q9"> Es wird das Merkmal gewählt, das am einfachsten zu messen ist.</label>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2>Modul D - Evaluation & Ethik</h2>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">10. Das KI-Modell zur Erkennung von "Defekten Propellern" wurde getestet.</div>
+            <p>Es wurden 100 Drohnen geprüft:</p>
+            <ul>
+                <li>Real Defekt: 10 Drohnen.</li>
+                <li>Davon hat die KI 8 korrekt als "Defekt" erkannt (TP = 8).</li>
+                <li>2 defekte Drohnen wurden fälschlicherweise als "Heil" eingestuft (FN = 2).</li>
+                <li>Die KI hat zudem 5 heile Drohnen fälschlicherweise als "Defekt" markiert (FP = 5).</li>
+            </ul>
+            <div class="question-text">
+                Berechnen Sie den F1-Score.<br>
+                <small style="font-weight: normal; color: #5f6368;">
+                Hinweis: Der F1-Score ist das harmonische Mittel aus Precision und Recall.<br>
+                Nutzen Sie die Formel: <strong>F1 = 2 * (Precision * Recall) / (Precision + Recall)</strong><br>
+                (Tipp: Berechnen Sie zuerst Precision und Recall separat).
+                </small>
+            </div>
+            <textarea placeholder="Ihr Rechenweg und Ergebnis"></textarea>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">11. Warum ist in diesem Szenario (Sicherheitsrelevanter Propeller-Defekt) ein hoher Recall wichtiger als eine hohe Precision? <span class="required-star">*</span></div>
+            <textarea placeholder="Begründung"></textarea>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">12. Data Bias: Die KI für die autonome Landung wurde ausschließlich mit Daten aus ländlichen Gebieten (Wiesen, Äcker) trainiert. Nun wird die Drohne in einem Vorort mit vielen gepflasterten Einfahrten eingesetzt und die Landungen schlagen oft fehl.</div>
+            <div class="question-text">Welches Problem liegt vor? (Wählen Sie alle zutreffenden Antworten) <span class="required-star">*</span></div>
+            <div class="option-group">
+                <label><input type="checkbox"> Overfitting (Überanpassung an die Trainingsumgebung)</label>
+                <label><input type="checkbox"> Mangelnde Repräsentativität der Trainingsdaten (Bias)</label>
+                <label><input type="checkbox"> Die Rechenleistung der Drohne ist zu gering.</label>
+                <label><input type="checkbox"> Die Drohne hat "verlernt" wie man fliegt.</label>
+            </div>
+        </div>
+
+        <div class="footer-action">
+            <button class="print-btn" onclick="window.print()">Prüfung als PDF speichern / Drucken</button>
+        </div>
+
+    </div>
+
+</body>
+</html>
