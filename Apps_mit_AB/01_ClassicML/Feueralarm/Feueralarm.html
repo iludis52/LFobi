@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI-Wächter-Labor v5</title>
+    <style>
+        :root {
+            --fire-red: #e74c3c;
+            --safe-green: #27ae60;
+            --bg-gray: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-dark: #2c3e50;
+            --star-gold: #f1c40f;
+            --star-gray: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-gray);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            margin: 0;
+            color: var(--text-dark);
+        }
+
+        #app-wrapper { width: 1000px; display: flex; flex-direction: column; gap: 15px; }
+
+        .main-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 15px; }
+
+        .zone {
+            background: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        }
+
+        /* Buttons & Tabelle */
+        .btn-group { display: flex; gap: 8px; margin: 10px 0; }
+        button { 
+            padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; 
+            font-weight: bold; background: #ddd; font-size: 0.85rem;
+        }
+        button.active { background: var(--text-dark); color: white; }
+        
+        .table-container { max-height: 380px; overflow-y: auto; border: 1px solid #eee; border-radius: 4px; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .data-table th { position: sticky; top: 0; background: #f8f9fa; padding: 8px; text-align: left; cursor: pointer; border-bottom: 2px solid #eee; }
+        .data-table td { padding: 6px 8px; border-bottom: 1px solid #f0f0f0; }
+        .row-detected { background-color: rgba(231, 76, 60, 0.1); }
+        .star-filled { color: var(--star-gold); }
+        .star-empty { color: var(--star-gray); }
+
+        /* Kompakte Schieberegler */
+        .slider-row { 
+            display: grid; 
+            grid-template-columns: 60px 380px; 
+            align-items: center; 
+            column-gap: 10px; 
+            margin-bottom: 10px; /* Halber Abstand */
+            position: relative;
+            padding-top: 28px; /* Platz für Icons */
+        }
+        .slider-label { font-size: 0.85rem; font-weight: bold; text-align: right; }
+        
+        input[type=range] { width: 100%; cursor: pointer; height: 6px; margin: 0; }
+        
+        .icon-overlay-container { position: absolute; top: -14px; left: 70px; width: calc(100% - 70px); height: 18px; }
+        .icon-stack { position: absolute; transform: translateX(-50%); font-size: 0.8rem; white-space: nowrap; pointer-events: none; }
+        
+        .star-scale { display: flex; justify-content: space-between; margin-top: 2px; padding: 0 2px; }
+        .scale-unit { font-size: 0.65rem; color: #aaa; text-align: center; line-height: 1; }
+
+        /* Logik */
+        .logic-card { background: #182430; color: #ecf0f1; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; margin-top: 5px; line-height: 1.8;}
+
+        /* Auswertung Unten */
+        .analysis-zone { 
+            display: grid; 
+            grid-template-columns: 1.2fr 0.8fr 1fr; 
+            gap: 20px; 
+            align-items: center; 
+            border-top: 3px double #ddd; 
+            margin-top: 5px;
+            padding-top: 15px; 
+        }
+        .matrix-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 0.75rem; }
+        .matrix-table td { padding: 5px; border: 1px solid #eee; }
+        .matrix-val { font-size: 1rem; font-weight: bold; display: block; color: var(--text-dark); }
+        
+        .metric-box { text-align: center; }
+        .metric-label { font-size: 0.7rem; color: #666; text-transform: uppercase; font-weight: bold; }
+        .metric-value { font-size: 1.2rem; font-weight: bold; display: block; }
+        .acc-large { font-size: 2rem; color: var(--fire-red); line-height: 1; }
+        
+        h2, h3, h4 { margin: 0 0 10px 0; }
+        h3 { font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+
+<div id="app-wrapper">
+    <div class="main-grid">
+        <div class="zone">
+            <h2>🏭 KI-Wächter-Labor</h2>
+            <p style="font-size: 0.9rem; line-height: 1.4;">
+            Du musst nachts auf eine Möbelfabrik mit drei Hallen aufpassen. Dort gibt es viel brennbares Holz. 
+            Deshalb erstellst du dir für jede Halle ein kleines KI-Modell, das Brände erkennt. 
+            Die Erfahrungen der letzten Jahre helfen dir dabei, das KI-Modell einzustellen - 
+            du findest sie in den Tabellen unten.
+            </p>
+            <p style="font-size: 0.9rem; font-style: italic; color: var(--fire-red);">
+                Stelle für jede Halle die Schieberegler so ein, dass deine KI alle Brände sicher erkennt, aber keine Fehlalarme auslöst.
+            </p>
+            <div class="btn-group">
+                <button id="btn0" onclick="loadHalle(0)" class="active">Halle 1 (easy)</button>
+                <button id="btn1" onclick="loadHalle(1)">Halle 2 (so lala)</button>
+                <button id="btn2" onclick="loadHalle(2)">Halle 3 (hard)</button>
+            </div>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th onclick="setSort('id')">ID ↕</th>
+                            <th onclick="setSort('rauch')">Rauch ↕</th>
+                            <th onclick="setSort('waerme')">Wärme ↕</th>
+                            <th onclick="setSort('knistern')">Knistern ↕</th>
+                            <th onclick="setSort('feuer')">Realität ↕</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="zone">
+            <h3>🎛️ KI-Einstellung</h3>
+            <div id="controls"></div>
+
+            <h3 style="margin-top:35px;">🧠 Entscheidungs-Logik: Deine KI</h3>
+            <div class="logic-card" id="logicText"></div>
+        </div>
+    </div>
+
+    <div class="zone analysis-zone">
+        <div>
+            <h4 style="margin:0 0 5px 0; font-size: 0.9rem;">Verwirrungs-Tabelle (Confusion Matrix)</h4>
+            <table class="matrix-table">
+                <tr>
+                    <td style="border:none"></td>
+                    <td style="background:#f8f9fa">KI sagt: Feuer</td>
+                    <td style="background:#f8f9fa">KI sagt: Sicher</td>
+                </tr>
+                <tr>
+                    <td style="background:#f8f9fa">Real: Feuer</td>
+                    <td style="background:#e8f5e9"><span class="matrix-val" id="tp">0</span>Richtig</td>
+                    <td style="background:#fff3e0"><span class="matrix-val" id="fn">0</span>Übersehen</td>
+                </tr>
+                <tr>
+                    <td style="background:#f8f9fa">Real: Sicher</td>
+                    <td style="background:#ffebee"><span class="matrix-val" id="fp">0</span>Fehlalarm</td>
+                    <td style="background:#e3f2fd"><span class="matrix-val" id="tn">0</span>Ignoriert</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="metric-box">
+            <span class="metric-label">Genauigkeit<br>(Accuracy)</span>
+            <span class="metric-value acc-large" id="accDisplay">0%</span>
+            <p style="font-size: 0.7rem; color: #666; margin-top: 5px;">Wie viele Fälle insgesamt (Feuer & Sicher) <br>wurden korrekt erkannt?</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="metric-box" style="background:#f8f9fa; padding:8px; border-radius:6px;">
+                <span class="metric-label">Verlässlichkeit (Precision)</span>
+                <span class="metric-value" id="precisionDisplay">0%</span>
+                <p style="font-size: 0.65rem; color: #666; margin-top: 3px;">Wenn die KI "Feuer" sagt: Wie oft stimmt das wirklich?</p>
+            </div>
+            <div class="metric-box" style="background:#f8f9fa; padding:8px; border-radius:6px;">
+                <span class="metric-label">Trefferquote<br>(Recall)</span>
+                <span class="metric-value" id="recallDisplay">0%</span>
+                <p style="font-size: 0.65rem; color: #666; margin-top: 3px;">Wie viel Prozent aller echten Brände hat die KI gefunden?</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const hallen = [
+        // HALLE 1
+        [
+            {id: 1, rauch: 3, waerme: 1, knistern: 2, feuer: false},
+            {id: 2, rauch: 2, waerme: 3, knistern: 1, feuer: true},
+            {id: 3, rauch: 4, waerme: 1, knistern: 1, feuer: false},
+            {id: 4, rauch: 1, waerme: 2, knistern: 4, feuer: false},
+            {id: 5, rauch: 3, waerme: 3, knistern: 1, feuer: true},
+            {id: 6, rauch: 2, waerme: 1, knistern: 3, feuer: false},
+            {id: 7, rauch: 4, waerme: 4, knistern: 0, feuer: true},
+            {id: 8, rauch: 2, waerme: 2, knistern: 2, feuer: true}
+        ],
+        // HALLE 2
+        [
+            {id: 1, rauch: 3, waerme: 0, knistern: 0, feuer: false},
+            {id: 2, rauch: 4, waerme: 4, knistern: 1, feuer: true},
+            {id: 3, rauch: 0, waerme: 4, knistern: 0, feuer: false},
+            {id: 4, rauch: 2, waerme: 3, knistern: 4, feuer: true},
+            {id: 5, rauch: 1, waerme: 0, knistern: 4, feuer: false},
+            {id: 6, rauch: 4, waerme: 4, knistern: 4, feuer: true},
+            {id: 7, rauch: 2, waerme: 2, knistern: 2, feuer: false},
+            {id: 8, rauch: 3, waerme: 3, knistern: 0, feuer: true}
+        ],
+        // HALLE 3
+        [
+            {id: 1, rauch: 0, waerme: 0, knistern: 0, feuer: false},
+            {id: 2, rauch: 4, waerme: 4, knistern: 3, feuer: true},
+            {id: 3, rauch: 1, waerme: 3, knistern: 4, feuer: true},
+            {id: 4, rauch: 3, waerme: 0, knistern: 0, feuer: false},
+            {id: 5, rauch: 0, waerme: 4, knistern: 0, feuer: false},
+            {id: 6, rauch: 4, waerme: 0, knistern: 1, feuer: false},
+            {id: 7, rauch: 0, waerme: 1, knistern: 1, feuer: false},
+            {id: 8, rauch: 2, waerme: 3, knistern: 2, feuer: true},
+            {id: 9, rauch: 3, waerme: 3, knistern: 0, feuer: true},
+            {id: 10, rauch: 1, waerme: 0, knistern: 4, feuer: false}
+        ]
+    ];
+
+    // --- NEU: SPEICHER LOGIK ---
+    let hallenSpeicher = [
+        { rauch: 0, waerme: 0, knistern: 0 },
+        { rauch: 0, waerme: 0, knistern: 0 },
+        { rauch: 0, waerme: 0, knistern: 0 }
+    ];
+    let aktuelleHalleIndex = 0;
+    let thresholds = hallenSpeicher[aktuelleHalleIndex];
+    // ---------------------------
+
+    let currentDataset = [];
+    let sortConfig = { key: 'id', asc: true };
+
+    function loadHalle(index) {
+        aktuelleHalleIndex = index;
+        currentDataset = JSON.parse(JSON.stringify(hallen[index]));
+        
+        // Lade die gespeicherten Schwellenwerte für diese Halle
+        thresholds = hallenSpeicher[index];
+        
+        for(let i=0; i<3; i++) document.getElementById('btn'+i).className = (i===index?'active':'');
+        renderSliders();
+        updateUI();
+    }
+
+    function renderSliders() {
+        const cont = document.getElementById('controls');
+        cont.innerHTML = '';
+        ['rauch', 'waerme', 'knistern'].forEach(key => {
+            const group = document.createElement('div');
+            group.className = 'slider-row';
+            
+            let iconHTML = '';
+            for(let v=0; v<=4; v++) {
+                let matches = currentDataset.filter(d => d[key] === v);
+                if(matches.length > 0) {
+                    let hasFire = matches.some(m => m.feuer);
+                    let hasSafe = matches.some(m => !m.feuer);
+                    let display = (hasFire && hasSafe) ? '🔥/✅' : (hasFire ? '🔥' : '✅');
+                    iconHTML += `<div class="icon-stack" style="left:${v/4*100}%">${display}</div>`;
+                }
+            }
+
+            group.innerHTML = `
+                <span class="slider-label">${key.charAt(0).toUpperCase() + key.slice(1)}</span>
+                <div style="position:relative">
+                    <div class="icon-overlay-container" style="left:0; width:100%">${iconHTML}</div>
+                    <input type="range" min="0" max="4" step="0.5" value="${thresholds[key]}" 
+                           oninput="thresholds.${key}=parseFloat(this.value); updateUI()">
+                    <div class="star-scale">
+                        ${[0,1,2,3,4].map(i => `<div class="scale-unit" style="font-size:0.8rem">${getStars(i)}<br>${i}</div>`).join('')}
+                    </div>
+                </div>`;
+            cont.appendChild(group);
+        });
+    }
+
+    function setSort(key) {
+        if(sortConfig.key === key) sortConfig.asc = !sortConfig.asc;
+        else sortConfig.key = key;
+        updateUI();
+    }
+
+    function getStars(count) {
+        let h = "";
+        for(let i=1; i<=4; i++) h += i <= count ? '<span class="star-filled">★</span>' : '<span class="star-empty">★</span>';
+        return h;
+    }
+
+    function updateUI() {
+        const sorted = [...currentDataset].sort((a,b) => {
+            let vA = a[sortConfig.key], vB = b[sortConfig.key];
+            return sortConfig.asc ? (vA > vB ? 1 : -1) : (vA < vB ? 1 : -1);
+        });
+
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        let stats = {tp:0, fp:0, fn:0, tn:0};
+
+        sorted.forEach(d => {
+            let alarm = d.rauch >= thresholds.rauch && d.waerme >= thresholds.waerme && d.knistern >= thresholds.knistern;
+            if(alarm && d.feuer) stats.tp++;
+            else if(alarm && !d.feuer) stats.fp++;
+            else if(!alarm && d.feuer) stats.fn++;
+            else stats.tn++;
+
+            const row = tbody.insertRow();
+            if(alarm) row.className = 'row-detected';
+            row.innerHTML = `<td>${d.id}</td><td>${getStars(d.rauch)}</td><td>${getStars(d.waerme)}</td><td>${getStars(d.knistern)}</td><td>${d.feuer?'🔥 Feuer':'✅ Sicher'}</td>`;
+        });
+
+        let total = currentDataset.length;
+        let acc = Math.round(((stats.tp + stats.tn) / total) * 100);
+        let prec = stats.tp + stats.fp > 0 ? Math.round((stats.tp / (stats.tp + stats.fp)) * 100) : 0;
+        let recall = stats.tp + stats.fn > 0 ? Math.round((stats.tp / (stats.tp + stats.fn)) * 100) : 0;
+
+        document.getElementById('tp').innerText = stats.tp;
+        document.getElementById('fp').innerText = stats.fp;
+        document.getElementById('fn').innerText = stats.fn;
+        document.getElementById('tn').innerText = stats.tn;
+        document.getElementById('accDisplay').innerText = acc + "%";
+        document.getElementById('precisionDisplay').innerText = prec + "%";
+        document.getElementById('recallDisplay').innerText = recall + "%";
+
+        const starStr = (v) => "★".repeat(Math.floor(v)) + (v%1!==0?"½":"") + "☆".repeat(4-Math.ceil(v));
+        document.getElementById('logicText').innerHTML = `
+            WENN (Rauch mehr als <span style="color:var(--star-gold)">${starStr(thresholds.rauch)}</span>)<br>
+            UND (Wärme mehr als <span style="color:var(--star-gold)">${starStr(thresholds.waerme)}</span>)<br>
+            UND (Knistern mehr als <span style="color:var(--star-gold)">${starStr(thresholds.knistern)}</span>)<br>
+            DANN: <strong style="color:var(--fire-red)">ALARM, ES BRENNT!</strong><br>
+            SONST: <strong style="color:var(--safe-green)">ALLES BESTENS.</strong>
+        `;
+
+        checkCertificate();
+    }
+
+    // --- NEU: ZERTIFIKAT PRÜFUNG ---
+    function checkCertificate() {
+        let gelöst = hallenSpeicher.map((th, idx) => {
+            let korrekte = 0;
+            hallen[idx].forEach(d => {
+                let alarm = d.rauch >= th.rauch && d.waerme >= th.waerme && d.knistern >= th.knistern;
+                if(alarm === d.feuer) korrekte++;
+            });
+            return (korrekte / hallen[idx].length) === 1;
+        });
+
+        if (gelöst.every(status => status === true)) {
+            showCertificate();
+        }
+    }
+
+    function showCertificate() {
+        if (document.getElementById('cert-overlay')) return;
+        const cert = document.createElement('div');
+        cert.id = 'cert-overlay';
+        cert.innerHTML = `
+            <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; z-index:1000;">
+                <div style="background:white; padding:40px; border-radius:20px; text-align:center; border:10px double var(--star-gold); max-width:500px;">
+                    <h1 style="font-size:3rem;">🏆</h1>
+                    <h2>Meister-Wächter Zertifikat</h2>
+                    <p>Du hast alle drei Hallen der Möbelfabrik perfekt abgesichert!</p>
+                    <p>Deine KI erkennt Gefahren präzise und vermeidet Fehlalarme. Die Fabrik ist sicher.</p>
+                    <button onclick="this.parentElement.parentElement.remove()" style="background:var(--text-dark); color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">Weiterarbeiten</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(cert);
+    }
+    // -------------------------------
+
+    loadHalle(0);
+</script>
+</body>
+</html>
