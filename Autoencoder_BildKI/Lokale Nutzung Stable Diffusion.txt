@@ -1,0 +1,22 @@
+**Lokale Nutzung von "Stable Diffusion" oder anderen Modellen zur Bilderzeugung und -manipulation**
+
+Quelle von Modellen: 
+https://civitai.com/models
+- Sollte nicht den Schülern empfohlen oder gezeigt werden - Abbildungen sind nicht 100% "safe for Work"
+- Download nur mit Login
+
+Zuerst wird ein von sogenannten "Base Models" wie SDXL oder FLux - z.B. DreamShaper XL.
+Diese können bei bedarf mit kleinen nachtrainierten LoRas ergänzt werden.
+
+Inspiration:
+https://civitai.com/images
+
+GUI - Automatic1111
+Installation Windows/Mac/Linux:
+https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki
+
+GUI - Comfyui
+Installation Windows/Mac/Linux:
+https://github.com/comfyanonymous/ComfyUI?tab=readme-ov-file#installing
+
+

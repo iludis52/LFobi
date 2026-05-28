@@ -1,0 +1,15 @@
+Softwarevoraussetzungen: 
+NVIDIA Grafiktreiber
+CUDA Toolkit
+cudnn
+Anaconda
+
+aus Anaconda:
+Anaconda Prompt als Administrator starten
+Step-by-Step Anleitung von hier ausführen: https://www.tensorflow.org/install/pip#windows-native
+>pip install jupyter notebook
+Anaconda Promt als User starten und passendes Environment aktivieren
+>jupyter notebook 
+
+Bei Fehlern im Zusammenhang mit Numpy:
+>pip install "numpy<2"
