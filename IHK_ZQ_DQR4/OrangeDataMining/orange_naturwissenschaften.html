@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orange Data Mining – Naturwissenschaften im Unterricht</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,600;1,300&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400&display=swap');
+
+  :root {
+    --navy: #1B3A5C;
+    --blue: #2E75B6;
+    --blue-light: #D6E4F4;
+    --blue-mid: #5B9BD5;
+    --accent: #E8832A;
+    --accent-light: #FDF0E4;
+    --green: #2E7D50;
+    --green-light: #E4F2EB;
+    --purple: #6B3FA0;
+    --purple-light: #EDE7F6;
+    --text: #1A1A2E;
+    --muted: #5A6478;
+    --border: #D0DCE8;
+    --bg: #F7FAFD;
+    --white: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  /* HEADER */
+  .page-header {
+    background: linear-gradient(135deg, var(--navy) 0%, #1e4d7a 60%, #2563a8 100%);
+    color: white;
+    padding: 44px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .page-header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+  }
+  .header-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 10px;
+  }
+  .page-header h1 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+  .page-header p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.72);
+    max-width: 620px;
+  }
+  .header-tags {
+    display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap;
+  }
+  .header-tag {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.82);
+    letter-spacing: 0.5px;
+  }
+
+  .content { padding: 36px 48px 60px; max-width: 1100px; }
+
+  /* OVERVIEW TABLE */
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+  h2 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 20px;
+  }
+  h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+
+  .overview-table-wrap {
+    overflow-x: auto;
+    margin-bottom: 48px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 12px rgba(27,58,92,0.07);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    font-size: 13px;
+  }
+  thead tr {
+    background: var(--navy);
+    color: white;
+  }
+  thead th {
+    padding: 13px 18px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  thead th:first-child { width: 110px; }
+
+  /* algo header badges */
+  .th-regression { background: var(--blue); }
+  .th-classification { background: var(--green); }
+  .th-kmeans { background: var(--purple); }
+
+  .subject-cell {
+    font-weight: 600;
+    font-size: 13px;
+    padding: 18px 18px;
+    border-right: 2px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    white-space: nowrap;
+    color: var(--navy);
+  }
+  .subject-icon { font-size: 22px; display: block; margin-bottom: 4px; }
+
+  td.algo-cell {
+    padding: 16px 18px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  td.algo-cell:last-child { border-right: none; }
+  tr:last-child td { border-bottom: none; }
+
+  .cell-title {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .cell-sub {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .cell-tag {
+    display: inline-block;
+    margin-top: 8px;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .tag-reg { background: var(--blue-light); color: var(--blue); }
+  .tag-cls { background: var(--green-light); color: var(--green); }
+  .tag-km  { background: var(--purple-light); color: var(--purple); }
+
+  tr:nth-child(even) .subject-cell,
+  tr:nth-child(even) td.algo-cell { background: #FAFCFE; }
+
+  /* DETAIL SECTIONS */
+  .details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 48px;
+  }
+  @media (max-width: 900px) { .details-grid { grid-template-columns: 1fr; } }
+
+  .detail-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(27,58,92,0.05);
+  }
+  .card-header {
+    padding: 14px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .card-header-reg   { border-left: 4px solid var(--blue); background: var(--blue-light); }
+  .card-header-cls   { border-left: 4px solid var(--green); background: var(--green-light); }
+  .card-header-km    { border-left: 4px solid var(--purple); background: var(--purple-light); }
+
+  .card-icon { font-size: 26px; line-height: 1; }
+  .card-title { font-weight: 600; font-size: 14px; color: var(--navy); }
+  .card-algo-badge {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
+    text-transform: uppercase; margin-top: 3px;
+  }
+  .badge-reg { color: var(--blue); }
+  .badge-cls { color: var(--green); }
+  .badge-km  { color: var(--purple); }
+
+  .card-body { padding: 16px 18px; }
+
+  .info-block { margin-bottom: 14px; }
+  .info-block:last-child { margin-bottom: 0; }
+
+  .info-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .info-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .info-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  /* CSV code block */
+  .csv-block {
+    background: #1e2535;
+    color: #a8d8a8;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 12px 14px;
+    border-radius: 6px;
+    line-height: 1.7;
+    overflow-x: auto;
+    margin-top: 6px;
+  }
+  .csv-header { color: #7ec8e3; font-weight: bold; }
+  .csv-comment { color: #666e8a; }
+
+  /* Orange workflow pill list */
+  .workflow-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 6px;
+  }
+  .wf-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12.5px;
+  }
+  .wf-num {
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .wf-num-reg { background: var(--blue); }
+  .wf-num-cls { background: var(--green); }
+  .wf-num-km  { background: var(--purple); }
+
+  /* material chips */
+  .material-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 6px;
+  }
+  .mat-chip {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* Subject section header */
+  .subject-section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 40px 0 18px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+  }
+  .subject-section-icon { font-size: 32px; }
+  .subject-section-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .subject-section-sub { font-size: 13px; color: var(--muted); }
+
+  /* Tips box */
+  .tipbox {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 28px 0;
+    font-size: 13px;
+  }
+  .tipbox-title {
+    font-weight: 600;
+    color: #b55d1a;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  /* orange pipeline visual */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .pipe-box {
+    background: var(--navy);
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .pipe-box-reg { background: var(--blue); }
+  .pipe-box-cls { background: var(--green); }
+  .pipe-box-km  { background: var(--purple); }
+  .pipe-box-neutral { background: #4A5568; }
+  .pipe-arrow { color: var(--muted); font-size: 14px; font-weight: bold; }
+
+  footer {
+    background: var(--navy);
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    font-size: 11px;
+    padding: 16px;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="header-eyebrow">Didaktisches Begleitmaterial · LFB KI BW</div>
+  <h1>Orange Data Mining<br>in Physik, Chemie und Biologie</h1>
+  <p>Neun praxiserprobte Szenarien, mit denen Schülerinnen und Schüler echte Messdaten erheben, als CSV aufbereiten und mit Orange für Regression, Klassifikation oder k-Means einsetzen.</p>
+  <div class="header-tags">
+    <span class="header-tag">Klassenstufe 7–12</span>
+    <span class="header-tag">Orange Data Mining</span>
+    <span class="header-tag">MINT-Unterricht</span>
+    <span class="header-tag">Datenerhebung &amp; ML</span>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- OVERVIEW TABLE -->
+  <div class="section-label">Überblick</div>
+  <h2>Alle 9 Szenarien auf einen Blick</h2>
+
+  <div class="overview-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Fach</th>
+          <th class="th-regression">📈 Regression</th>
+          <th class="th-classification">🏷️ Klassifikation</th>
+          <th class="th-kmeans">🔵 k-Means</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="subject-cell">
+            <span class="subject-icon">⚙️</span>Physik
+          </td>
+          <td class="algo-cell">
+            <div class="cell-title">Pendelgesetz</div>
+            <div class="cell-sub">Fadenlänge → Schwingungsdauer<br>T = 2π√(L/g) empirisch bestätigen</div>
+            <span class="cell-tag tag-reg">Linear / Poly Regression</span>
+          </td>
+          <td class="algo-cell">
+            <div class="cell-title">Federklassifikation</div>
+            <div class="cell-sub">Kraft &amp; Dehnung → Federkategorie<br>weich / mittel / hart</div>
+            <span class="cell-tag tag-cls">kNN · Decision Tree</span>
+          </td>
+          <td class="algo-cell">
+            <div class="cell-title">Bewegungsprofile</div>
+            <div class="cell-sub">Sensor-Kenngrößen clustern<br>(PhyPhox / Smartphone)</div>
+            <span class="cell-tag tag-km">k-Means (k=3)</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="subject-cell">
+            <span class="subject-icon">🧪</span>Chemie
+          </td>
+          <td class="algo-cell">
+            <div class="cell-title">Reaktionsrate vs. Temperatur</div>
+            <div class="cell-sub">Thiosulfat-Reaktion:<br>Temperatur → Reaktionszeit</div>
+            <span class="cell-tag tag-reg">Poly Regression</span>
+          </td>
+          <td class="algo-cell">
+            <div class="cell-title">pH-Klassifikation</div>
+            <div class="cell-sub">Haushaltsstoffe: pH + Leitf. →<br>sauer / neutral / basisch</div>
+            <span class="cell-tag tag-cls">Decision Tree · Naive Bayes</span>
+          </td>
+          <td class="algo-cell">
+            <div class="cell-title">Stoffgruppen-Clustering</div>
+            <div class="cell-sub">Elemente nach phys. Eigen-<br>schaften: Metall vs. Nichtmetall?</div>
+            <span class="cell-tag tag-km">k-Means (k=3)</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="subject-cell">
+            <span class="subject-icon">🌿</span>Biologie
+          </td>
+          <td class="algo-cell">
+            <div class="cell-title">Pflanzenwachstum</div>
+            <div class="cell-sub">Lichtintensität (lux) →<br>Wuchshöhe Kresse (mm)</div>
+            <span class="cell-tag tag-reg">Linear Regression</span>
+          </td>
+          <td class="algo-cell">
+            <div class="cell-title">Blattmerkmale → Baumart</div>
+            <div class="cell-sub">Morphologische Maße →<br>Eiche / Buche / Ahorn / Birke</div>
+            <span class="cell-tag tag-cls">Random Forest · kNN</span>
+          </td>
+          <td class="algo-cell">
+            <div class="cell-title">Samen-Morphologie</div>
+            <div class="cell-sub">Hülsenfrüchte clustern nach<br>Größe, Gewicht, Farbe</div>
+            <span class="cell-tag tag-km">k-Means (k=4–6)</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ========== PHYSIK ========== -->
+  <div class="subject-section-header">
+    <div class="subject-section-icon">⚙️</div>
+    <div>
+      <div class="subject-section-title">Physik</div>
+      <div class="subject-section-sub">Drei Szenarien · Regression · Klassifikation · k-Means</div>
+    </div>
+  </div>
+
+  <div class="details-grid">
+
+    <!-- P1: Pendelgesetz -->
+    <div class="detail-card">
+      <div class="card-header card-header-reg">
+        <div class="card-icon">🕰️</div>
+        <div>
+          <div class="card-title">P1 · Pendelgesetz</div>
+          <div class="card-algo-badge badge-reg">Regression</div>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="info-block">
+          <div class="info-label">Fragestellung</div>
+          <div class="info-text">Wie hängt die Schwingungsdauer T eines Fadenpendels von der Fadenlänge L ab? Können Schüler:innen das Gesetz T = 2π√(L/g) empirisch durch Regression „entdecken"?</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Datenerhebung</div>
+          <div class="info-text">
+            Fadenlängen L: 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 cm (je 2–3 Messwiederholungen). Pro Messpunkt: 10 Schwingungen mit Stoppuhr messen → durch 10 teilen = T. Amplitude konstant halten (&lt;15°). Mindestens 30 Datensätze für gute Modellqualität.
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">CSV-Struktur</div>
+          <div class="csv-block">
+<span class="csv-header">laenge_cm,periode_s,amplitude_grad,messung_nr</span>
+<span class="csv-comment"># Zieldvariable: periode_s</span>
+10,0.63,10,1
+10,0.64,10,2
+20,0.90,10,1
+30,1.10,12,1
+...</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Orange-Workflow</div>
+          <div class="pipeline">
+            <span class="pipe-box pipe-box-neutral">CSV File</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Feature Constructor<br><small>(√laenge_cm)</small></span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-reg">Linear Regression</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Predictions</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Scatter Plot</span>
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Pädagogischer Kniff</div>
+          <div class="info-text">Zuerst lineare Regression auf L → schlechtes Ergebnis (R²~0.85). Dann neues Feature √L via <em>Feature Constructor</em> → plötzlich R²≈0.99. Schüler:innen „sehen", warum das Gesetz eine Wurzelfunktion ist.</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Material</div>
+          <div class="material-list">
+            <span class="mat-chip">Faden (1 m)</span>
+            <span class="mat-chip">Gewicht ~50 g</span>
+            <span class="mat-chip">Stativ + Klemme</span>
+            <span class="mat-chip">Maßband</span>
+            <span class="mat-chip">Stoppuhr / Handy</span>
+            <span class="mat-chip">Winkelmesser</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- P2: Federklassifikation -->
+    <div class="detail-card">
+      <div class="card-header card-header-cls">
+        <div class="card-icon">🌀</div>
+        <div>
+          <div class="card-title">P2 · Federklassifikation</div>
+          <div class="card-algo-badge badge-cls">Klassifikation</div>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="info-block">
+          <div class="info-label">Fragestellung</div>
+          <div class="info-text">Können wir Federn anhand ihres Dehnungsverhaltens automatisch in „weich", „mittel" und „hart" einordnen? Lässt sich die Federkonstante k durch Messung erschließen?</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Datenerhebung</div>
+          <div class="info-text">
+            Mindestens 3 verschiedene Federn aus dem Physikkoffer (oder günstig kaufen). Jede Feder mit Gewichten 50, 100, 150, 200, 250, 300 g belasten; Dehnung in mm ablesen. Klasse vorab vergeben: weich/mittel/hart basierend auf der gemessenen Federkonstante.
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">CSV-Struktur</div>
+          <div class="csv-block">
+<span class="csv-header">gewicht_g,dehnung_mm,material,klasse</span>
+<span class="csv-comment"># Zielvariable (Klasse): klasse</span>
+100,45,Stahl,weich
+200,92,Stahl,weich
+100,18,Stahl,hart
+200,35,Stahl,hart
+50,20,Chrom,mittel
+...</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Orange-Workflow</div>
+          <div class="pipeline">
+            <span class="pipe-box pipe-box-neutral">CSV File</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-cls">kNN / Decision Tree</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Cross Validation</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Confusion Matrix</span>
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Pädagogischer Kniff</div>
+          <div class="info-text">Der Decision Tree zeigt eine grafisch intuitive Entscheidungsregel: „Wenn bei 100 g die Dehnung > 35 mm, dann weich." Schüler:innen können diesen Baum mit ihrer physikalischen Intuition vergleichen und die Bedeutung von Trainingsdaten diskutieren.</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Material</div>
+          <div class="material-list">
+            <span class="mat-chip">3–5 Schraubenfedern</span>
+            <span class="mat-chip">Gewichtssatz</span>
+            <span class="mat-chip">Stativ + Maßstab</span>
+            <span class="mat-chip">Lineal</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- P3: Bewegungsprofile -->
+    <div class="detail-card">
+      <div class="card-header card-header-km">
+        <div class="card-icon">📱</div>
+        <div>
+          <div class="card-title">P3 · Bewegungsprofile</div>
+          <div class="card-algo-badge badge-km">k-Means</div>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="info-block">
+          <div class="info-label">Fragestellung</div>
+          <div class="info-text">Kann ein ML-Modell verschiedene Bewegungsarten (Gehen, Rennen, Treppensteigen) allein anhand von Beschleunigungsdaten unterscheiden – ohne dass wir ihm sagen, was was ist?</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Datenerhebung</div>
+          <div class="info-text">
+            App <strong>PhyPhox</strong> (kostenlos): Experiment „Beschleunigung ohne g". Schüler:innen führen je 30 Sek. verschiedene Bewegungen aus. Aus dem Zeitfenster werden statistische Kenngrößen berechnet (Mittelwert, Std., Max). Mindestens 10 Messungen pro Bewegungstyp empfohlen.
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">CSV-Struktur</div>
+          <div class="csv-block">
+<span class="csv-header">mean_x,std_x,max_x,mean_y,std_y,max_y,bewegung</span>
+<span class="csv-comment"># bewegung nur zum späteren Vergleich</span>
+0.12,0.45,1.8,0.08,0.33,1.2,gehen
+0.18,1.20,4.5,0.15,0.98,3.8,rennen
+0.05,0.12,0.4,0.22,0.80,2.1,treppe
+...</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Orange-Workflow</div>
+          <div class="pipeline">
+            <span class="pipe-box pipe-box-neutral">CSV (ohne Label)</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-km">k-Means (k=3)</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Scatter Plot (t-SNE)</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Silhouette</span>
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Pädagogischer Kniff</div>
+          <div class="info-text">Cluster-Ergebnisse zuerst ohne Labels zeigen; Schüler:innen vermuten, was die Cluster bedeuten. Erst dann die Spalte „bewegung" einblenden und mit den Cluster-Zuweisungen vergleichen. Diskussion: Wo funktioniert unsupervised Learning? Wo versagt es?</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Material</div>
+          <div class="material-list">
+            <span class="mat-chip">Smartphones</span>
+            <span class="mat-chip">PhyPhox (gratis)</span>
+            <span class="mat-chip">Tabellenkalkulat.</span>
+            <span class="mat-chip">Python (optional)</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /Physik grid -->
+
+  <!-- ========== CHEMIE ========== -->
+  <div class="subject-section-header">
+    <div class="subject-section-icon">🧪</div>
+    <div>
+      <div class="subject-section-title">Chemie</div>
+      <div class="subject-section-sub">Drei Szenarien · Regression · Klassifikation · k-Means</div>
+    </div>
+  </div>
+
+  <div class="details-grid">
+
+    <!-- C1: Reaktionsrate -->
+    <div class="detail-card">
+      <div class="card-header card-header-reg">
+        <div class="card-icon">🌡️</div>
+        <div>
+          <div class="card-title">C1 · Reaktionsrate vs. Temp.</div>
+          <div class="card-algo-badge badge-reg">Regression</div>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="info-block">
+          <div class="info-label">Fragestellung</div>
+          <div class="info-text">Wie verändert sich die Reaktionsgeschwindigkeit der Thiosulfat-Salzsäure-Reaktion mit der Temperatur? Welche Regressionskurve passt am besten – linear, quadratisch oder exponentiell?</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Chemischer Hintergrund</div>
+          <div class="info-text">
+            Na₂S₂O₃ + 2 HCl → S↓ + SO₂ + 2 NaCl + H₂O. Der entstehende Schwefel trübt die Lösung. Auf einem weißen Papier wird ein Kreuz gezeichnet – sobald es nicht mehr sichtbar ist, stoppt man die Zeit. Reaktionsrate r = 1 / Zeit.
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Datenerhebung</div>
+          <div class="info-text">
+            Temperaturen: 10, 15, 20, 25, 30, 35, 40, 45, 50 °C (Wasserbad mit Thermometer). Konzentration konstant halten: 0,1 mol/L Thiosulfat + 0,5 mol/L HCl. Je Temperatur 2–3 Wiederholungen. Ergibt ~25–30 Zeilen.
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">CSV-Struktur</div>
+          <div class="csv-block">
+<span class="csv-header">temperatur_c,zeit_s,rate_inv_s,konzentration</span>
+<span class="csv-comment"># rate_inv_s = 1/zeit_s (Zieldvariable)</span>
+10,148,0.0068,0.1
+15,101,0.0099,0.1
+20,68,0.0147,0.1
+25,47,0.0213,0.1
+30,32,0.0313,0.1
+...</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Orange-Workflow</div>
+          <div class="pipeline">
+            <span class="pipe-box pipe-box-neutral">CSV File</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-reg">Polynomial Regression</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Predictions</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Line Plot</span>
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Pädagogischer Kniff</div>
+          <div class="info-text">Schüler:innen vergleichen R² für Grad 1, 2 und 3. Das exponentielle Wachstum (RGT-Regel: Verdopplung pro 10 K) zeigt sich deutlich. Brücke zur Arrhenius-Gleichung für Oberstufe möglich.</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Material</div>
+          <div class="material-list">
+            <span class="mat-chip">Na₂S₂O₃-Lösung</span>
+            <span class="mat-chip">HCl (verdünnt)</span>
+            <span class="mat-chip">Bechergläser 250 ml</span>
+            <span class="mat-chip">Thermometer</span>
+            <span class="mat-chip">Heizplatte / Eisbad</span>
+            <span class="mat-chip">Stoppuhr</span>
+            <span class="mat-chip">weißes Papier + Stift</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- C2: pH-Klassifikation -->
+    <div class="detail-card">
+      <div class="card-header card-header-cls">
+        <div class="card-icon">🧴</div>
+        <div>
+          <div class="card-title">C2 · pH-Klassifikation</div>
+          <div class="card-algo-badge badge-cls">Klassifikation</div>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="info-block">
+          <div class="info-label">Fragestellung</div>
+          <div class="info-text">Kann ein Modell Haushaltsstoffe allein anhand von pH-Wert, elektrischer Leitfähigkeit und Indikatorfarbe als sauer, neutral oder basisch einordnen – und welche Merkmale sind dabei am wichtigsten?</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Datenerhebung</div>
+          <div class="info-text">
+            Stoffe (je ~10 ml in Reagenzglas): Essig, Zitronensaft, Cola, Milch, Leitungswasser, Mineralwasser, Backpulverlösung, Seifenwasser, Natronlauge. Pro Stoff: pH-Streifen oder pH-Meter, Leitfähigkeit (µS), Rotkohlindikator → Farbscore 1–7. Beschriftung mit sauer/neutral/basisch.
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">CSV-Struktur</div>
+          <div class="csv-block">
+<span class="csv-header">stoff,ph_wert,leitf_us,indikator_score,klasse</span>
+<span class="csv-comment"># klasse: sauer/neutral/basisch</span>
+Essig,3.1,520,2,sauer
+Zitronensaft,2.8,890,1,sauer
+Leitungswasser,7.2,380,4,neutral
+Backpulver,8.5,610,6,basisch
+Seife,9.8,280,7,basisch
+...</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Orange-Workflow</div>
+          <div class="pipeline">
+            <span class="pipe-box pipe-box-neutral">CSV File</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-cls">Decision Tree</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Tree Viewer</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Confusion Matrix</span>
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Pädagogischer Kniff</div>
+          <div class="info-text">Der Tree Viewer zeigt einen perfekt interpretierbaren Baum: „pH &lt; 6 → sauer". Schüler:innen können danach <em>nur</em> Leitfähigkeit und Indikator ohne pH testen – wie gut funktioniert die Klassifikation dann noch? Diskussion: Merkmalsauswahl und Redundanz.</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Material</div>
+          <div class="material-list">
+            <span class="mat-chip">pH-Streifen / -Meter</span>
+            <span class="mat-chip">Leitfähigkeitsmessgerät</span>
+            <span class="mat-chip">Rotkohlsaft</span>
+            <span class="mat-chip">Reagenzgläser</span>
+            <span class="mat-chip">Haushaltsstoffe</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- C3: Stoffgruppen -->
+    <div class="detail-card">
+      <div class="card-header card-header-km">
+        <div class="card-icon">⚗️</div>
+        <div>
+          <div class="card-title">C3 · Stoffgruppen-Clustering</div>
+          <div class="card-algo-badge badge-km">k-Means</div>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="info-block">
+          <div class="info-label">Fragestellung</div>
+          <div class="info-text">Wenn wir k-Means auf physikalische Eigenschaften von Elementen loslassen, ohne ihm die Kategorie Metall/Nichtmetall/Halbmetall zu nennen – findet das Modell diese Gruppen von selbst?</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Datenerhebung</div>
+          <div class="info-text">
+            <strong>Kein direktes Experiment nötig</strong> – Daten aus Schulbuch-Anhang oder Periodensystem-App. Ca. 20 Elemente auswählen (8 Metalle, 7 Nichtmetalle, 3–4 Halbmetalle, 2 Edelgase). Ergänzend: eigene Leitfähigkeitsmessung an Materialproben (Kupfer, Aluminium, Graphit, Schwefel).
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">CSV-Struktur</div>
+          <div class="csv-block">
+<span class="csv-header">element,schmp_c,siedp_c,dichte,elekleitung,atomradius_pm,gruppe</span>
+<span class="csv-comment"># gruppe nur zum Vergleich am Ende</span>
+Eisen,1538,2862,7.87,1,126,Metall
+Schwefel,119,445,2.07,0,104,Nichtmetall
+Silicium,1414,3265,2.33,0.1,111,Halbmetall
+Kupfer,1085,2562,8.96,1,128,Metall
+...</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Orange-Workflow</div>
+          <div class="pipeline">
+            <span class="pipe-box pipe-box-neutral">CSV (ohne „gruppe")</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-km">k-Means (k=3)</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Scatter Plot</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Data Table</span>
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Pädagogischer Kniff</div>
+          <div class="info-text">Silhouette Score für k=2, 3, 4 vergleichen lassen. Fast immer findet k=3 gute Cluster, die weitgehend Metalle / Halbmetalle / Nichtmetalle trennen. Toller Einstieg in das Konzept „was bedeutet Ähnlichkeit in Daten?"</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Material</div>
+          <div class="material-list">
+            <span class="mat-chip">Schulbuch / Anhang</span>
+            <span class="mat-chip">Periodensystem-App</span>
+            <span class="mat-chip">Tabellenkalkulation</span>
+            <span class="mat-chip">optional: Leitfähigkeitstest</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /Chemie grid -->
+
+  <!-- ========== BIOLOGIE ========== -->
+  <div class="subject-section-header">
+    <div class="subject-section-icon">🌿</div>
+    <div>
+      <div class="subject-section-title">Biologie</div>
+      <div class="subject-section-sub">Drei Szenarien · Regression · Klassifikation · k-Means</div>
+    </div>
+  </div>
+
+  <div class="details-grid">
+
+    <!-- B1: Pflanzenwachstum -->
+    <div class="detail-card">
+      <div class="card-header card-header-reg">
+        <div class="card-icon">🌱</div>
+        <div>
+          <div class="card-title">B1 · Pflanzenwachstum</div>
+          <div class="card-algo-badge badge-reg">Regression</div>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="info-block">
+          <div class="info-label">Fragestellung</div>
+          <div class="info-text">Wie stark hängt das Wachstum von Kresse von der Lichtintensität ab? Lässt sich ein lineares Modell aufstellen – und was sind die Grenzen dieser Linearität?</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Datenerhebung</div>
+          <div class="info-text">
+            5–6 identische Töpfe mit Kresse. Verschiedene Abstände zur Lampe → verschiedene Lux-Werte (Smartphone-App z.B. „Lux Light Meter"). Täglich zur gleichen Zeit: Pflanzenhöhe in mm messen, Lux messen, Bewässerung protokollieren. Laufzeit: 10–14 Tage. Ergibt 50–80 Datensätze.
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">CSV-Struktur</div>
+          <div class="csv-block">
+<span class="csv-header">tag,topf_id,lux,hoehe_mm,temp_c,wasser_ml</span>
+<span class="csv-comment"># Zielvariable: hoehe_mm</span>
+1,A,850,4,21,5
+2,A,860,8,21,5
+3,A,840,15,22,5
+1,B,2200,5,21,5
+2,B,2150,12,21,5
+...</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Orange-Workflow</div>
+          <div class="pipeline">
+            <span class="pipe-box pipe-box-neutral">CSV File</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-reg">Linear Regression</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Predictions</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Scatter Plot</span>
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Pädagogischer Kniff</div>
+          <div class="info-text">Modell aus den ersten 7 Tagen trainieren, auf die letzten 7 Tage anwenden: Klappt die Vorhersage? Sättigungseffekte bei hoher Lichtintensität werden sichtbar – Biologie-Konzept Lichtsättigung direkt aus den Daten erfahrbar.</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Material</div>
+          <div class="material-list">
+            <span class="mat-chip">Kressesamen</span>
+            <span class="mat-chip">5–6 Töpfe</span>
+            <span class="mat-chip">Lampe (regelbar)</span>
+            <span class="mat-chip">Lineal</span>
+            <span class="mat-chip">Lux-App (Smartphone)</span>
+            <span class="mat-chip">Thermometer</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- B2: Blattmerkmale -->
+    <div class="detail-card">
+      <div class="card-header card-header-cls">
+        <div class="card-icon">🍂</div>
+        <div>
+          <div class="card-title">B2 · Blattmerkmale → Baumart</div>
+          <div class="card-algo-badge badge-cls">Klassifikation</div>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="info-block">
+          <div class="info-label">Fragestellung</div>
+          <div class="info-text">Welche Blattmerkmale reichen aus, um eine Baumart zu bestimmen? Kann ein ML-Modell das Bestimmungsbuch ersetzen – oder zumindest helfen?</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Datenerhebung</div>
+          <div class="info-text">
+            Je Baumart (Eiche, Buche, Ahorn, Birke, Esche) mindestens 15–20 Blätter. Merkmale messen: Länge und Breite (mm), Stiel (mm), Anzahl Lappen, Blattrand kodiert (1=glatt, 2=gezähnt, 3=gebuchtet, 4=gelappt), Oberfläche (1=glatt, 2=rau, 3=behaart). Tipp: Blätter scannen, dann ausmessen.
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">CSV-Struktur</div>
+          <div class="csv-block">
+<span class="csv-header">laenge_mm,breite_mm,stiel_mm,lappen_n,rand,oberflaeche,baumart</span>
+<span class="csv-comment"># Zielvariable: baumart</span>
+82,55,28,5,4,1,Ahorn
+78,62,31,5,4,1,Ahorn
+65,32,12,0,2,1,Buche
+68,35,15,0,2,2,Buche
+110,75,8,7,3,1,Eiche
+...</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Orange-Workflow</div>
+          <div class="pipeline">
+            <span class="pipe-box pipe-box-neutral">CSV File</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-cls">Random Forest</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Rank (Feature Imp.)</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Confusion Matrix</span>
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Pädagogischer Kniff</div>
+          <div class="info-text">Das Rank-Widget zeigt, welches Merkmal am wichtigsten ist. Oft: Anzahl Lappen und Blattrand trennen besser als die reine Größe. Schüler:innen können ihre eigene Intuition mit der Feature-Importance vergleichen. Herbst-Exkursion als Datenerhebungsphase ideal!</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Material</div>
+          <div class="material-list">
+            <span class="mat-chip">Blattsammlungen (Herbst)</span>
+            <span class="mat-chip">Lineal / Schieblehre</span>
+            <span class="mat-chip">Bestimmungsbuch</span>
+            <span class="mat-chip">Scanner (optional)</span>
+            <span class="mat-chip">Lupe</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- B3: Samen -->
+    <div class="detail-card">
+      <div class="card-header card-header-km">
+        <div class="card-icon">🫘</div>
+        <div>
+          <div class="card-title">B3 · Samen-Morphologie</div>
+          <div class="card-algo-badge badge-km">k-Means</div>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="info-block">
+          <div class="info-label">Fragestellung</div>
+          <div class="info-text">Erkennt k-Means verschiedene Hülsenfrüchtesorten allein anhand ihrer Größe, ihres Gewichts und ihrer Farbe – ohne Vorwissen über die Artbezeichnung?</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Datenerhebung</div>
+          <div class="info-text">
+            Hülsenfrüchte aus dem Supermarkt: Rote Linsen, grüne Erbsen, weiße Bohnen, Kichererbsen, Mungobohnen (5 Arten). Pro Art: 20–30 Körner. Messen: Länge, Breite, Dicke (mm, Schieblehre), Gewicht (mg, Feinwaage), Farb-Score per Smartphone-Foto (R/G/B-Mittelwert aus Bildeditor). Art notieren für Vergleich.
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">CSV-Struktur</div>
+          <div class="csv-block">
+<span class="csv-header">laenge_mm,breite_mm,dicke_mm,gewicht_mg,r,g,b,art</span>
+<span class="csv-comment"># art wird für den Abschlussvergleich genutzt</span>
+4.2,3.8,2.1,35,200,90,70,Rote_Linse
+8.5,8.2,7.1,480,220,215,185,Erbse
+15.2,9.8,7.5,1200,240,235,225,Bohne
+11.8,9.5,8.2,980,210,175,110,Kichererbse
+...</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Orange-Workflow</div>
+          <div class="pipeline">
+            <span class="pipe-box pipe-box-neutral">CSV (ohne „art")</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Normalize</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-km">k-Means (k=5)</span>
+            <span class="pipe-arrow">→</span>
+            <span class="pipe-box pipe-box-neutral">Scatter Matrix</span>
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Pädagogischer Kniff</div>
+          <div class="info-text"><strong>Normalisierung</strong> ist hier essenziell und lehrreich: Gewicht in mg dominiert ohne Normierung komplett. Schüler:innen sehen direkt, warum man skalieren muss. Anschließend: Silhouette für k=3,4,5,6 vergleichen. Oft sind Bohne+Kichererbse schwer trennbar – Diskussion über biologische Ähnlichkeit.</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-label">Material</div>
+          <div class="material-list">
+            <span class="mat-chip">5 Hülsenfruchtarten</span>
+            <span class="mat-chip">Schieblehre</span>
+            <span class="mat-chip">Feinwaage (mg)</span>
+            <span class="mat-chip">Smartphone-Kamera</span>
+            <span class="mat-chip">Bildbearbeitungs-App</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /Biologie grid -->
+
+  <!-- TIPS BOX -->
+  <div class="tipbox">
+    <div class="tipbox-title">💡 Allgemeine Hinweise für die Unterrichtspraxis</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap: 12px 24px; margin-top:8px; font-size:13px;">
+      <div><strong>Datenmenge:</strong> Für sinnvolle Modelle braucht man mindestens 30–50 Datenpunkte. Klassen von 25–30 Schüler:innen können in Gruppen erheben und Daten zusammenführen – das ist selbst schon eine Lernerfahrung.</div>
+      <div><strong>CSV-Hygiene:</strong> Spaltennamen ohne Leerzeichen, Umlaute vermeiden (ae statt ä), Dezimalkomma → Dezimalpunkt für Orange. Am einfachsten: direkt in Google Sheets erheben, als .csv exportieren.</div>
+      <div><strong>Orange-Einstieg:</strong> Für Erstnutzer: Zuerst nur CSV File → Scatter Plot → Data Table. Modell erst in Stunde 2. Das Entdecken der Datenstruktur vor dem Modellieren ist didaktisch wertvoller.</div>
+      <div><strong>Evaluation:</strong> Immer Cross-Validation statt einfache Train-Test-Konfusion. Bei k-Means: Silhouette anzeigen und erklären (nahe 1 = gut getrennt, nahe 0 = überlappend). Das Confusion Matrix Widget ist für Klassen besonders anschaulich.</div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<footer>
+  Didaktisches Begleitmaterial · LFB KI BW · Orange Data Mining im Naturwissenschaftsunterricht · iludis.de
+</footer>
+
+</body>
+</html>
