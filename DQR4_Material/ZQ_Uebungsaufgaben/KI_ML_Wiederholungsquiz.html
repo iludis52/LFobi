@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KI &amp; ML – Wiederholungsquiz</title>
+<style>
+  :root{
+    --navy:#1B3A5C;
+    --blue:#2E75B6;
+    --blue-dark:#245d92;
+    --tint:#EAF1F8;
+    --tint2:#D9E2EC;
+    --page:#F2F6FA;
+    --ink:#1F2933;
+    --ink2:#52606D;
+    --line:#CBD6E2;
+    --ok:#2E7D46; --ok-bg:#E7F4EC;
+    --no:#C0392B; --no-bg:#FBEAE8;
+    --card:#FFFFFF;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:var(--page);
+    color:var(--ink);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:24px 20px 64px;}
+
+  /* Header */
+  header.app{
+    border-bottom:4px solid var(--blue);
+    padding-bottom:14px;margin-bottom:24px;
+  }
+  header.app h1{
+    color:var(--navy);font-size:26px;margin:0 0 4px;letter-spacing:.2px;
+  }
+  header.app p{color:var(--ink2);margin:0;font-size:14px;}
+
+  /* Overview */
+  .lead{color:var(--ink2);font-size:15px;margin:0 0 20px;}
+  .modules{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:620px){.modules{grid-template-columns:1fr;}}
+  .mod{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    border-left:5px solid var(--blue);
+    padding:16px 18px;cursor:pointer;text-align:left;width:100%;
+    transition:box-shadow .15s ease, transform .15s ease, border-color .15s ease;
+    display:flex;flex-direction:column;gap:6px;
+  }
+  .mod:hover{box-shadow:0 4px 14px rgba(27,58,92,.12);transform:translateY(-1px);}
+  .mod:focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
+  .mod .badge{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:30px;height:30px;border-radius:50%;
+    background:var(--navy);color:#fff;font-weight:bold;font-size:15px;flex:none;
+  }
+  .mod .top{display:flex;align-items:center;gap:12px;}
+  .mod h2{color:var(--navy);font-size:17px;margin:0;}
+  .mod .topics{color:var(--ink2);font-size:13px;margin:2px 0 0;}
+  .mod .meta{display:flex;align-items:center;justify-content:space-between;margin-top:6px;}
+  .mod .count{font-size:13px;color:var(--ink2);}
+  .pill{
+    font-size:12px;font-weight:bold;padding:3px 10px;border-radius:999px;
+    background:var(--tint);color:var(--blue-dark);
+  }
+  .pill.done{background:var(--ok-bg);color:var(--ok);}
+
+  .hint{
+    background:var(--tint);border-left:4px solid var(--blue);
+    border-radius:6px;padding:12px 14px;margin:24px 0 0;font-size:13.5px;color:var(--ink2);
+  }
+  .hint strong{color:var(--navy);}
+
+  /* Quiz */
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+  .btn-link{
+    background:none;border:none;color:var(--blue-dark);font:inherit;font-size:14px;
+    cursor:pointer;padding:6px 4px;border-radius:6px;display:inline-flex;align-items:center;gap:6px;
+  }
+  .btn-link:hover{text-decoration:underline;}
+  .btn-link:focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
+  .qmodtitle{color:var(--navy);font-weight:bold;font-size:16px;}
+
+  .progress{height:8px;background:var(--tint2);border-radius:999px;overflow:hidden;margin-bottom:6px;}
+  .progress > i{display:block;height:100%;background:var(--blue);width:0;transition:width .3s ease;}
+  .progress-meta{display:flex;justify-content:space-between;font-size:13px;color:var(--ink2);margin-bottom:18px;}
+
+  .qcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 22px 20px;}
+  .qtopic{font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;color:var(--blue);margin:0 0 8px;}
+  .qtext{color:var(--navy);font-size:19px;font-weight:bold;margin:0 0 18px;line-height:1.4;}
+
+  .figure{margin:0 0 18px;text-align:center;}
+  .figure svg{max-width:100%;height:auto;border:1px solid var(--line);border-radius:8px;background:#fff;padding:8px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .opt{
+    text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;
+    padding:12px 14px;font:inherit;font-size:15px;color:var(--ink);cursor:pointer;
+    display:flex;gap:12px;align-items:flex-start;transition:border-color .12s, background .12s;
+  }
+  .opt:hover:not(:disabled){border-color:var(--blue);background:#fafcff;}
+  .opt:focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
+  .opt .key{
+    flex:none;width:24px;height:24px;border-radius:6px;background:var(--tint);
+    color:var(--blue-dark);font-weight:bold;font-size:14px;display:flex;align-items:center;justify-content:center;
+  }
+  .opt[disabled]{cursor:default;}
+  .opt.correct{border-color:var(--ok);background:var(--ok-bg);}
+  .opt.correct .key{background:var(--ok);color:#fff;}
+  .opt.wrong{border-color:var(--no);background:var(--no-bg);}
+  .opt.wrong .key{background:var(--no);color:#fff;}
+  .opt.dim{opacity:.6;}
+
+  .explain{
+    margin-top:16px;border-left:4px solid var(--blue);background:var(--tint);
+    border-radius:6px;padding:13px 15px;font-size:14.5px;color:var(--ink);
+  }
+  .explain.correct{border-left-color:var(--ok);background:var(--ok-bg);}
+  .explain.wrong{border-left-color:var(--no);background:var(--no-bg);}
+  .explain b{color:var(--navy);}
+  .explain.correct b{color:var(--ok);}
+  .explain.wrong b{color:var(--no);}
+
+  .qactions{display:flex;justify-content:flex-end;margin-top:18px;}
+  .btn{
+    background:var(--blue);color:#fff;border:none;border-radius:8px;
+    padding:11px 22px;font:inherit;font-size:15px;font-weight:bold;cursor:pointer;
+    transition:background .12s;
+  }
+  .btn:hover{background:var(--blue-dark);}
+  .btn:focus-visible{outline:3px solid var(--navy);outline-offset:2px;}
+  .btn.ghost{background:#fff;color:var(--blue-dark);border:1.5px solid var(--blue);}
+  .btn.ghost:hover{background:var(--tint);}
+  .keyhint{color:var(--ink2);font-size:12.5px;margin-top:10px;text-align:right;}
+
+  /* Result */
+  .result{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px;text-align:center;}
+  .result h2{color:var(--navy);margin:0 0 4px;font-size:22px;}
+  .scorebig{font-size:46px;font-weight:bold;color:var(--blue);margin:10px 0 2px;}
+  .scorebig small{font-size:22px;color:var(--ink2);font-weight:normal;}
+  .result .msg{color:var(--ink2);font-size:15px;margin:6px auto 20px;max-width:480px;}
+  .review{text-align:left;margin:18px 0 6px;}
+  .review h3{color:var(--navy);font-size:15px;margin:0 0 10px;}
+  .rev-list{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  .rev-list li{display:flex;gap:10px;align-items:flex-start;padding:9px 13px;font-size:14px;}
+  .rev-list li:nth-child(odd){background:#fff;}
+  .rev-list li:nth-child(even){background:var(--page);}
+  .rev-list .mark{flex:none;font-weight:bold;width:20px;text-align:center;}
+  .rev-list .mark.ok{color:var(--ok);}
+  .rev-list .mark.no{color:var(--no);}
+  .rev-list .rev-topic{color:var(--ink2);font-size:12.5px;}
+  .diag{margin-top:18px;border-left:4px solid var(--navy);background:var(--tint);border-radius:6px;padding:13px 15px;text-align:left;font-size:14px;}
+  .diag b{color:var(--navy);}
+  .diag.allgood{border-left-color:var(--ok);background:var(--ok-bg);}
+  .diag.allgood b{color:var(--ok);}
+  .result-actions{display:flex;gap:12px;justify-content:center;margin-top:22px;flex-wrap:wrap;}
+
+  .hidden{display:none;}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="app">
+    <h1>Wiederholungsquiz – Künstliche Intelligenz &amp; maschinelles Lernen</h1>
+    <p>Zusatzqualifikation KI/ML · Wiederholung nach Themenbereichen · Sofort-Feedback</p>
+  </header>
+
+  <!-- OVERVIEW -->
+  <section id="overview">
+    <p class="lead">Wähle einen Themenbereich. Die Fragenzahl steht jeweils auf der Karte. Nach jeder Antwort siehst du sofort die Lösung mit kurzer Begründung – am Ende eine Auswertung, welche Themen du noch einmal ansehen solltest.</p>
+    <div class="modules" id="moduleGrid"></div>
+    <div class="hint">
+      <strong>Einsatz im Unterricht:</strong> Nutze die Auswertung am Modulende diagnostisch – wo es hakt, lohnt sich die gemeinsame Besprechung bzw. der Lernauftrag. Mit den Tasten <b>1–4</b> antworten, mit <b>Enter</b> weiter.
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="hidden">
+    <div class="topbar">
+      <button class="btn-link" id="backBtn">&larr; Zur Übersicht</button>
+      <span class="qmodtitle" id="quizModTitle"></span>
+    </div>
+    <div class="progress"><i id="progBar"></i></div>
+    <div class="progress-meta">
+      <span id="progText"></span>
+      <span id="scoreText"></span>
+    </div>
+    <div class="qcard" id="qcard"></div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" class="hidden"></section>
+</div>
+
+<script>
+const MODULES = [
+  {
+    name: "Grundbegriffe der KI",
+    topics: "Regression · Klassifikation · Lernarten · Algorithmen",
+    questions: [
+      { topic:"Regression vs. Klassifikation",
+        q:"Worin unterscheiden sich Regression und Klassifikation?",
+        options:[
+          "Regression liefert einen kontinuierlichen Zahlenwert, Klassifikation eine Klasse.",
+          "Regression liefert eine Klasse, Klassifikation einen kontinuierlichen Zahlenwert.",
+          "Beide Verfahren liefern grundsätzlich nur diskrete Kategorien.",
+          "Regression ist stets unüberwacht, Klassifikation stets überwacht."
+        ],
+        correct:0,
+        explain:"Regression liefert eine kontinuierliche Zielgröße (z. B. eine Verkaufszahl), Klassifikation eine diskrete Klasse (z. B. „hoch/niedrig“). Beide sind überwachte Verfahren." },
+      { topic:"Überwachtes Lernen",
+        q:"Welche Aussage beschreibt überwachtes Lernen (Supervised Learning)?",
+        options:[
+          "Es wird ausschließlich mit Eingaben ohne bekannte Zielwerte trainiert.",
+          "Es lernt allein durch Belohnung und Bestrafung der Umgebung.",
+          "Es wird mit Eingaben und den zugehörigen bekannten Zielwerten trainiert.",
+          "Es gruppiert die Daten in vorab unbekannte Cluster."
+        ],
+        correct:2,
+        explain:"Beim überwachten Lernen sind die korrekten Ausgaben (Labels) während des Trainings bekannt – das Modell lernt die Zuordnung von Eingabe zu Zielwert." },
+      { topic:"Unüberwachtes Lernen",
+        q:"Clustering ist ein Beispiel für …",
+        options:[
+          "verstärkendes Lernen.",
+          "überwachtes Lernen.",
+          "eine Regressionsmethode.",
+          "unüberwachtes Lernen."
+        ],
+        correct:3,
+        explain:"Clustering gruppiert Daten ohne vorgegebene Zielwerte in ähnliche Gruppen und gehört damit zum unüberwachten Lernen." },
+      { topic:"Methodenwahl",
+        q:"Ein Modell soll Kundengruppen anhand ihres Bestellverhaltens entdecken, ohne dass die Gruppen vorher festgelegt sind. Welche Methode passt?",
+        options:[
+          "Clustering",
+          "Klassifikation",
+          "lineare Regression",
+          "Reinforcement Learning"
+        ],
+        correct:0,
+        explain:"Ohne vorgegebene Gruppen/Labels handelt es sich um eine unüberwachte Aufgabe – also Clustering." },
+      { topic:"Feature / Label",
+        q:"Was ist ein „Feature“ (Merkmal/Attribut)?",
+        options:[
+          "Der konkrete Zielwert, den das Modell vorhersagen soll.",
+          "Ein Eingabemerkmal, das das Modell nutzt.",
+          "Ein fehlerhafter Eintrag im Trainingsdatensatz.",
+          "Die Anzahl der Schichten eines neuronalen Netzes."
+        ],
+        correct:1,
+        explain:"Features sind die Eingabemerkmale, die ins Modell gehen. Der vorherzusagende Wert heißt Label bzw. Zielwert." },
+      { topic:"Algorithmus",
+        q:"Was beschreibt ein Algorithmus?",
+        options:[
+          "Eine Sammlung gespeicherter Trainingsdaten.",
+          "Ein bereits vollständig trainiertes KI-Modell.",
+          "Eine geordnete Folge von Lösungsschritten.",
+          "Die grafische Benutzeroberfläche eines Programms."
+        ],
+        correct:2,
+        explain:"Ein Algorithmus ist eine endliche, geordnete Folge von Verarbeitungsschritten und kann z. B. als Pseudo-Code oder Flussdiagramm beschrieben werden." },
+      { topic:"Trainingsdaten",
+        q:"Welche Information muss in Trainingsdaten für überwachtes Lernen enthalten sein?",
+        options:[
+          "Eingabemerkmale und die zugehörigen bekannten Zielwerte.",
+          "Nur die Eingabemerkmale, ohne jegliche Zielwerte.",
+          "Ausschließlich die Zielwerte ohne die Merkmale.",
+          "Eine Belohnungsfunktion für einen lernenden Agenten."
+        ],
+        correct:0,
+        explain:"Für überwachtes Lernen braucht es Eingaben plus die korrekten Ausgaben (Labels), damit das Modell die Zuordnung lernen kann." },
+      { topic:"Entscheidungsbaum",
+        q:"Wie entsteht ein Entscheidungsbaum beim maschinellen Lernen?",
+        options:[
+          "Rein zufällig und völlig ohne Daten.",
+          "Durch manuelles Festlegen sämtlicher Regeln von Hand.",
+          "Durch Multiplikation großer Gewichtematrizen miteinander.",
+          "Schrittweise aus den Daten heraus."
+        ],
+        correct:3,
+        explain:"Ein Lern-Algorithmus wählt schrittweise Merkmale und Schwellen, die die Daten möglichst gut in die Zielklassen aufteilen." },
+      { topic:"KI-Modelle anwenden",
+        q:"Was leistet ein KI-Modell, nachdem es trainiert wurde?",
+        options:[
+          "Es speichert lediglich die Trainingsdaten ab.",
+          "Es trifft Vorhersagen für neue, ungesehene Daten.",
+          "Es kann nur die Trainingsdaten reproduzieren.",
+          "Es braucht für jede Vorhersage neues Training."
+        ],
+        correct:1,
+        explain:"Der eigentliche Nutzen liegt in der Generalisierung: Das Modell trifft Vorhersagen für neue Daten." },
+      { topic:"Reinforcement Learning",
+        q:"Beim verstärkenden Lernen (Reinforcement Learning) lernt …",
+        options:[
+          "ein Modell aus fest gelabelten Beispielen.",
+          "ein Modell allein durch Clustering von Daten.",
+          "ein Agent durch Belohnung aus seiner Umgebung.",
+          "ein Mensch die Bedienung des Programms."
+        ],
+        correct:2,
+        explain:"Ein Agent optimiert sein Verhalten anhand von Belohnungssignalen, die er aus der Umgebung erhält." }
+    ]
+  },
+  {
+    name: "Umgang mit Daten",
+    topics: "Tabellen · Statistik · Boxplot · Datensicherheit",
+    questions: [
+      { topic:"Tabellen / Instanz",
+        q:"In einer Datentabelle entspricht eine Zeile typischerweise …",
+        options:[
+          "einer Instanz bzw. einem Datensatz.",
+          "einem einzelnen Merkmal (Feature).",
+          "einem vorherzusagenden Zielwert.",
+          "einem einzelnen fehlenden Wert."
+        ],
+        correct:0,
+        explain:"Zeile = Instanz/Datensatz, Spalte = Merkmal/Feature. Diese Struktur ist die Grundlage tabellarischer Datenanalyse." },
+      { topic:"Median",
+        q:"Was ist der Median einer Datenreihe?",
+        options:[
+          "Der Durchschnitt aller vorkommenden Werte.",
+          "Der mittlere Wert der sortierten Daten.",
+          "Der am häufigsten vorkommende Wert.",
+          "Die Differenz aus Maximum und Minimum."
+        ],
+        correct:1,
+        explain:"Der Median teilt die sortierten Daten in zwei gleich große Hälften. Bei gerader Anzahl ist es der Mittelwert der beiden mittleren Werte." },
+      { topic:"Mittelwert berechnen",
+        q:"Gegeben sind die Werte 2, 4, 4, 6, 9. Wie groß ist der Mittelwert?",
+        options:[
+          "4",
+          "4,5",
+          "5",
+          "6"
+        ],
+        correct:2,
+        explain:"(2 + 4 + 4 + 6 + 9) / 5 = 25 / 5 = 5." },
+      { topic:"Median berechnen",
+        q:"Gegeben sind die sortierten Werte 3, 5, 7, 9. Wie groß ist der Median?",
+        options:[
+          "5",
+          "7",
+          "8",
+          "6"
+        ],
+        correct:3,
+        explain:"Bei gerader Anzahl ist der Median der Mittelwert der beiden mittleren Werte: (5 + 7) / 2 = 6." },
+      { topic:"Diagramm auswerten",
+        figure:"<svg viewBox='0 0 380 215' xmlns='http://www.w3.org/2000/svg' role='img' aria-label='Balkendiagramm: Reklamationen pro Monat'><line x1='36' y1='20' x2='36' y2='182' stroke='#9AA8B8' stroke-width='1'/><line x1='36' y1='182' x2='366' y2='182' stroke='#9AA8B8' stroke-width='1'/><g stroke='#E2E8F0' stroke-width='1'><line x1='36' y1='141.5' x2='366' y2='141.5'/><line x1='36' y1='101' x2='366' y2='101'/><line x1='36' y1='60.5' x2='366' y2='60.5'/><line x1='36' y1='20' x2='366' y2='20'/></g><g font-family='Arial' font-size='10' fill='#52606D' text-anchor='end'><text x='31' y='185'>0</text><text x='31' y='144.5'>4</text><text x='31' y='104'>8</text><text x='31' y='63.5'>12</text><text x='31' y='23'>16</text></g><g fill='#2E75B6'><rect x='52' y='101' width='40' height='81'/><rect x='116' y='40.25' width='40' height='141.75'/><rect x='180' y='121.25' width='40' height='60.75'/><rect x='244' y='60.5' width='40' height='121.5'/><rect x='308' y='80.75' width='40' height='101.25'/></g><g font-family='Arial' font-size='11' font-weight='bold' fill='#1B3A5C' text-anchor='middle'><text x='72' y='95'>8</text><text x='136' y='34'>14</text><text x='200' y='115'>6</text><text x='264' y='54'>12</text><text x='328' y='74'>10</text></g><g font-family='Arial' font-size='10' fill='#52606D' text-anchor='middle'><text x='72' y='196'>Jan</text><text x='136' y='196'>Feb</text><text x='200' y='196'>März</text><text x='264' y='196'>Apr</text><text x='328' y='196'>Mai</text></g><text x='201' y='211' font-family='Arial' font-size='10' fill='#52606D' text-anchor='middle'>Reklamationen pro Monat</text></svg>",
+        q:"Das Balkendiagramm zeigt die Anzahl der Reklamationen pro Monat. Wie groß ist die Spannweite (Maximum − Minimum) der dargestellten Werte?",
+        options:[
+          "6",
+          "8",
+          "14",
+          "10"
+        ],
+        correct:1,
+        explain:"Spannweite = größter Wert − kleinster Wert = 14 − 6 = 8. (14 wäre nur das Maximum, 10 der Mittelwert der fünf Werte.)" },
+      { topic:"Boxplot",
+        q:"Wozu dient ein Boxplot?",
+        options:[
+          "Zum Anzeigen des zeitlichen Verlaufs einer Messgröße.",
+          "Zum Anzeigen des Zusammenhangs zweier Merkmale.",
+          "Zum Anzeigen von Lage, Streuung und Ausreißern.",
+          "Zum Verschlüsseln sensibler Datenfelder."
+        ],
+        correct:2,
+        explain:"Der Boxplot zeigt Median, unteres und oberes Quartil, die Whisker (Antennen) sowie Ausreißer." },
+      { topic:"Interquartilsabstand",
+        q:"Was misst der Interquartilsabstand (IQR)?",
+        options:[
+          "Die Differenz zwischen Q3 und Q1.",
+          "Die Differenz aus Maximum und Minimum.",
+          "Den häufigsten Wert innerhalb der Daten.",
+          "Die durchschnittliche Abweichung vom Mittelwert."
+        ],
+        correct:0,
+        explain:"IQR = Q3 − Q1. Er beschreibt die Streuung der mittleren 50 % der Daten und dient zur Ausreißererkennung." },
+      { topic:"Schutzziele",
+        q:"Welche drei Schutzziele beschreibt die Datensicherheit?",
+        options:[
+          "Geschwindigkeit, Integrität, Verfügbarkeit",
+          "Vertraulichkeit, Transparenz, Verfügbarkeit",
+          "Vertraulichkeit, Integrität, Verfügbarkeit",
+          "Vertraulichkeit, Integrität, Wirtschaftlichkeit"
+        ],
+        correct:2,
+        explain:"Die klassischen Schutzziele (CIA): Vertraulichkeit, Integrität und Verfügbarkeit." },
+      { topic:"Sichere Passwörter",
+        q:"Welche Eigenschaft macht ein Passwort sicherer?",
+        options:[
+          "Möglichst kurz und somit leicht zu merken.",
+          "Ausreichend lang, komplex und nicht wiederverwendet.",
+          "Aus dem eigenen Geburtsdatum gebildet.",
+          "Für alle Konten einheitlich vergeben."
+        ],
+        correct:1,
+        explain:"Länge, Komplexität und Einzigartigkeit erhöhen die Sicherheit deutlich – Wiederverwendung ist ein großes Risiko." },
+      { topic:"Phishing erkennen",
+        q:"Woran lässt sich eine Phishing-Mail häufig erkennen?",
+        options:[
+          "An persönlicher Anrede und fehlerfreier Sprache.",
+          "Daran, dass immer ein Anhang fehlt.",
+          "Daran, dass sie von Bekannten stammt.",
+          "An Zeitdruck, gefälschten Links und Datenabfragen."
+        ],
+        correct:3,
+        explain:"Typische Merkmale: erzeugter Zeitdruck, gefälschte Absender oder Links und die Aufforderung, Zugangsdaten preiszugeben." }
+    ]
+  },
+  {
+    name: "Datenanalyse & maschinelles Lernen",
+    topics: "Regression · Korrelation · Evaluationsmaße · Neuronale Netze",
+    questions: [
+      { topic:"Lineare Funktion",
+        q:"Eine lineare Funktion hat die Form y = m·x + b. Was beschreibt der Parameter m?",
+        options:[
+          "Die Steigung der Geraden.",
+          "Den y-Achsenabschnitt der Geraden.",
+          "Den Schnittpunkt mit der x-Achse.",
+          "Den Korrelationskoeffizienten der Daten."
+        ],
+        correct:0,
+        explain:"m ist die Steigung (Änderung von y je Einheit x), b ist der y-Achsenabschnitt (Wert von y bei x = 0)." },
+      { topic:"Regressionsgerade aufstellen",
+        q:"Eine Gerade verläuft durch die Punkte (0|5) und (10|20). Wie lautet ihre Funktionsgleichung?",
+        options:[
+          "y = 2x + 5",
+          "y = 3x + 5",
+          "y = 1,5x + 5",
+          "y = 1,5x"
+        ],
+        correct:2,
+        explain:"Steigung m = (20 − 5) / (10 − 0) = 15/10 = 1,5. Der y-Achsenabschnitt ist b = 5 (Wert bei x = 0)." },
+      { topic:"Korrelation",
+        q:"Was beschreibt der Korrelationskoeffizient?",
+        options:[
+          "Die Steigung der zugehörigen Regressionsgeraden.",
+          "Den Anteil der fehlenden Werte im Datensatz.",
+          "Die Genauigkeit eines Klassifikationsmodells.",
+          "Richtung und Stärke des linearen Zusammenhangs."
+        ],
+        correct:3,
+        explain:"Werte nahe +1 oder −1 zeigen einen starken positiven bzw. negativen linearen Zusammenhang, Werte nahe 0 keinen linearen Zusammenhang." },
+      { topic:"Korrelation ≠ Kausalität",
+        q:"„Korrelation bedeutet nicht Kausalität.“ Was heißt das?",
+        options:[
+          "Korrelierte Größen sind stets voneinander unabhängig.",
+          "Ein Zusammenhang beweist keine Ursache-Wirkung.",
+          "Kausalität ist ein Spezialfall der Steigung.",
+          "Eine Korrelation kann ausschließlich negativ sein."
+        ],
+        correct:1,
+        explain:"Zwei Größen können zusammenhängen, ohne dass eine die andere verursacht – etwa durch eine gemeinsame Ursache oder eine Scheinkorrelation." },
+      { topic:"Accuracy",
+        q:"Wie wird die Genauigkeit (Accuracy) berechnet?",
+        options:[
+          "TP / (TP + FN)",
+          "(TP + FP) / (TP + TN + FP + FN)",
+          "(TP + TN) / (TP + TN + FP + FN)",
+          "TP / (TP + FP)"
+        ],
+        correct:2,
+        explain:"Accuracy ist der Anteil aller korrekten Vorhersagen (TP + TN) an der Gesamtzahl aller Fälle." },
+      { topic:"Recall",
+        q:"Wie wird der Recall (Sensitivität) berechnet?",
+        options:[
+          "TP / (TP + FN)",
+          "TP / (TP + FP)",
+          "(TP + TN) / Gesamtzahl",
+          "TN / (TN + FP)"
+        ],
+        correct:0,
+        explain:"Recall ist der Anteil der tatsächlich positiven Fälle, die korrekt als positiv erkannt wurden. Die Formel TP/(TP+FP) wäre die Precision." },
+      { topic:"Overfitting erkennen",
+        q:"Woran erkennt man Overfitting?",
+        options:[
+          "Schlecht auf Trainings- und auf Testdaten.",
+          "Stark auf Trainings-, schwach auf Testdaten.",
+          "Gleich gut auf Trainings- und Testdaten.",
+          "Auffällig wenige Merkmale im Modell."
+        ],
+        correct:1,
+        explain:"Beim Overfitting hat das Modell die Trainingsdaten „auswendig gelernt“ und generalisiert schlecht – sichtbar an der Lücke zwischen Trainings- und Testleistung." },
+      { topic:"Training/Test-Aufteilung",
+        q:"Wozu teilt man die Daten in Trainings- und Testdaten auf?",
+        options:[
+          "Um dasselbe Modell mehrfach hintereinander neu zu trainieren.",
+          "Um die gesamte Trainingszeit deutlich zu verlängern.",
+          "Um Generalisierung zu prüfen und Overfitting zu erkennen.",
+          "Um fehlende Werte automatisch zu ersetzen."
+        ],
+        correct:2,
+        explain:"Nur auf separaten Testdaten lässt sich beurteilen, wie gut das Modell auf neue, unbekannte Daten reagiert." },
+      { topic:"Aktivierungsfunktion",
+        q:"Welche Funktion hat die Aktivierungsfunktion (z. B. Sigmoid) in einem Neuron?",
+        options:[
+          "Sie summiert die gewichteten Eingaben auf.",
+          "Sie ermöglicht nichtlineare Zusammenhänge.",
+          "Sie speichert die Trainingsdaten dauerhaft.",
+          "Sie berechnet die Accuracy des Modells."
+        ],
+        correct:1,
+        explain:"Ohne nichtlineare Aktivierung könnte ein Netz – egal wie viele Schichten – nur lineare Zusammenhänge abbilden." },
+      { topic:"Training neuronaler Netze",
+        q:"Was passiert beim Training eines neuronalen Netzes?",
+        options:[
+          "Die Eingabedaten werden dauerhaft verändert.",
+          "Die Anzahl der Schichten wird automatisch halbiert.",
+          "Die Aktivierungsfunktion wird jedes Mal neu gewählt.",
+          "Die Gewichte werden über Gradienten angepasst."
+        ],
+        correct:3,
+        explain:"Über die Gradienten der Verlustfunktion werden die lernbaren Gewichte so verändert, dass der Fehler des Netzes sinkt." },
+      { topic:"Neuron / Perzeptron",
+        q:"Wie verarbeitet ein künstliches Neuron (Perzeptron) seine Eingaben?",
+        options:[
+          "Es bildet die gewichtete Summe und wendet eine Aktivierung an.",
+          "Es speichert alle Eingaben unverändert in einer Tabelle ab.",
+          "Es sortiert die Eingaben zunächst nach ihrer Größe.",
+          "Es multipliziert alle Eingaben ohne jede Gewichtung."
+        ],
+        correct:0,
+        explain:"Ein Perzeptron berechnet aus den gewichteten Eingaben plus Bias den sogenannten Logit und wandelt ihn über die Aktivierungsfunktion in die Ausgabe um." },
+      { topic:"y-Achsenabschnitt",
+        q:"Was beschreibt der Parameter b in einer linearen Funktion y = m·x + b?",
+        options:[
+          "Die Steigung der Geraden.",
+          "Den größten vorkommenden y-Wert.",
+          "Den Korrelationskoeffizienten der Daten.",
+          "Den Wert von y an der Stelle x = 0."
+        ],
+        correct:3,
+        explain:"b ist der y-Achsenabschnitt – der Funktionswert, an dem die Gerade die y-Achse schneidet, also der Wert von y bei x = 0." },
+      { topic:"Precision",
+        q:"Wie wird die Precision (Genauigkeit der positiven Vorhersagen) berechnet?",
+        options:[
+          "TP / (TP + FP)",
+          "TP / (TP + FN)",
+          "(TP + TN) / Gesamtzahl",
+          "FP / (FP + TN)"
+        ],
+        correct:0,
+        explain:"Precision ist der Anteil der tatsächlich positiven Fälle unter allen als positiv vorhergesagten. TP/(TP+FN) wäre dagegen der Recall." },
+      { topic:"Prognose mit Regression",
+        q:"Ein Regressionsmodell lautet y = 2·x + 3. Welchen Wert sagt es für x = 4 voraus?",
+        options:[
+          "8",
+          "10",
+          "11",
+          "14"
+        ],
+        correct:2,
+        explain:"Einsetzen von x = 4: y = 2 · 4 + 3 = 8 + 3 = 11." },
+      { topic:"Tiefe neuronale Netze",
+        q:"Wodurch ist ein tiefes neuronales Netz gekennzeichnet?",
+        options:[
+          "Durch genau ein einziges, isoliertes Neuron.",
+          "Durch mehrere verborgene Schichten (Hidden Layers).",
+          "Durch das vollständige Fehlen jeglicher Gewichte.",
+          "Durch den kompletten Verzicht auf Trainingsdaten."
+        ],
+        correct:1,
+        explain:"Tiefe Netze besitzen mehrere verborgene Schichten zwischen Eingabe- und Ausgabeschicht und können dadurch komplexe Zusammenhänge abbilden." }
+    ]
+  },
+  {
+    name: "Chancen & Herausforderungen",
+    topics: "Datenschutz · DSGVO · algorithmischer Bias · Erklärbarkeit",
+    questions: [
+      { topic:"Personenbezogene Daten",
+        q:"Was sind personenbezogene Daten?",
+        options:[
+          "Informationen über eine identifizierbare Person.",
+          "Nur der Name und die Anschrift einer Person.",
+          "Ausschließlich bereits anonymisierte Datensätze.",
+          "Nur Angaben über einzelne Unternehmen."
+        ],
+        correct:0,
+        explain:"Ein Personenbezug liegt vor, sobald eine natürliche Person direkt oder indirekt identifizierbar ist." },
+      { topic:"Rechtsgrundlage",
+        q:"Unter welcher Voraussetzung dürfen personenbezogene Daten in der Regel verarbeitet werden?",
+        options:[
+          "Immer und ohne jede weitere Bedingung.",
+          "Nur mit Zustimmung eines Wettbewerbers.",
+          "Nur zu bestimmten Tageszeiten erlaubt.",
+          "Nur mit Einwilligung oder anderer Rechtsgrundlage."
+        ],
+        correct:3,
+        explain:"Die DSGVO verlangt eine Rechtsgrundlage; häufig ist das die Einwilligung der betroffenen Person, die bestimmten Anforderungen genügen muss." },
+      { topic:"Betroffenenrechte",
+        q:"Welches der folgenden Rechte gibt es so NICHT in der DSGVO?",
+        options:[
+          "Recht auf Auskunft über gespeicherte Daten",
+          "Recht auf Berichtigung unrichtiger Daten",
+          "Recht auf Gewinnbeteiligung an der Datennutzung",
+          "Recht auf Löschung der eigenen Daten"
+        ],
+        correct:2,
+        explain:"Die DSGVO sichert u. a. Auskunft, Berichtigung, Löschung und Widerspruch zu – aber keinen Anspruch auf finanziellen Gewinn aus der Verarbeitung." },
+      { topic:"Datenminimierung",
+        q:"Was bedeutet der Grundsatz der Datenminimierung?",
+        options:[
+          "Nur so viele Daten wie nötig erheben.",
+          "Daten möglichst lange dauerhaft speichern.",
+          "Daten an möglichst viele Stellen weitergeben.",
+          "Vorsorglich alle verfügbaren Daten sammeln."
+        ],
+        correct:0,
+        explain:"Datenminimierung verlangt, die Erhebung und Verarbeitung auf das für den Zweck notwendige Maß zu beschränken." },
+      { topic:"Zweckbindung",
+        q:"Was beschreibt der Grundsatz der Zweckbindung?",
+        options:[
+          "Daten dürfen für beliebige neue Zwecke dienen.",
+          "Daten müssen unbegrenzt aufbewahrt werden.",
+          "Daten dürfen nur intern gespeichert werden.",
+          "Daten nur für den Erhebungszweck verarbeiten."
+        ],
+        correct:3,
+        explain:"Die Verarbeitung ist an den ursprünglich festgelegten, legitimen Zweck gebunden." },
+      { topic:"Pseudonymisierung",
+        q:"Was versteht man unter Pseudonymisierung?",
+        options:[
+          "Das endgültige und unumkehrbare Löschen aller Daten.",
+          "Das Verschlüsseln der gesamten Festplatte.",
+          "Direktbezug entfernen, Rückführung nur mit Zusatzinfo.",
+          "Das Veröffentlichen vollständiger Klardaten."
+        ],
+        correct:2,
+        explain:"Bei der Pseudonymisierung wird der direkte Personenbezug entfernt, bleibt aber mit gesondert aufbewahrten Zusatzinfos wiederherstellbar – anders als bei der Anonymisierung." },
+      { topic:"Algorithmischer Bias",
+        q:"Was versteht man unter algorithmischem Bias?",
+        options:[
+          "Einen einfachen Tippfehler im Quellcode.",
+          "Systematische Verzerrung mit unfairen Folgen.",
+          "Die reine Rechenzeit eines Algorithmus.",
+          "Die Verschlüsselung der Trainingsdaten."
+        ],
+        correct:1,
+        explain:"Algorithmischer Bias ist eine systematische Schieflage in den Ergebnissen, die Personengruppen benachteiligen kann." },
+      { topic:"Ursachen für Bias",
+        q:"Eine häufige Ursache für algorithmischen Bias ist …",
+        options:[
+          "eine besonders leistungsfähige Hardware.",
+          "ein zu groß gewählter Testdatensatz.",
+          "nicht repräsentative Trainingsdaten.",
+          "die Wahl eines einfachen Entscheidungsbaums."
+        ],
+        correct:2,
+        explain:"Wenn Trainingsdaten bestimmte Gruppen über- oder unterrepräsentieren, übernimmt und verstärkt das Modell diese Verzerrung." },
+      { topic:"Erklärbarkeit einfacher Modelle",
+        q:"Warum gelten einfache Modelle wie Entscheidungsbäume oder lineare Regression als gut erklärbar?",
+        options:[
+          "Weil sie ganz ohne Daten auskommen.",
+          "Weil sie stets genauer als Netze sind.",
+          "Weil sie gar keine Vorhersagen treffen.",
+          "Weil ihre Regeln nachvollziehbar sind."
+        ],
+        correct:3,
+        explain:"Bei einfachen Modellen lassen sich die Entscheidungswege direkt nachvollziehen – ein klarer Vorteil bei Transparenzanforderungen." },
+      { topic:"Black Box neuronaler Netze",
+        q:"Warum ist die Interpretation einzelner Parameter bei tiefen neuronalen Netzen kaum möglich?",
+        options:[
+          "Wegen der riesigen Menge vernetzter Gewichte.",
+          "Weil neuronale Netze keine Parameter besitzen.",
+          "Weil sie nur ungelabelte Daten nutzen.",
+          "Weil sie keine Aktivierungsfunktion haben."
+        ],
+        correct:0,
+        explain:"Die hohe Anzahl und starke Vernetzung der Gewichte macht eine Einzelinterpretation praktisch unmöglich – man spricht von einer „Black Box“." }
+    ]
+  }
+];
+
+// ---- State ----
+let modIndex = 0, qIndex = 0, score = 0, answered = false;
+let results = []; // per-question: {correct:bool, topic:str}
+
+const $ = id => document.getElementById(id);
+const overview = $("overview"), quiz = $("quiz"), resultEl = $("result");
+
+// ---- Overview ----
+function renderOverview(){
+  const grid = $("moduleGrid");
+  grid.innerHTML = "";
+  MODULES.forEach((m, i) => {
+    const done = m._done;
+    const btn = document.createElement("button");
+    btn.className = "mod";
+    btn.setAttribute("aria-label", "Themenbereich starten: " + m.name);
+    btn.innerHTML =
+      '<div class="top"><span class="badge">'+(i+1)+'</span><h2>'+m.name+'</h2></div>'+
+      '<p class="topics">'+m.topics+'</p>'+
+      '<div class="meta"><span class="count">'+m.questions.length+' Fragen</span>'+
+      (done!==undefined
+        ? '<span class="pill done">'+done+'/'+m.questions.length+' richtig</span>'
+        : '<span class="pill">Starten</span>')+
+      '</div>';
+    btn.onclick = () => startModule(i);
+    grid.appendChild(btn);
+  });
+}
+
+function show(section){
+  [overview, quiz, resultEl].forEach(s => s.classList.add("hidden"));
+  section.classList.remove("hidden");
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+// ---- Quiz flow ----
+function startModule(i){
+  modIndex = i; qIndex = 0; score = 0; answered = false; results = [];
+  $("quizModTitle").textContent = (i+1)+" · "+MODULES[i].name;
+  show(quiz);
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const m = MODULES[modIndex];
+  const item = m.questions[qIndex];
+  const total = m.questions.length;
+
+  $("progBar").style.width = ((qIndex)/total*100)+"%";
+  $("progText").textContent = "Frage "+(qIndex+1)+" von "+total;
+  $("scoreText").textContent = "Punkte: "+score;
+
+  const card = $("qcard");
+  card.innerHTML = "";
+  const topic = document.createElement("p");
+  topic.className = "qtopic"; topic.textContent = item.topic;
+  const qtext = document.createElement("p");
+  qtext.className = "qtext"; qtext.textContent = item.q;
+  const opts = document.createElement("div");
+  opts.className = "options";
+
+  item.options.forEach((opt, idx) => {
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.innerHTML = '<span class="key">'+(idx+1)+'</span><span>'+opt+'</span>';
+    b.onclick = () => choose(idx);
+    opts.appendChild(b);
+  });
+
+  card.appendChild(topic);
+  card.appendChild(qtext);
+  if(item.figure){
+    const fig = document.createElement("div");
+    fig.className = "figure";
+    fig.innerHTML = item.figure;
+    card.appendChild(fig);
+  }
+  card.appendChild(opts);
+
+  const kh = document.createElement("p");
+  kh.className = "keyhint"; kh.id = "keyhint";
+  kh.textContent = "Tasten 1\u20134 zum Antworten";
+  card.appendChild(kh);
+}
+
+function choose(idx){
+  if(answered) return;
+  answered = true;
+  const m = MODULES[modIndex];
+  const item = m.questions[qIndex];
+  const correct = item.correct;
+  const isRight = idx === correct;
+  if(isRight) score++;
+  results.push({correct:isRight, topic:item.topic});
+
+  const buttons = $("qcard").querySelectorAll(".opt");
+  buttons.forEach((b, i) => {
+    b.setAttribute("disabled","true");
+    if(i === correct) b.classList.add("correct");
+    else if(i === idx) b.classList.add("wrong");
+    else b.classList.add("dim");
+  });
+
+  const ex = document.createElement("div");
+  ex.className = "explain " + (isRight ? "correct" : "wrong");
+  ex.setAttribute("role","status");
+  ex.innerHTML = "<b>"+(isRight ? "Richtig." : "Nicht ganz.")+"</b> "+item.explain;
+  $("qcard").appendChild(ex);
+
+  const actions = document.createElement("div");
+  actions.className = "qactions";
+  const next = document.createElement("button");
+  next.className = "btn";
+  const last = qIndex === m.questions.length - 1;
+  next.textContent = last ? "Auswertung anzeigen" : "Nächste Frage";
+  next.onclick = goNext;
+  actions.appendChild(next);
+  $("qcard").appendChild(actions);
+  next.focus();
+  const kh = $("keyhint"); if(kh) kh.textContent = "Enter \u2013 weiter";
+
+  $("scoreText").textContent = "Punkte: "+score;
+  $("progBar").style.width = ((qIndex+1)/m.questions.length*100)+"%";
+}
+
+function goNext(){
+  const m = MODULES[modIndex];
+  if(qIndex < m.questions.length - 1){ qIndex++; renderQuestion(); }
+  else showResult();
+}
+
+function showResult(){
+  const m = MODULES[modIndex];
+  m._done = score;
+  const total = m.questions.length;
+  const pct = Math.round(score/total*100);
+  let msg;
+  if(pct === 100) msg = "Alles richtig – dieser Themenbereich sitzt.";
+  else if(pct >= 80) msg = "Sehr solide. Nur wenige Punkte zum Auffrischen.";
+  else if(pct >= 50) msg = "Grundlagen sind da – die markierten Themen lohnen eine Wiederholung.";
+  else msg = "Hier lohnt sich eine gemeinsame Besprechung der Grundlagen.";
+
+  const wrongTopics = results.filter(r => !r.correct).map(r => r.topic);
+
+  let revHtml = '<ul class="rev-list">';
+  results.forEach((r, i) => {
+    revHtml += '<li><span class="mark '+(r.correct?'ok':'no')+'">'+(r.correct?'\u2713':'\u2717')+
+               '</span><span><b>Frage '+(i+1)+'</b> <span class="rev-topic">– '+r.topic+'</span></span></li>';
+  });
+  revHtml += '</ul>';
+
+  let diag;
+  if(wrongTopics.length === 0){
+    diag = '<div class="diag allgood"><b>Diagnose:</b> Keine offenen Themen in diesem Bereich.</div>';
+  } else {
+    const uniq = [...new Set(wrongTopics)];
+    diag = '<div class="diag"><b>Nochmal ansehen:</b> '+uniq.join(" · ")+'</div>';
+  }
+
+  resultEl.innerHTML =
+    '<div class="result">'+
+      '<h2>'+m.name+'</h2>'+
+      '<div class="scorebig">'+score+'<small> / '+total+'</small></div>'+
+      '<p class="msg">'+msg+'</p>'+
+      '<div class="review"><h3>Überblick</h3>'+revHtml+'</div>'+
+      diag+
+      '<div class="result-actions">'+
+        '<button class="btn ghost" id="repeatBtn">Modul wiederholen</button>'+
+        '<button class="btn" id="overviewBtn">Zur Übersicht</button>'+
+      '</div>'+
+    '</div>';
+  show(resultEl);
+  $("repeatBtn").onclick = () => startModule(modIndex);
+  $("overviewBtn").onclick = () => { renderOverview(); show(overview); };
+}
+
+// ---- Navigation + keyboard ----
+$("backBtn").onclick = () => { renderOverview(); show(overview); };
+
+document.addEventListener("keydown", (e) => {
+  if(quiz.classList.contains("hidden")) return;
+  if(!answered && ["1","2","3","4"].includes(e.key)){
+    const idx = parseInt(e.key,10)-1;
+    const m = MODULES[modIndex];
+    if(idx < m.questions[qIndex].options.length){ e.preventDefault(); choose(idx); }
+  } else if(answered && (e.key === "Enter" || e.key === " ")){
+    e.preventDefault(); goNext();
+  }
+});
+
+// init
+renderOverview();
+</script>
+</body>
+</html>

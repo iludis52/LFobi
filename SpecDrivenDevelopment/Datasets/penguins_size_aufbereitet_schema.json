@@ -1,0 +1,40 @@
+{
+  "erstellt_am": "2026-06-18T10:49:20",
+  "werkzeug": "CSV-Aufbereitung (Variante A)",
+  "zielspalte": "sex",
+  "ziel_bleibt_label": true,
+  "zeilen_mit_fehlern_entfernt": 0,
+  "numerische_merkmale": [
+    "culmen_length_mm",
+    "culmen_depth_mm",
+    "flipper_length_mm",
+    "body_mass_g"
+  ],
+  "kategoriale_merkmale_codiert": {
+    "species": [
+      "species_Adelie",
+      "species_Chinstrap",
+      "species_Gentoo"
+    ],
+    "island": [
+      "island_Biscoe",
+      "island_Dream",
+      "island_Torgersen"
+    ]
+  },
+  "spalten_endgueltig": [
+    "culmen_length_mm",
+    "culmen_depth_mm",
+    "flipper_length_mm",
+    "body_mass_g",
+    "species_Adelie",
+    "species_Chinstrap",
+    "species_Gentoo",
+    "island_Biscoe",
+    "island_Dream",
+    "island_Torgersen",
+    "sex"
+  ],
+  "zeilen": 334,
+  "ziel_datei": "Datasets\\penguins_size_aufbereitet.csv"
+}
