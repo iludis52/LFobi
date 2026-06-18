@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSV-Aufbereitung · Variante A (Offline)</title>
+<style>
+  :root{
+    --dunkelblau:#1B3A5C;
+    --mittelblau:#2E75B6;
+    --hellblau:#EAF1F8;
+    --rahmen:#D4DEE9;
+    --gruen:#2E7D52;
+    --gruen-bg:#E8F3EC;
+    --gelb:#8A6D1E;
+    --gelb-bg:#FBF3DC;
+    --rot:#A32C2C;
+    --rot-bg:#F8E6E6;
+    --grau:#5A6675;
+    --zebra:#F4F7FB;
+    --text:#1F2A37;
+  }
+  *{box-sizing:border-box}
+  body{
+    font-family:Arial,Helvetica,sans-serif;
+    color:var(--text);
+    margin:0;
+    background:#fff;
+    line-height:1.5;
+  }
+  .wrap{max-width:1000px;margin:0 auto;padding:28px 22px 80px}
+  h1{
+    color:var(--dunkelblau);
+    font-size:26px;
+    margin:0 0 6px;
+    border-bottom:3px solid var(--mittelblau);
+    padding-bottom:10px;
+  }
+  .untertitel{color:var(--grau);margin:0 0 4px;font-size:14.5px}
+  .untertitel em{color:var(--grau)}
+  h2{
+    color:var(--dunkelblau);
+    font-size:16px;
+    margin:30px 0 10px;
+    display:flex;align-items:center;gap:8px;
+  }
+  h2 .num{
+    background:var(--mittelblau);color:#fff;font-size:13px;
+    width:24px;height:24px;border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
+  }
+  /* Drop-Zone */
+  #dropzone{
+    border:2px dashed var(--mittelblau);
+    border-radius:10px;
+    background:var(--hellblau);
+    padding:30px 20px;
+    text-align:center;
+    cursor:pointer;
+    transition:background .15s,border-color .15s;
+    color:var(--dunkelblau);
+  }
+  #dropzone.dragover{background:#DCE9F6;border-color:var(--dunkelblau)}
+  #dropzone strong{font-size:15px}
+  #dropzone .klein{color:var(--grau);font-size:13px;margin-top:6px}
+  #fileInput{display:none}
+  /* Infozeile */
+  .infozeile{
+    margin:14px 0 0;font-size:15px;color:var(--dunkelblau);font-weight:bold;
+  }
+  /* Tabellen */
+  .tabelle-scroll{overflow-x:auto;border:1px solid var(--rahmen);border-radius:8px;margin-top:8px}
+  table{border-collapse:collapse;width:100%;font-size:13.5px}
+  th{
+    background:var(--dunkelblau);color:#fff;text-align:left;
+    padding:8px 10px;font-weight:bold;white-space:nowrap;position:sticky;top:0;
+  }
+  td{padding:7px 10px;border-top:1px solid var(--rahmen);vertical-align:top}
+  tr:nth-child(even) td{background:var(--zebra)}
+  .badge{
+    display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;white-space:nowrap;
+  }
+  .b-num{background:var(--gruen-bg);color:var(--gruen)}
+  .b-kat{background:var(--hellblau);color:var(--mittelblau)}
+  .b-warn{background:var(--gelb-bg);color:var(--gelb)}
+  .b-del{background:var(--rot-bg);color:var(--rot)}
+  /* Steuerblöcke */
+  .panel{
+    border:1px solid var(--rahmen);border-radius:8px;padding:14px 16px;margin-top:8px;background:#fff;
+  }
+  label.feld{display:block;font-size:13px;color:var(--grau);margin-bottom:6px;font-weight:bold}
+  .checkliste{
+    display:flex;flex-wrap:wrap;gap:6px 14px;max-height:150px;overflow-y:auto;
+  }
+  .checkliste label{
+    display:inline-flex;align-items:center;gap:6px;font-size:13.5px;
+    background:var(--hellblau);border:1px solid var(--rahmen);border-radius:6px;
+    padding:4px 9px;cursor:pointer;color:var(--dunkelblau);
+  }
+  .checkliste input{accent-color:var(--mittelblau)}
+  .zeile{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;margin-top:8px}
+  .zeile > div{flex:1 1 220px}
+  select,input[type=text]{
+    width:100%;padding:8px 10px;border:1px solid var(--rahmen);border-radius:6px;
+    font-family:inherit;font-size:14px;color:var(--text);background:#fff;
+  }
+  select:focus,input[type=text]:focus{outline:2px solid var(--mittelblau);outline-offset:0}
+  button{
+    font-family:inherit;font-size:14px;cursor:pointer;border-radius:6px;
+    padding:9px 16px;border:1px solid var(--mittelblau);background:#fff;color:var(--mittelblau);
+    font-weight:bold;transition:background .12s,color .12s;
+  }
+  button:hover:not(:disabled){background:var(--hellblau)}
+  button.primary{background:var(--mittelblau);color:#fff}
+  button.primary:hover:not(:disabled){background:var(--dunkelblau);border-color:var(--dunkelblau)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  .btnzeile{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  .ordneropt{font-size:13px;color:var(--grau);display:inline-flex;align-items:center;gap:7px;margin-top:10px}
+  .ordneropt input{accent-color:var(--mittelblau)}
+  /* Status-Infobox mit linkem Akzentbalken */
+  .box{border-left:5px solid var(--mittelblau);background:var(--hellblau);
+       padding:12px 16px;border-radius:0 8px 8px 0;margin-top:14px;font-size:14px}
+  .box.ok{border-color:var(--gruen);background:var(--gruen-bg)}
+  .box.warn{border-color:var(--gelb);background:var(--gelb-bg)}
+  .box.err{border-color:var(--rot);background:var(--rot-bg)}
+  .box code{background:#fff;border:1px solid var(--rahmen);border-radius:4px;padding:1px 5px;font-size:12.5px}
+  .box b{color:var(--dunkelblau)}
+  .verborgen{display:none}
+  footer{margin-top:50px;font-size:12px;color:var(--grau);border-top:1px solid var(--rahmen);padding-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>CSV-Aufbereitung für das ML-Skript</h1>
+  <p class="untertitel">Offline-Variante A · läuft vollständig im Browser, ohne Server und ohne Internet.</p>
+  <p class="untertitel"><em>Kategoriale Merkmalsspalten werden direkt zu <code>0/1</code>-Spalten umgewandelt (One-Hot). Die Umwandlung wird in einer begleitenden <code>*_schema.json</code> dokumentiert. Die Zielspalte bleibt als Klartext-Label erhalten.</em></p>
+
+  <h2><span class="num">1</span>CSV laden</h2>
+  <div id="dropzone">
+    <strong>CSV hierher ziehen</strong> oder klicken zum Auswählen
+    <div class="klein">Trennzeichen (Komma, Semikolon, Tab) wird automatisch erkannt.</div>
+  </div>
+  <input type="file" id="fileInput" accept=".csv,text/csv">
+  <div id="info" class="infozeile"></div>
+
+  <div id="analyseBlock" class="verborgen">
+    <h2><span class="num">2</span>Spaltenanalyse</h2>
+    <div class="tabelle-scroll"><table id="analyseTabelle"></table></div>
+
+    <h2><span class="num">3</span>Aufräumen</h2>
+    <div class="panel">
+      <label class="feld">Spalten entfernen (Mehrfachauswahl)</label>
+      <div id="dropListe" class="checkliste"></div>
+      <div class="btnzeile">
+        <button id="dropBtn">Ausgewählte Spalten entfernen</button>
+        <button id="cleanBtn">Zeilen mit fehlenden Werten entfernen</button>
+      </div>
+    </div>
+
+    <h2><span class="num">4</span>Ziel wählen & speichern</h2>
+    <div class="panel">
+      <div class="zeile">
+        <div>
+          <label class="feld" for="targetSelect">Zielspalte (Target)</label>
+          <select id="targetSelect"></select>
+        </div>
+        <div>
+          <label class="feld" for="nameInput">Dateiname zum Speichern</label>
+          <input type="text" id="nameInput" value="aufbereitet.csv">
+        </div>
+      </div>
+      <div class="btnzeile">
+        <button id="saveBtn" class="primary">Aufbereiten &amp; speichern</button>
+      </div>
+      <label class="ordneropt" id="ordnerWrap" style="display:none">
+        <input type="checkbox" id="ordnerCheck">
+        In festen Ordner speichern (Chrome/Edge) statt herunterladen
+      </label>
+    </div>
+
+    <div id="status"></div>
+
+    <div id="vorschauBlock" class="verborgen">
+      <h2><span class="num">5</span>Vorschau <span style="font-weight:normal;color:var(--grau);font-size:13px">(numerisch, Ziel am Ende, erste 10 Zeilen)</span></h2>
+      <div class="tabelle-scroll"><table id="vorschauTabelle"></table></div>
+    </div>
+  </div>
+
+  <footer>
+    Offline-Nachbau der Gradio-App „CSV-Aufbereitung (Variante A)“. Alle Verarbeitung geschieht lokal in deinem Browser; es werden keine Daten gesendet.
+  </footer>
+</div>
+
+<script>
+"use strict";
+/* =========================================================================
+   Datenmodell:  data = { columns:[...], rows:[[...]] }
+   Fehlende Werte werden als null gespeichert.
+   ========================================================================= */
+let data = null;          // aktueller Datensatz
+let dirHandle = null;     // gewählter Zielordner (File System Access API)
+
+const NA = new Set(["", "na", "n/a", "nan", "null", "none", "#n/a"]);
+
+/* ---- CSV einlesen ------------------------------------------------------- */
+function trennzeichenErkennen(zeile){
+  const kandidaten = [",",";","\t"];
+  let best = ",", max = -1;
+  for(const d of kandidaten){
+    // außerhalb von Anführungszeichen zählen
+    let inQ=false, n=0;
+    for(let i=0;i<zeile.length;i++){
+      const c=zeile[i];
+      if(c==='"') inQ=!inQ;
+      else if(c===d && !inQ) n++;
+    }
+    if(n>max){max=n;best=d;}
+  }
+  return best;
+}
+
+function parseCSV(text){
+  if(text.charCodeAt(0)===0xFEFF) text=text.slice(1);   // BOM entfernen
+  const ersteZeile = text.split(/\r?\n/,1)[0] || "";
+  const delim = trennzeichenErkennen(ersteZeile);
+
+  const rows=[]; let row=[], field="", inQ=false, i=0;
+  while(i<text.length){
+    const c=text[i];
+    if(inQ){
+      if(c==='"'){ if(text[i+1]==='"'){field+='"';i+=2;continue;} inQ=false;i++;continue; }
+      field+=c;i++;continue;
+    }else{
+      if(c==='"'){inQ=true;i++;continue;}
+      if(c===delim){row.push(field);field="";i++;continue;}
+      if(c==='\r'){i++;continue;}
+      if(c==='\n'){row.push(field);rows.push(row);row=[];field="";i++;continue;}
+      field+=c;i++;continue;
+    }
+  }
+  if(field.length>0 || row.length>0){row.push(field);rows.push(row);}
+  // leere Schlusszeilen verwerfen
+  while(rows.length && rows[rows.length-1].every(v=>v.trim()==="")) rows.pop();
+  return rows;
+}
+
+function zelleNorm(v){
+  const t = (v==null?"":String(v)).trim();
+  return NA.has(t.toLowerCase()) ? null : t;
+}
+
+function csvNachData(text){
+  const rows = parseCSV(text);
+  if(rows.length===0) return {columns:[],rows:[]};
+  const columns = rows[0].map(c=>c.trim());
+  const breite = columns.length;
+  const datenzeilen = rows.slice(1).map(r=>{
+    const z=[];
+    for(let j=0;j<breite;j++) z.push(zelleNorm(r[j]));
+    return z;
+  });
+  return {columns, rows:datenzeilen};
+}
+
+/* ---- Spaltenlogik ------------------------------------------------------- */
+function spalte(d, idx){ return d.rows.map(r=>r[idx]); }
+
+function istZahl(tok){
+  return tok!==null && tok!=="" && isFinite(Number(tok));
+}
+function spalteNumerisch(d, idx){
+  let gesehen=false;
+  for(const r of d.rows){
+    const v=r[idx];
+    if(v===null) continue;
+    gesehen=true;
+    if(!istZahl(v)) return false;
+  }
+  return gesehen;   // reine Leerspalte gilt nicht als numerisch
+}
+function uniqueNonNull(d, idx){
+  const seen=new Set(), out=[];
+  for(const r of d.rows){
+    const v=r[idx];
+    if(v===null) continue;
+    if(!seen.has(v)){seen.add(v);out.push(v);}
+  }
+  return out;
+}
+function fehlend(d, idx){ let n=0; for(const r of d.rows) if(r[idx]===null) n++; return n; }
+function fehlendGesamt(d){ let n=0; for(const r of d.rows) for(const v of r) if(v===null) n++; return n; }
+
+function typLabel(d, idx){
+  const u=uniqueNonNull(d,idx);
+  if(u.length===0) return "leer";
+  if(spalteNumerisch(d,idx)){
+    return u.some(v=>String(v).includes(".")||String(v).toLowerCase().includes("e"))
+      ? "Dezimalzahl" : "Ganzzahl";
+  }
+  return "Text";
+}
+
+/* ---- Analyse-Tabelle ---------------------------------------------------- */
+function analysiere(d){
+  const n=d.rows.length, zeilen=[];
+  d.columns.forEach((col,idx)=>{
+    const isNum=spalteNumerisch(d,idx);
+    const nMissing=fehlend(d,idx);
+    const uq=uniqueNonNull(d,idx);
+    const nUnique=uq.length;
+    const beispiele=uq.slice(0,2).map(String).join(", ");
+    let hinweis, klasse;
+    if(nUnique<=1){hinweis="konstant → Löschkandidat";klasse="b-del";}
+    else if(isNum){hinweis="numerisch";klasse="b-num";}
+    else if(nUnique===n){hinweis="alle Werte verschieden → evtl. ID/Text";klasse="b-warn";}
+    else{hinweis="kategorial (Text)";klasse="b-kat";}
+    zeilen.push({col,typ:typLabel(d,idx),beispiele,nMissing,nUnique,hinweis,klasse});
+  });
+  return zeilen;
+}
+
+/* ---- Klassifikationsprüfung & Aufbereitung (Variante A) ----------------- */
+function istKlassifikation(d, zielIdx){
+  if(!spalteNumerisch(d,zielIdx)) return true;
+  const nu=uniqueNonNull(d,zielIdx).length;
+  return nu <= Math.max(20, Math.floor(0.05*d.rows.length));
+}
+
+function dropNa(d){
+  const rows=d.rows.filter(r=>r.every(v=>v!==null));
+  return {columns:d.columns.slice(), rows};
+}
+
+function aufbereiten(d, ziel){
+  const vorher=d.rows.length;
+  const clean=dropNa(d);
+  const entfernt=vorher-clean.rows.length;
+  const zielIdx=clean.columns.indexOf(ziel);
+
+  const featIdx=clean.columns.map((c,i)=>i).filter(i=>i!==zielIdx);
+  const numIdx=featIdx.filter(i=>spalteNumerisch(clean,i));
+  const katIdx=featIdx.filter(i=>!numIdx.includes(i));
+
+  const numFeats=numIdx.map(i=>clean.columns[i]);
+
+  // One-Hot je kategorialer Spalte
+  const katDoku={};          // {spaltenname: [dummyspalten...]}
+  const dummyDefs=[];        // {name, srcIdx, wert}
+  katIdx.forEach(i=>{
+    const name=clean.columns[i];
+    const werte=uniqueNonNull(clean,i).slice().sort(); // Codepoint-Sortierung wie Python sorted
+    const cols=werte.map(w=>name+"_"+w);
+    cols.sort(); // sortiert nach vollem Dummy-Spaltennamen (wie im Original)
+    katDoku[name]=cols;
+    // Definitionen in sortierter Reihenfolge erzeugen
+    cols.forEach(cn=>{
+      const wert=cn.slice((name+"_").length);
+      dummyDefs.push({name:cn, srcIdx:i, wert});
+    });
+  });
+
+  const dummyCols=dummyDefs.map(dd=>dd.name);
+  const spalten=[...numFeats, ...dummyCols, ziel];
+
+  // Zeilen aufbauen
+  const outRows=clean.rows.map(r=>{
+    const out=[];
+    numIdx.forEach(i=>out.push(r[i]));               // numerische Merkmale unverändert
+    dummyDefs.forEach(dd=>out.push(r[dd.srcIdx]===dd.wert ? "1" : "0"));
+    out.push(r[zielIdx]);                            // Ziel ans Ende, Klartext
+    return out;
+  });
+
+  const schema={
+    erstellt_am: new Date().toISOString().slice(0,19),
+    werkzeug: "CSV-Aufbereitung (Variante A) – HTML-Offline-Version",
+    zielspalte: ziel,
+    ziel_bleibt_label: true,
+    zeilen_mit_fehlern_entfernt: entfernt,
+    numerische_merkmale: numFeats,
+    kategoriale_merkmale_codiert: katDoku,
+    spalten_endgueltig: spalten,
+    zeilen: outRows.length
+  };
+
+  return {out:{columns:spalten, rows:outRows}, schema, entfernt, katDoku};
+}
+
+/* ---- CSV-Ausgabe -------------------------------------------------------- */
+function feldQuote(v){
+  const s=(v==null?"":String(v));
+  return /[",\n\r]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
+}
+function dataNachCSV(d){
+  const kopf=d.columns.map(feldQuote).join(",");
+  const leib=d.rows.map(r=>r.map(feldQuote).join(",")).join("\n");
+  return "\ufeff"+kopf+"\n"+leib+"\n";   // BOM für Excel-Umlaute
+}
+
+/* =========================================================================
+   Oberfläche / Rendering
+   ========================================================================= */
+const $=id=>document.getElementById(id);
+
+function infoText(d){
+  return `${d.rows.length} Zeilen · ${d.columns.length} Spalten · ${fehlendGesamt(d)} fehlende Werte insgesamt`;
+}
+
+function renderAnalyse(){
+  const zeilen=analysiere(data);
+  let html="<thead><tr><th>Spalte</th><th>Typ</th><th>Beispielwerte</th><th>Fehlend</th><th>Verschiedene</th><th>Hinweis</th></tr></thead><tbody>";
+  for(const z of zeilen){
+    html+=`<tr><td><b>${esc(z.col)}</b></td><td>${esc(z.typ)}</td><td>${esc(z.beispiele)}</td>`
+        +`<td>${z.nMissing}</td><td>${z.nUnique}</td>`
+        +`<td><span class="badge ${z.klasse}">${esc(z.hinweis)}</span></td></tr>`;
+  }
+  html+="</tbody>";
+  $("analyseTabelle").innerHTML=html;
+  $("info").textContent=infoText(data);
+}
+
+function renderDropListe(){
+  const box=$("dropListe");
+  box.innerHTML="";
+  data.columns.forEach(c=>{
+    const lab=document.createElement("label");
+    lab.innerHTML=`<input type="checkbox" value="${escAttr(c)}"> ${esc(c)}`;
+    box.appendChild(lab);
+  });
+}
+
+function renderTargetSelect(behalteWahl){
+  const sel=$("targetSelect");
+  const alt = behalteWahl && data.columns.includes(sel.value) ? sel.value : null;
+  sel.innerHTML="";
+  data.columns.forEach(c=>{
+    const o=document.createElement("option");
+    o.value=c; o.textContent=c; sel.appendChild(o);
+  });
+  sel.value = alt!==null ? alt : (data.columns[data.columns.length-1]||"");
+}
+
+function renderVorschau(d){
+  const max=Math.min(10,d.rows.length);
+  let html="<thead><tr>"+d.columns.map(c=>`<th>${esc(c)}</th>`).join("")+"</tr></thead><tbody>";
+  for(let i=0;i<max;i++){
+    html+="<tr>"+d.rows[i].map(v=>`<td>${esc(v==null?"":v)}</td>`).join("")+"</tr>";
+  }
+  html+="</tbody>";
+  $("vorschauTabelle").innerHTML=html;
+  $("vorschauBlock").classList.remove("verborgen");
+}
+
+function esc(s){return String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function escAttr(s){return String(s).replace(/"/g,"&quot;");}
+
+function status(text, klasse){
+  $("status").innerHTML = text ? `<div class="box ${klasse||""}">${text}</div>` : "";
+}
+
+/* ---- Aktionen ----------------------------------------------------------- */
+function ladenAusText(text, dateiname){
+  data=csvNachData(text);
+  if(data.columns.length===0){ status("Die Datei enthält keine Spalten.","err"); return; }
+  $("analyseBlock").classList.remove("verborgen");
+  renderAnalyse(); renderDropListe(); renderTargetSelect(false);
+  const stem=dateiname.replace(/\.[^.]*$/,"");
+  $("nameInput").value=`${stem}_aufbereitet.csv`;
+  status("", "");
+  $("vorschauBlock").classList.add("verborgen");
+}
+
+function dropSpalten(){
+  if(!data) return;
+  const gewaehlt=[...$("dropListe").querySelectorAll("input:checked")].map(i=>i.value);
+  if(gewaehlt.length===0){ status("Keine Spalte ausgewählt.","warn"); return; }
+  const behalten=data.columns.map((c,i)=>i).filter(i=>!gewaehlt.includes(data.columns[i]));
+  data={columns:behalten.map(i=>data.columns[i]),
+        rows:data.rows.map(r=>behalten.map(i=>r[i]))};
+  renderAnalyse(); renderDropListe(); renderTargetSelect(true);
+  status(`Entfernt: <b>${gewaehlt.map(esc).join(", ")}</b>.`,"ok");
+}
+
+function zeilenBereinigen(){
+  if(!data) return;
+  const vorher=data.rows.length;
+  data=dropNa(data);
+  const entfernt=vorher-data.rows.length;
+  renderAnalyse(); renderDropListe(); renderTargetSelect(true);
+  status(`${infoText(data)} · <b>${entfernt} Zeilen</b> mit fehlenden Werten entfernt.`,"ok");
+}
+
+function downloadDatei(name, inhalt, mime){
+  const blob=new Blob([inhalt],{type:mime});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url; a.download=name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+async function inOrdner(handle, name, inhalt){
+  const fh=await handle.getFileHandle(name,{create:true});
+  const w=await fh.createWritable(); await w.write(inhalt); await w.close();
+}
+
+async function speichern(){
+  if(!data){ status("Bitte zuerst eine CSV laden.","err"); return; }
+  const ziel=$("targetSelect").value;
+  if(!ziel || !data.columns.includes(ziel)){ status("Bitte eine gültige Zielspalte wählen.","err"); return; }
+  const zielIdx=data.columns.indexOf(ziel);
+  if(!istKlassifikation(data, zielIdx)){
+    status(`Die Spalte <b>${esc(ziel)}</b> wirkt kontinuierlich (sehr viele verschiedene Zahlenwerte). `
+          +`Dieses Werkzeug ist nur für <b>Klassifikation</b> gedacht – bitte ein diskretes Ziel wählen.`,"warn");
+    return;
+  }
+
+  const {out, schema, entfernt, katDoku}=aufbereiten(data, ziel);
+
+  let name=$("nameInput").value.trim() || "aufbereitet.csv";
+  if(!name.toLowerCase().endsWith(".csv")) name+=".csv";
+  const jsonName=name.slice(0,-4)+"_schema.json";
+  schema.ziel_datei = name;
+
+  const csvInhalt=dataNachCSV(out);
+  const jsonInhalt=JSON.stringify(schema,null,2);
+
+  let zielort;
+  if($("ordnerCheck").checked && window.showDirectoryPicker){
+    try{
+      if(!dirHandle) dirHandle=await window.showDirectoryPicker();
+      await inOrdner(dirHandle, name, csvInhalt);
+      await inOrdner(dirHandle, jsonName, jsonInhalt);
+      zielort="gewählter Ordner";
+    }catch(e){
+      if(e && e.name==="AbortError"){ status("Speichern abgebrochen.","warn"); return; }
+      downloadDatei(name,csvInhalt,"text/csv");
+      downloadDatei(jsonName,jsonInhalt,"application/json");
+      zielort="Download-Ordner (Ordnerzugriff nicht möglich)";
+    }
+  }else{
+    downloadDatei(name,csvInhalt,"text/csv");
+    downloadDatei(jsonName,jsonInhalt,"application/json");
+    zielort="Download-Ordner";
+  }
+
+  // Statusmeldung
+  let txt=`<b>Gespeichert</b> (${esc(zielort)}):<br>`
+        +`<code>${esc(name)}</code> (${out.rows.length} Zeilen, ${out.columns.length} Spalten) – alle Merkmale numerisch.<br>`
+        +`<code>${esc(jsonName)}</code> – Dokumentation der Umwandlung (Schema).<br><br>`;
+  if(entfernt) txt+=`${entfernt} Zeilen mit fehlenden Werten wurden beim Speichern entfernt.<br>`;
+  const keys=Object.keys(katDoku);
+  if(keys.length){
+    txt+="<b>One-Hot-codiert:</b><br>"+keys.map(k=>
+      `<code>${esc(k)}</code> → `+katDoku[k].map(c=>`<code>${esc(c)}</code>`).join(", ")
+    ).join("<br>")+"<br>";
+  }else{
+    txt+="Keine kategorialen Merkmale – es wurde nichts codiert.<br>";
+  }
+  txt+=`Zielspalte <b>${esc(ziel)}</b> steht am Ende und bleibt als Klartext-Label erhalten.`;
+  status(txt,"ok");
+  renderVorschau(out);
+}
+
+/* ---- Drag & Drop / Datei-Auswahl ---------------------------------------- */
+function dateiLesen(file){
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>ladenAusText(e.target.result, file.name);
+  reader.readAsText(file,"utf-8");
+}
+const dz=$("dropzone");
+dz.addEventListener("click",()=>$("fileInput").click());
+$("fileInput").addEventListener("change",e=>dateiLesen(e.target.files[0]));
+["dragenter","dragover"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add("dragover");}));
+["dragleave","drop"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove("dragover");}));
+dz.addEventListener("drop",e=>{const f=e.dataTransfer.files[0]; if(f) dateiLesen(f);});
+
+$("dropBtn").addEventListener("click",dropSpalten);
+$("cleanBtn").addEventListener("click",zeilenBereinigen);
+$("saveBtn").addEventListener("click",speichern);
+
+// Ordner-Option nur anzeigen, wenn die File System Access API verfügbar ist
+if(window.showDirectoryPicker){ $("ordnerWrap").style.display="inline-flex"; }
+$("ordnerCheck") && $("ordnerCheck").addEventListener("change",()=>{ if(!$("ordnerCheck").checked) dirHandle=null; });
+</script>
+</body>
+</html>
