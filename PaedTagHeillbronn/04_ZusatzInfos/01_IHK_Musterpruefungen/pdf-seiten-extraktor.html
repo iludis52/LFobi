@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF-Seiten-Extraktor – Abbildungsseiten als PNG</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+  :root{
+    --paper:#f3efe6;        /* light-table paper */
+    --paper-2:#ece6d8;
+    --ink:#23211c;          /* warm near-black */
+    --ink-soft:#6b6557;
+    --line:#cfc7b4;
+    --ochre:#b5751f;        /* the one meaningful signal: "Abbildung erkannt" */
+    --ochre-soft:#f0e2c6;
+    --green:#3f6f43;        /* completion only */
+    --frame:#1c1a15;
+    --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:32px 24px 80px}
+
+  header{border-bottom:1px solid var(--line);padding-bottom:20px;margin-bottom:24px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--ochre);margin:0 0 8px}
+  h1{font-size:clamp(24px,3.4vw,34px);line-height:1.1;margin:0;letter-spacing:-.01em;font-weight:650}
+  .sub{color:var(--ink-soft);margin:10px 0 0;max-width:62ch}
+  .privacy{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);margin-top:14px;display:flex;gap:8px;align-items:baseline}
+  .privacy b{color:var(--ink);font-weight:600}
+
+  /* drop zone */
+  .drop{
+    margin-top:8px;border:1.5px dashed var(--line);border-radius:10px;
+    background:linear-gradient(180deg,#fbf8f1,#f1ece1);
+    padding:38px 24px;text-align:center;transition:border-color .15s,background .15s;cursor:pointer;
+  }
+  .drop.hover{border-color:var(--ochre);background:#fbf6ea}
+  .drop strong{display:block;font-size:17px}
+  .drop span{color:var(--ink-soft);font-size:14px}
+  .drop .pick{display:inline-block;margin-top:14px;font-family:var(--mono);font-size:13px;border:1px solid var(--ink);border-radius:6px;padding:7px 14px;background:var(--ink);color:var(--paper)}
+  input[type=file]{display:none}
+
+  /* controls bar */
+  .bar{
+    position:sticky;top:0;z-index:5;margin:24px 0 8px;
+    background:var(--paper-2);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;display:flex;flex-wrap:wrap;gap:18px 22px;align-items:center;
+  }
+  .bar.hidden{display:none}
+  .stat{font-family:var(--mono);font-size:13px;color:var(--ink-soft)}
+  .stat b{color:var(--ink)}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+  .seg button{border:0;background:transparent;font:inherit;font-size:13px;padding:7px 12px;cursor:pointer;color:var(--ink-soft);border-left:1px solid var(--line)}
+  .seg button:first-child{border-left:0}
+  .seg button:hover{background:#fff7e9}
+  .scale{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-soft)}
+  .scale input[type=range]{accent-color:var(--ochre)}
+  .scale .val{font-family:var(--mono);color:var(--ink);min-width:64px}
+  .spacer{flex:1 1 auto}
+  .save{
+    border:0;border-radius:7px;background:var(--ink);color:var(--paper);
+    font:inherit;font-weight:600;font-size:14px;padding:10px 18px;cursor:pointer;
+  }
+  .save:hover{background:#000}
+  .save:disabled{opacity:.4;cursor:not-allowed}
+  .ghost{border:1px solid var(--line);background:transparent;border-radius:7px;font:inherit;font-size:13px;padding:9px 14px;cursor:pointer;color:var(--ink)}
+  .ghost:hover{background:#fff7e9}
+
+  .hint{font-size:13px;color:var(--ink-soft);margin:4px 2px 0}
+  .hint code{font-family:var(--mono);font-size:12px;background:var(--paper-2);padding:1px 5px;border-radius:4px}
+
+  /* contact sheet grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:18px;margin-top:22px}
+  .card{
+    border:1px solid var(--line);border-radius:8px;background:#fbf8f1;overflow:hidden;
+    display:flex;flex-direction:column;transition:opacity .35s ease;
+  }
+  .card.fade{opacity:0}
+  .thumb{
+    position:relative;background:var(--frame);aspect-ratio:1/1.3;
+    display:flex;align-items:center;justify-content:center;padding:10px;
+  }
+  .thumb canvas{max-width:100%;max-height:100%;box-shadow:0 1px 10px rgba(0,0,0,.4);background:#fff}
+  .thumb .spin{color:#9a937f;font-family:var(--mono);font-size:12px}
+  .badge{
+    position:absolute;top:8px;left:8px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;
+    background:var(--ochre);color:#fff;padding:3px 8px;border-radius:4px;font-weight:600;
+  }
+  .meta{display:flex;align-items:center;gap:10px;padding:10px 12px;border-top:1px solid var(--line)}
+  .meta label{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;cursor:pointer;flex:1}
+  .meta input[type=checkbox]{width:16px;height:16px;accent-color:var(--ochre);cursor:pointer}
+  .dl{border:1px solid var(--line);background:transparent;border-radius:5px;font-family:var(--mono);font-size:11px;padding:4px 8px;cursor:pointer;color:var(--ink-soft)}
+  .dl:hover{background:#fff7e9;color:var(--ink)}
+
+  /* toast / progress */
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+    background:var(--ink);color:var(--paper);padding:12px 20px;border-radius:8px;
+    font-size:14px;box-shadow:0 6px 26px rgba(0,0,0,.3);display:none;align-items:center;gap:12px;z-index:20;
+  }
+  .toast.show{display:flex}
+  .toast.ok{background:var(--green)}
+  .toast .bar2{width:140px;height:6px;border-radius:3px;background:rgba(255,255,255,.25);overflow:hidden}
+  .toast .bar2 i{display:block;height:100%;width:0;background:#fff;transition:width .15s}
+
+  footer{margin-top:48px;border-top:1px solid var(--line);padding-top:18px;color:var(--ink-soft);font-size:13px}
+  footer code{font-family:var(--mono);font-size:12px;background:var(--paper-2);padding:1px 5px;border-radius:4px}
+  details{margin-top:10px}
+  summary{cursor:pointer;color:var(--ink);font-weight:600}
+  details p{margin:8px 0}
+
+  @media (prefers-reduced-motion:reduce){.card{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Prüfungsdokument · Lichttisch</p>
+    <h1>PDF-Seiten-Extraktor</h1>
+    <p class="sub">Lädt ein PDF, markiert automatisch die Seiten mit eingebetteten Abbildungen und speichert die ausgewählten Seiten als einzelne PNG-Dateien – zum Anhängen an ein Vision-Modell in LM Studio.</p>
+    <p class="privacy"><b>Lokal:</b> Das PDF wird ausschließlich im Browser verarbeitet und nirgendwohin hochgeladen.</p>
+  </header>
+
+  <label class="drop" id="drop">
+    <strong>PDF hierher ziehen oder klicken</strong>
+    <span>Eine Datei. Bleibt auf diesem Rechner.</span>
+    <span class="pick">Datei wählen</span>
+    <input type="file" id="file" accept="application/pdf">
+  </label>
+
+  <div class="bar hidden" id="bar">
+    <span class="stat" id="stat">–</span>
+    <div class="seg" role="group" aria-label="Auswahl">
+      <button data-sel="figures">Nur Abbildungsseiten</button>
+      <button data-sel="all">Alle</button>
+      <button data-sel="none">Keine</button>
+    </div>
+    <div class="scale">
+      <label for="scale">Auflösung</label>
+      <input type="range" id="scale" min="1.5" max="3.5" step="0.25" value="2.25">
+      <span class="val" id="scaleVal">2.25× · –</span>
+    </div>
+    <div class="spacer"></div>
+    <button class="ghost" id="dlAll">Einzeln laden</button>
+    <button class="save" id="saveDir">In Ordner speichern</button>
+  </div>
+  <p class="hint" id="hint" style="display:none">
+    Erkennt eingebettete <b>Rasterbilder</b> (Screenshots, exportierte Diagramme). Reine Vektor-Zeichnungen werden ggf. nicht markiert – solche Seiten lassen sich per Häkchen manuell zuschalten.
+  </p>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    <div>Dateinamen: <code>&lt;PDF-Name&gt;_seite-03.png</code> · PNG, verlustfrei.</div>
+    <details>
+      <summary>Vollständig offline nutzen (ohne Internet)</summary>
+      <p>Dieses Tool lädt die Bibliothek <code>pdf.js</code> einmalig von einem CDN. Das <em>PDF selbst</em> bleibt immer lokal. Für einen Rechner ganz ohne Internet: <code>pdf.min.js</code> und <code>pdf.worker.min.js</code> (Version 3.11.174) herunterladen, neben diese HTML-Datei legen und im Quelltext die beiden CDN-Adressen durch die lokalen Dateinamen ersetzen (im <code>&lt;script src&gt;</code> oben und bei <code>workerSrc</code> im Skript).</p>
+      <p><b>Ordner-Speichern</b> nutzt die File-System-Access-API von Chrome/Edge. In Firefox/Safari (oder in einer eingebetteten Vorschau) steht stattdessen „Einzeln laden“ bzw. der Knopf je Seite bereit. Für volle Funktion die Datei direkt in Chrome/Edge öffnen.</p>
+    </details>
+  </footer>
+</div>
+
+<div class="toast" id="toast"><span id="toastMsg">…</span><span class="bar2"><i id="toastBar"></i></span></div>
+
+<script>
+const pdfjsLib = window['pdfjsLib'];
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// image-drawing operators (guarded — names vary across pdf.js builds)
+const IMG_OPS = ['paintImageXObject','paintImageXObjectRepeat','paintInlineImage',
+                 'paintImageMaskXObject','paintJpegXObject']
+  .map(k => pdfjsLib.OPS[k]).filter(v => v !== undefined);
+const IMG_OP_SET = new Set(IMG_OPS);
+
+const $ = id => document.getElementById(id);
+const drop = $('drop'), fileInput = $('file'), bar = $('bar'), grid = $('grid');
+const stat = $('stat'), hint = $('hint'), scale = $('scale'), scaleVal = $('scaleVal');
+const toast = $('toast'), toastMsg = $('toastMsg'), toastBar = $('toastBar');
+
+let pdfDoc = null;
+let baseName = 'dokument';
+let pages = [];            // {num, hasImage, checked, w, h}
+let padLen = 2;
+
+// ---------- file intake ----------
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('hover'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('hover'));
+drop.addEventListener('drop', e => {
+  e.preventDefault(); drop.classList.remove('hover');
+  const f = e.dataTransfer.files[0]; if (f) loadPdf(f);
+});
+fileInput.addEventListener('change', e => { const f = e.target.files[0]; if (f) loadPdf(f); });
+
+async function loadPdf(file){
+  if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')){
+    return showToast('Bitte eine PDF-Datei wählen.', false, true);
+  }
+  baseName = file.name.replace(/\.pdf$/i,'').replace(/[^\w\-]+/g,'_').slice(0,60) || 'dokument';
+  grid.innerHTML = ''; pages = [];
+  showToast('PDF wird gelesen …', false);
+  const buf = await file.arrayBuffer();
+  try {
+    pdfDoc = await pdfjsLib.getDocument({data: buf}).promise;
+  } catch(err){
+    return showToast('Konnte das PDF nicht öffnen.', false, true);
+  }
+  padLen = String(pdfDoc.numPages).length;
+  bar.classList.remove('hidden'); hint.style.display = 'block';
+  await buildSheet();
+  hideToast();
+  updateScaleLabel();
+}
+
+// ---------- contact sheet ----------
+async function buildSheet(){
+  const N = pdfDoc.numPages;
+  for (let n = 1; n <= N; n++){
+    const card = document.createElement('div');
+    card.className = 'card fade';
+    card.innerHTML =
+      `<div class="thumb"><span class="spin">Seite ${n} …</span></div>
+       <div class="meta">
+         <label><input type="checkbox" data-n="${n}"> seite-${String(n).padStart(padLen,'0')}</label>
+         <button class="dl" data-n="${n}">PNG</button>
+       </div>`;
+    grid.appendChild(card);
+    pages.push({num:n, hasImage:false, checked:false, card});
+  }
+  // render thumbnails + detect images sequentially (keeps memory low on big docs)
+  for (const p of pages){
+    await renderThumb(p);
+  }
+  applySelection('figures');
+  refreshStat();
+}
+
+async function renderThumb(p){
+  const page = await pdfDoc.getPage(p.num);
+
+  // detect embedded raster images
+  try {
+    const opList = await page.getOperatorList();
+    p.hasImage = opList.fnArray.some(fn => IMG_OP_SET.has(fn));
+  } catch(e){ p.hasImage = false; }
+
+  // thumbnail render (low res)
+  const vp = page.getViewport({scale: 0.55});
+  const cv = document.createElement('canvas');
+  cv.width = Math.ceil(vp.width); cv.height = Math.ceil(vp.height);
+  await page.render({canvasContext: cv.getContext('2d'), viewport: vp}).promise;
+
+  const thumb = p.card.querySelector('.thumb');
+  thumb.innerHTML = '';
+  if (p.hasImage){
+    const b = document.createElement('span');
+    b.className = 'badge'; b.textContent = 'Abbildung';
+    thumb.appendChild(b);
+  }
+  thumb.appendChild(cv);
+  requestAnimationFrame(() => p.card.classList.remove('fade'));
+}
+
+// ---------- selection ----------
+function applySelection(mode){
+  for (const p of pages){
+    p.checked = mode === 'all' ? true : mode === 'none' ? false : p.hasImage;
+    p.card.querySelector('input[type=checkbox]').checked = p.checked;
+  }
+  refreshStat();
+}
+document.querySelectorAll('.seg button').forEach(b =>
+  b.addEventListener('click', () => applySelection(b.dataset.sel)));
+
+grid.addEventListener('change', e => {
+  if (e.target.matches('input[type=checkbox]')){
+    const p = pages[+e.target.dataset.n - 1];
+    p.checked = e.target.checked; refreshStat();
+  }
+});
+grid.addEventListener('click', e => {
+  if (e.target.matches('.dl')){
+    const p = pages[+e.target.dataset.n - 1];
+    downloadOne(p);
+  }
+});
+
+function refreshStat(){
+  const withImg = pages.filter(p => p.hasImage).length;
+  const sel = pages.filter(p => p.checked).length;
+  stat.innerHTML = `<b>${pdfDoc.numPages}</b> Seiten · <b>${withImg}</b> mit Abbildung · <b>${sel}</b> ausgewählt`;
+  $('saveDir').disabled = sel === 0;
+}
+
+// ---------- rendering to PNG ----------
+function updateScaleLabel(){
+  // rough dpi estimate: pdf user units are 1/72 inch → dpi ≈ 72 * scale
+  const dpi = Math.round(72 * parseFloat(scale.value));
+  scaleVal.textContent = `${parseFloat(scale.value).toFixed(2)}× · ≈${dpi} dpi`;
+}
+scale.addEventListener('input', updateScaleLabel);
+
+async function pageToBlob(num){
+  const page = await pdfDoc.getPage(num);
+  const vp = page.getViewport({scale: parseFloat(scale.value)});
+  const cv = document.createElement('canvas');
+  cv.width = Math.ceil(vp.width); cv.height = Math.ceil(vp.height);
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0,0,cv.width,cv.height); // flatten transparency
+  await page.render({canvasContext: ctx, viewport: vp}).promise;
+  return await new Promise(res => cv.toBlob(res, 'image/png'));
+}
+function fileNameFor(num){ return `${baseName}_seite-${String(num).padStart(padLen,'0')}.png`; }
+
+// ---------- save: folder (File System Access API) ----------
+$('saveDir').addEventListener('click', async () => {
+  const sel = pages.filter(p => p.checked);
+  if (!sel.length) return;
+  if (!window.showDirectoryPicker){
+    return showToast('Ordner-Speichern braucht Chrome/Edge. Nutze „Einzeln laden“.', false, true);
+  }
+  let dir;
+  try { dir = await window.showDirectoryPicker(); }
+  catch(e){ return; } // user cancelled
+  let done = 0;
+  showToast(`Speichere 0/${sel.length} …`, false, false, true);
+  for (const p of sel){
+    try {
+      const blob = await pageToBlob(p.num);
+      const fh = await dir.getFileHandle(fileNameFor(p.num), {create:true});
+      const w = await fh.createWritable();
+      await w.write(blob); await w.close();
+    } catch(err){ /* skip a failed page, keep going */ }
+    done++;
+    toastMsg.textContent = `Speichere ${done}/${sel.length} …`;
+    toastBar.style.width = (done/sel.length*100)+'%';
+  }
+  showToast(`${done} Seite(n) gespeichert.`, true);
+});
+
+// ---------- fallback: individual downloads ----------
+async function downloadOne(p){
+  const blob = await pageToBlob(p.num);
+  triggerDownload(blob, fileNameFor(p.num));
+}
+$('dlAll').addEventListener('click', async () => {
+  const sel = pages.filter(p => p.checked);
+  if (!sel.length) return showToast('Nichts ausgewählt.', false, true);
+  let done = 0;
+  showToast(`Lade 0/${sel.length} …`, false, false, true);
+  for (const p of sel){
+    const blob = await pageToBlob(p.num);
+    triggerDownload(blob, fileNameFor(p.num));
+    done++;
+    toastMsg.textContent = `Lade ${done}/${sel.length} …`;
+    toastBar.style.width = (done/sel.length*100)+'%';
+    await new Promise(r => setTimeout(r, 350)); // let the browser queue each file
+  }
+  showToast(`${done} Datei(en) angestoßen. Sieh im Download-Ordner nach.`, true);
+});
+function triggerDownload(blob, name){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name; document.body.appendChild(a); a.click();
+  a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+
+// ---------- toast ----------
+let toastTimer;
+function showToast(msg, ok=false, error=false, sticky=false){
+  clearTimeout(toastTimer);
+  toastMsg.textContent = msg;
+  toast.classList.toggle('ok', ok);
+  toast.classList.add('show');
+  toastBar.parentElement.style.display = sticky ? '' : 'none';
+  if (!sticky){ toastBar.style.width = '0'; }
+  if (ok || error){ toastTimer = setTimeout(hideToast, 3200); }
+}
+function hideToast(){ toast.classList.remove('show'); }
+</script>
+</body>
+</html>

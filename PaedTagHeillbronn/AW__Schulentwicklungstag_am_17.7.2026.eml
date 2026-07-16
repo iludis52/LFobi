@@ -1,0 +1,304 @@
+Return-Path: <ralf.bauer@ass-hn.de>
+Delivered-To: dceba51c-4cbc-103f-9b56-e9cfa9c0951a
+Received: from kmbawu-prod-dovecot-proxy-1 ([10.250.0.130])
+	by kmbawu-prod-dovecot-backend-3 with LMTP
+	id 2a74OWUFMWouUAYAqaE29Q:P1
+	(envelope-from <ralf.bauer@ass-hn.de>)
+	for <dceba51c-4cbc-103f-9b56-e9cfa9c0951a>; Tue, 16 Jun 2026 08:12:21 +0000
+Received: from dap.bw.schule ([10.250.0.130])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	by kmbawu-prod-dovecot-proxy-1 with LMTPS
+	id 2a74OWUFMWouUAYAqaE29Q
+	(envelope-from <ralf.bauer@ass-hn.de>)
+	for <thomas.joerg@bw.schule>; Tue, 16 Jun 2026 08:12:21 +0000
+Received: from mailhub01.cloud01-netplans.de (mailhub01.cloud01-netplans.de [185.197.40.68])
+	by dap.bw.schule (Postfix) with ESMTPS id B176E40922
+	for <thomas.joerg@bw.schule>; Tue, 16 Jun 2026 08:12:17 +0000 (UTC)
+Received: from exchange.ass-hn.de (exchange.ass-hn.de [141.7.83.226]) by mailhub01.cloud01-netplans.de with ESMTP id qkNGUDrjKzSkHHdD (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Tue, 16 Jun 2026 10:12:16 +0200 (CEST)
+Received: from exc2019.schule.local (192.168.100.35) by exc2019.schule.local
+ (192.168.100.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.41; Tue, 16 Jun
+ 2026 10:12:16 +0200
+Received: from exc2019.schule.local ([::1]) by exc2019.schule.local ([::1])
+ with mapi id 15.02.2562.041; Tue, 16 Jun 2026 10:12:16 +0200
+From: "Bauer, Ralf" <ralf.bauer@ass-hn.de>
+To: =?iso-8859-1?Q?Thomas_J=F6rg?= <thomas.joerg@bw.schule>
+CC: "annely.humphreys@zsl-rsgd.de" <annely.humphreys@zsl-rsgd.de>,
+	"sabine.schuh@zsl-rsgd.de" <sabine.schuh@zsl-rsgd.de>,
+	"maciej.garpiel@zsl-rss.de" <maciej.garpiel@zsl-rss.de>
+Subject: AW: Schulentwicklungstag am 17.7.2026
+Thread-Topic: Schulentwicklungstag am 17.7.2026
+Thread-Index: AQHc/WJs5mAqLEBfh0eIFHAAXa/jArZAz+h7
+Date: Tue, 16 Jun 2026 08:12:16 +0000
+Message-ID: <5deef6b4a696461a97fa3c7ce4485132@ass-hn.de>
+References: <513967002.23547.1781595203415@webmail.dap.bw.schule>
+In-Reply-To: <513967002.23547.1781595203415@webmail.dap.bw.schule>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-originating-ip: [10.0.0.207]
+Content-Type: multipart/alternative;
+	boundary="_000_5deef6b4a696461a97fa3c7ce4485132asshnde_"
+MIME-Version: 1.0
+X-Virus-Scanned: by bsmtpd at cloud01-netplans.de
+
+--_000_5deef6b4a696461a97fa3c7ce4485132asshnde_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Sehr geehrter Herr J=F6rg,
+
+
+vielen Dank f=FCr Ihre Nachricht, wir freuen und schon auf Ihr Kommen!
+
+
+Wir werden eine =FCberschaubare Truppe sein (KuK unterrichten Informatik im=
+ WG, in den Lernfeldern f=FCr IT-Kaufleute, sind als Admins im Unterricht- =
+und Verwaltungsnetz eingesetzt) und Ihre "Inspiration" trifft gut auf unser=
+e Profile und Interessen:
+
+
+  1.  Vom Prompting zum Context-Engineering: Wie entwirft man qualit=E4tsge=
+st=FCtzt Lehreinheiten?
+
+=3D> Ist f=FCr alle gut und wichtig, da sind die KuK wahrscheinlich mit unt=
+erschiedlicher Intensit=E4t unterwegs
+
+
+2. Wie ver=E4ndert sich die Vermittlung von Programmierkenntnissen im Zeita=
+lter der agentischen KI-Assistenten?
+=3D> Das interessiert v.a. die LuL mit Unterricht im Programmierbereich
+
+3. Lokale Sprachmodelle fernab von Cloud-Hosting im eigenen Netzwerk betrei=
+ben: Datenschutzkonforme KI-Setups 'on premise'.
+=3D> das w=E4re total interessant f=FCr die KuK, die sowohl IT-Lehrer als a=
+uch IT-Admin sind
+
+
+Bin gespannt und sende freundliche Gr=FC=DFe aus Heilbronn
+
+Ralf Bauer
+Abteilungsleiter Berufsschule I
+Systemadministration
+
+Andreas-Schneider-Schule Heilbronn
+L=E4ngelterstra=DFe 106
+74080 Heilbronn
+
+Tel 07131-928-120
+Fax 07131-928-169
+________________________________
+Von: Thomas J=F6rg <thomas.joerg@bw.schule>
+Gesendet: Dienstag, 16. Juni 2026 09:33:23
+An: Bauer, Ralf
+Cc: annely.humphreys@zsl-rsgd.de; sabine.schuh@zsl-rsgd.de; maciej.garpiel@=
+zsl-rss.de
+Betreff: Schulentwicklungstag am 17.7.2026
+
+Sehr geehrter Herr Bauer,
+Frau Schuh als LGL und Frau Humphrey/Herr Garpiel in CC,
+
+mein Name ist Thomas J=F6rg, ich bin Mitglied im LFT KI und arbeite am RFT =
+KI des RP
+Stuttgart mit. Ich bin eingeplant als Referent f=FCr das Fach Informatik/Ma=
+thematik an
+Ihrem Schulentwicklungstag - und darauf freue ich mich auch.
+
+Ich w=FCrde gerne mit Ihnen im Vorfeld die Themen abstimmen, an denen es an=
+ diesem
+Tag gehen soll. Haben sie , bzw. die Informatik-Fachschaft konkrete W=FCnsc=
+he oder
+Vorstellungen? Vielleicht als 'Inspiration' einige Stichw=F6rter, um die es=
+ in einigen meiner
+letzten Workshops ging:
+
+- Wie vermittelt man KI im Informatik-Unterricht? Themen / Tools / Didaktik=
+.
+- Wie ver=E4ndert sich die Vermittlung von Programmierkenntnissen im Zeital=
+ter der
+agentischen KI-Assistenten?
+- Vom Prompting zum Context-Engineering: Wie entwirft man qualit=E4tsgest=
+=FCtzt Lehreinheiten?
+- Moderne Paradigmen der Software-Entwicklung: Spec-Driven-Development als =
+Methode
+im Informatik-Unterricht.
+- Lokale Sprachmodelle fernab von Cloud-Hosting im eigenen Netzwerk betreib=
+en:
+Datenschutzkonforme KI-Setups 'on premise'.
+- Architektur und Programmierung von Agenten-Systemen anhand einfacher Beis=
+piele
+mit Langgraph (das ist fachlich sehr speziell; das war z.B. Thema am p=E4d.=
+Tag in Aalen)
+
+Falls Sie bereits eigene Vorstellungen haben: sehr gerne!
+
+Ich w=FCrde mich =FCber eine R=FCckmeldung von Ihnen freuen,
+mit freundlichen Gr=FC=DFen,
+Thomas J=F6rg
+
+--_000_5deef6b4a696461a97fa3c7ce4485132asshnde_
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html>
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
+1">
+</head>
+<body>
+<style type=3D"text/css" style=3D"display:none;"><!-- P {margin-top:0;margi=
+n-bottom:0;} --></style>
+<div id=3D"divtagdefaultwrapper" style=3D"font-size:12pt;color:#000000;font=
+-family:Calibri,Helvetica,sans-serif;" dir=3D"ltr">
+<p>Sehr geehrter Herr J=F6rg,</p>
+<p><br>
+</p>
+<p>vielen Dank f=FCr Ihre Nachricht, wir freuen und schon auf Ihr Kommen!</=
+p>
+<p><br>
+</p>
+<p>Wir werden eine =FCberschaubare Truppe sein (KuK unterrichten Informatik=
+ im WG, in den Lernfeldern f=FCr IT-Kaufleute, sind als Admins im Unterrich=
+t- und Verwaltungsnetz eingesetzt) und Ihre &quot;Inspiration&quot; trifft =
+gut auf unsere Profile und Interessen:</p>
+<p><span style=3D"color: rgb(33, 33, 33); font-family: wf_segoe-ui_normal, =
+&quot;Segoe UI&quot;, &quot;Segoe WP&quot;, Tahoma, Arial, sans-serif, seri=
+f, EmojiFont; font-size: 15px;"><br>
+</span></p>
+<p></p>
+<ol style=3D"margin-bottom: 0px; margin-top: 0px;">
+<li><span style=3D"color: rgb(33, 33, 33); font-family: wf_segoe-ui_normal,=
+ &quot;Segoe UI&quot;, &quot;Segoe WP&quot;, Tahoma, Arial, sans-serif, ser=
+if, EmojiFont; font-size: 15px;">Vom Prompting zum Context-Engineering: Wie=
+ entwirft man qualit=E4tsgest=FCtzt Lehreinheiten?</span></li></ol>
+<p></p>
+<p><span style=3D"color: rgb(33, 33, 33); font-family: wf_segoe-ui_normal, =
+&quot;Segoe UI&quot;, &quot;Segoe WP&quot;, Tahoma, Arial, sans-serif, seri=
+f, EmojiFont; font-size: 15px;">=3D&gt; Ist f=FCr alle gut und wichtig, da =
+sind die KuK&nbsp;wahrscheinlich mit&nbsp;unterschiedlicher Intensit=E4t
+ unterwegs</span></p>
+<p><span style=3D"color: rgb(33, 33, 33); font-family: wf_segoe-ui_normal, =
+&quot;Segoe UI&quot;, &quot;Segoe WP&quot;, Tahoma, Arial, sans-serif, seri=
+f, EmojiFont; font-size: 15px;"><br>
+</span></p>
+<p><span style=3D"color: rgb(33, 33, 33); font-family: wf_segoe-ui_normal, =
+&quot;Segoe UI&quot;, &quot;Segoe WP&quot;, Tahoma, Arial, sans-serif, seri=
+f, EmojiFont; font-size: 15px;">2.&nbsp;Wie ver=E4ndert sich die Vermittlun=
+g von Programmierkenntnissen im Zeitalter der&nbsp;</span><span style=3D"co=
+lor: rgb(33, 33, 33); font-family: wf_segoe-ui_normal, &quot;Segoe UI&quot;=
+, &quot;Segoe WP&quot;, Tahoma, Arial, sans-serif, serif, EmojiFont; font-s=
+ize: 15px;">agentischen
+ KI-Assistenten?<br>
+</span>=3D&gt; Das interessiert v.a. die LuL mit Unterricht im Programmierb=
+ereich<br style=3D"color: rgb(33, 33, 33); font-family: wf_segoe-ui_normal,=
+ &quot;Segoe UI&quot;, &quot;Segoe WP&quot;, Tahoma, Arial, sans-serif, ser=
+if, EmojiFont; font-size: 15px;">
+<span style=3D"color: rgb(33, 33, 33); font-family: wf_segoe-ui_normal, &qu=
+ot;Segoe UI&quot;, &quot;Segoe WP&quot;, Tahoma, Arial, sans-serif, serif, =
+EmojiFont; font-size: 15px;">&nbsp;</span><br style=3D"color: rgb(33, 33, 3=
+3); font-family: wf_segoe-ui_normal, &quot;Segoe UI&quot;, &quot;Segoe WP&q=
+uot;, Tahoma, Arial, sans-serif, serif, EmojiFont; font-size: 15px;">
+<span style=3D"color: rgb(33, 33, 33); font-family: wf_segoe-ui_normal, &qu=
+ot;Segoe UI&quot;, &quot;Segoe WP&quot;, Tahoma, Arial, sans-serif, serif, =
+EmojiFont; font-size: 15px;">3.&nbsp;Lokale Sprachmodelle fernab von Cloud-=
+Hosting im eigenen Netzwerk betreiben:&nbsp;</span><span style=3D"color: rg=
+b(33, 33, 33); font-family: wf_segoe-ui_normal, &quot;Segoe UI&quot;, &quot=
+;Segoe WP&quot;, Tahoma, Arial, sans-serif, serif, EmojiFont; font-size: 15=
+px;">Datenschutzkonforme
+ KI-Setups 'on premise'.&nbsp;<br>
+</span>=3D&gt; das w=E4re total interessant f=FCr die KuK, die sowohl IT-Le=
+hrer als auch IT-Admin sind</p>
+<p><br>
+</p>
+<div id=3D"Signature">
+<div id=3D"divtagdefaultwrapper" dir=3D"ltr" style=3D"font-size: 12pt; colo=
+r: rgb(0, 0, 0); font-family: Calibri, Helvetica, sans-serif, EmojiFont, &q=
+uot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, NotoColorEmoji, &q=
+uot;Segoe UI Symbol&quot;, &quot;Android Emoji&quot;, EmojiSymbols;">
+<div name=3D"divtagdefaultwrapper" style=3D"font-family:Calibri,Arial,Helve=
+tica,sans-serif; font-size:; margin:0">
+Bin gespannt und sende freundliche&nbsp;Gr=FC=DFe aus Heilbronn</div>
+<div name=3D"divtagdefaultwrapper" style=3D"font-family:Calibri,Arial,Helve=
+tica,sans-serif; font-size:; margin:0">
+<br>
+Ralf Bauer<br>
+Abteilungsleiter Berufsschule I<br>
+Systemadministration<br>
+<br>
+Andreas-Schneider-Schule Heilbronn<br>
+L=E4ngelterstra=DFe 106<br>
+74080 Heilbronn<br>
+<br>
+Tel 07131-928-120<br>
+Fax 07131-928-169<br>
+</div>
+</div>
+</div>
+</div>
+<hr style=3D"display:inline-block;width:98%" tabindex=3D"-1">
+<div id=3D"divRplyFwdMsg" dir=3D"ltr"><font face=3D"Calibri, sans-serif" st=
+yle=3D"font-size:11pt" color=3D"#000000"><b>Von:</b> Thomas J=F6rg &lt;thom=
+as.joerg@bw.schule&gt;<br>
+<b>Gesendet:</b> Dienstag, 16. Juni 2026 09:33:23<br>
+<b>An:</b> Bauer, Ralf<br>
+<b>Cc:</b> annely.humphreys@zsl-rsgd.de; sabine.schuh@zsl-rsgd.de; maciej.g=
+arpiel@zsl-rss.de<br>
+<b>Betreff:</b> Schulentwicklungstag am 17.7.2026</font>
+<div>&nbsp;</div>
+</div>
+<div>
+<div class=3D"default-style" style=3D"">Sehr geehrter Herr Bauer, <br>
+Frau Schuh als LGL und Frau Humphrey/Herr Garpiel in CC, <br>
+<br>
+mein Name ist Thomas J=F6rg, ich bin Mitglied im LFT KI und arbeite am RFT =
+KI des RP&nbsp;
+<br>
+Stuttgart mit. Ich bin eingeplant als Referent f=FCr das Fach Informatik/Ma=
+thematik an
+<br>
+Ihrem Schulentwicklungstag - und darauf freue ich mich auch. </div>
+<div class=3D"default-style" style=3D"">&nbsp;</div>
+<div class=3D"default-style" style=3D"">Ich w=FCrde gerne mit Ihnen im Vorf=
+eld die Themen abstimmen, an denen es an diesem
+<br>
+Tag gehen soll. Haben sie , bzw. die Informatik-Fachschaft konkrete W=FCnsc=
+he oder <br>
+Vorstellungen? Vielleicht als 'Inspiration' einige Stichw=F6rter, um die es=
+ in einigen meiner
+<br>
+letzten Workshops ging: </div>
+<div class=3D"default-style" style=3D""><br>
+- Wie vermittelt man KI im Informatik-Unterricht? Themen / Tools / Didaktik=
+. <br>
+- Wie ver=E4ndert sich die Vermittlung von Programmierkenntnissen im Zeital=
+ter der&nbsp;
+<br>
+agentischen KI-Assistenten? <br>
+- Vom Prompting zum Context-Engineering: Wie entwirft man qualit=E4tsgest=
+=FCtzt Lehreinheiten?&nbsp;
+<br>
+- Moderne Paradigmen der Software-Entwicklung: Spec-Driven-Development als =
+Methode
+<br>
+im Informatik-Unterricht. <br>
+- Lokale Sprachmodelle fernab von Cloud-Hosting im eigenen Netzwerk betreib=
+en: <br>
+Datenschutzkonforme KI-Setups 'on premise'.&nbsp; <br>
+- Architektur und Programmierung von Agenten-Systemen anhand einfacher Beis=
+piele <br>
+mit Langgraph (das ist fachlich sehr speziell; das war z.B. Thema am p=E4d.=
+Tag in Aalen)
+<br>
+<br>
+Falls Sie bereits eigene Vorstellungen haben: sehr gerne! <br>
+<br>
+Ich w=FCrde mich =FCber eine R=FCckmeldung von Ihnen freuen, <br>
+mit freundlichen Gr=FC=DFen, <br>
+Thomas J=F6rg </div>
+</div>
+</body>
+</html>
+
+--_000_5deef6b4a696461a97fa3c7ce4485132asshnde_--

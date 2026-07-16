@@ -1,0 +1,8 @@
+Vom Prompting zum Context-Engineering: Wie entwirft man qualitätsgestützt Lehreinheiten?
+=> Ist für alle gut und wichtig, da sind die KuK wahrscheinlich mit unterschiedlicher Intensität unterwegs
+
+2. Wie verändert sich die Vermittlung von Programmierkenntnissen im Zeitalter der agentischen KI-Assistenten?
+=> Das interessiert v.a. die LuL mit Unterricht im Programmierbereich
+ 
+3. Lokale Sprachmodelle fernab von Cloud-Hosting im eigenen Netzwerk betreiben: Datenschutzkonforme KI-Setups 'on premise'. 
+=> das wäre total interessant für die KuK, die sowohl IT-Lehrer als auch IT-Admin sind
