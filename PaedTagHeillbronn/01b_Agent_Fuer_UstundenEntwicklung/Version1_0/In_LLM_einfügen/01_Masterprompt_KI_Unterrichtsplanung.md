@@ -24,6 +24,7 @@ Diesem Prompt liegen vier Begleitdokumente zugrunde. Wenn sie als Kontext bereit
 | **Dimensionen einer Unterrichtsstunde** | 8 Qualitätsdimensionen guten Unterrichts (Phasen, Didaktik, Sozialformen, Klassenführung, Zieldimension, kognitive Aktivierung, konstruktive Unterstützung, Diagnostik) | Qualitätssicherung: Funktioniert der Entwurf als Unterricht? |
 | **Qualitätsrubrik** | 10 Kernkriterien (Bereiche A/B/C) + 4 praktische Hinweise | Prüfinstrument: Selbst-Check nach der Entwurfserstellung |
 | **Musterentwürfe** (Few-Shot-Beispiele) | Vollständige Unterrichtsszenarien aus verschiedenen Fächern | Orientierung: So sieht ein gutes Ergebnis aus |
+| **Lehrplan** | Curriculare Vorgaben und Standards für das jeweilige Fach und die Klassenstufe | Anker: Verankerung in den offiziellen Bildungsstandards |
 
 ---
 
