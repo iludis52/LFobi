@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zahlensystem-Konverter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Zahlensystem-Konverter</h1>
+        <p>Ein interaktives Tool für IT-Azubis (1. Lehrjahr)</p>
+    </header>
+    
+    <main>
+        <!-- Modus-Tabs -->
+        <nav class="tabs" aria-label="Modus Auswahl">
+            <button id="tab-converter" class="active" aria-selected="true">Konverter</button>
+            <button id="tab-quiz" aria-selected="false">Quiz</button>
+        </nav>
+
+        <!-- Sektion: Konverter (Kernfunktion) -->
+        <section id="view-converter" class="view active" aria-labelledby="tab-converter">
+            <div class="converter-inputs">
+                <div class="input-group">
+                    <label for="input-dec">Dezimal (Basis 10)</label>
+                    <input type="text" id="input-dec" autocomplete="off">
+                    <span id="error-dec" class="error-text" aria-live="polite"></span>
+                </div>
+                <div class="input-group">
+                    <label for="input-hex">Hexadezimal (Basis 16)</label>
+                    <input type="text" id="input-hex" autocomplete="off">
+                    <span id="error-hex" class="error-text" aria-live="polite"></span>
+                </div>
+                <div class="input-group">
+                    <label for="input-bin">Binär (Basis 2)</label>
+                    <input type="text" id="input-bin" autocomplete="off">
+                    <span id="error-bin" class="error-text" aria-live="polite"></span>
+                </div>
+            </div>
+
+            <!-- Interaktive Bitgewichts-Anzeige -->
+            <div class="bit-weights" role="group" aria-label="Interaktive Bitgewichte">
+                <button class="bit-btn" data-weight="128" data-state="0" aria-label="Bit mit Wertigkeit 128, aktuell 0">
+                    <span class="weight-label">128</span><span class="bit-value">0</span>
+                </button>
+                <button class="bit-btn" data-weight="64" data-state="0" aria-label="Bit mit Wertigkeit 64, aktuell 0">
+                    <span class="weight-label">64</span><span class="bit-value">0</span>
+                </button>
+                <button class="bit-btn" data-weight="32" data-state="0" aria-label="Bit mit Wertigkeit 32, aktuell 0">
+                    <span class="weight-label">32</span><span class="bit-value">0</span>
+                </button>
+                <button class="bit-btn" data-weight="16" data-state="0" aria-label="Bit mit Wertigkeit 16, aktuell 0">
+                    <span class="weight-label">16</span><span class="bit-value">0</span>
+                </button>
+                <button class="bit-btn" data-weight="8" data-state="0" aria-label="Bit mit Wertigkeit 8, aktuell 0">
+                    <span class="weight-label">8</span><span class="bit-value">0</span>
+                </button>
+                <button class="bit-btn" data-weight="4" data-state="0" aria-label="Bit mit Wertigkeit 4, aktuell 0">
+                    <span class="weight-label">4</span><span class="bit-value">0</span>
+                </button>
+                <button class="bit-btn" data-weight="2" data-state="0" aria-label="Bit mit Wertigkeit 2, aktuell 0">
+                    <span class="weight-label">2</span><span class="bit-value">0</span>
+                </button>
+                <button class="bit-btn" data-weight="1" data-state="0" aria-label="Bit mit Wertigkeit 1, aktuell 0">
+                    <span class="weight-label">1</span><span class="bit-value">0</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Sektion: Quiz-Modus -->
+        <section id="view-quiz" class="view hidden" aria-labelledby="tab-quiz">
+            <div class="quiz-controls">
+                <label for="quiz-difficulty">Schwierigkeit:</label>
+                <select id="quiz-difficulty">
+                    <option value="easy">Leicht (4 Bit, 0-15)</option>
+                    <option value="medium">Mittel (7 Bit, 0-127)</option>
+                    <option value="hard">Schwer (8 Bit, 0-255)</option>
+                </select>
+            </div>
+            <div class="quiz-task">
+                <h3 id="quiz-question" aria-live="polite">Rechne: ...</h3>
+                <div class="input-group">
+                    <label for="quiz-answer">Deine Antwort</label>
+                    <input type="text" id="quiz-answer" autocomplete="off">
+                    <span id="error-quiz" class="error-text" aria-live="polite"></span>
+                </div>
+                <div class="quiz-actions">
+                    <button id="btn-check">Prüfen</button>
+                    <button id="btn-next">Nächste Aufgabe</button>
+                </div>
+            </div>
+            <div id="quiz-feedback" aria-live="assertive"></div>
+        </section>
+
+        <hr>
+
+        <!-- Sektion: Referenz (Cheat Sheet) -->
+        <section id="reference">
+            <h2>Referenz (Cheat Sheet)</h2>
+            <div class="ref-tables">
+                <table>
+                    <thead>
+                        <tr><th>Dezimal</th><th>Hexadezimal</th><th>Binär</th></tr>
+                    </thead>
+                    <tbody id="ref-tbody">
+                        <!-- Wird per JS befüllt -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Open Source Web-App für IT-Azubis • Monolithisches Design</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
