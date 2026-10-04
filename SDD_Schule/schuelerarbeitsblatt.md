@@ -2,7 +2,7 @@
 titel: Unsere Software mit KI – Arbeitsblatt
 datum: 2026-10-04
 kurs: Ab Klasse 10
-version: 3.0
+version: 3.2
 ---
 
 # Von unserer Idee zur geprüften Anwendung
@@ -87,7 +87,7 @@ Erwartungen vor der Umsetzung eintragen, Beobachtungen danach. Behält eine Änd
 
 ## 3. Jeweils einen Task umsetzen
 
-Nutzt den [Umsetzungs-Prompt](prompts/04-umsetzung.md) mit dem aktuellen Task. Vor der Änderung sagen wir eine Erwartung selbst voraus. Danach:
+Nutzt den [Umsetzungs-Prompt](prompts/04-umsetzung.md) mit dem aktuellen Task. Vor der Änderung verwenden wir unsere vereinbarten Erwartungen. Fehlt ein passender Fall, nennen wir eine eigene Eingabe mit erwartetem Ergebnis. Bereits Besprochenes muss nicht erneut erklärt werden. Danach:
 
 1. Code in die angegebene Datei übertragen und speichern.
 2. App oder Test mit dem vereinbarten Verfahren starten.
@@ -96,6 +96,8 @@ Nutzt den [Umsetzungs-Prompt](prompts/04-umsetzung.md) mit dem aktuellen Task. V
 5. Korrektur prüfen; dann den nächsten Task beginnen.
 
 Die KI sieht unsere lokalen Dateien und unseren Bildschirm nicht automatisch. Bei einer vollständigen Datei nur den Code übernehmen, keine Markdown-Zäune. Bei einer Teiländerung genau die benannte Stelle ersetzen. Für einen neuen Chat Projektkarte, Regeln, Projektseite und betroffene aktuelle Dateien mitgeben.
+
+Mehrere Fälle können wir gesammelt prüfen und kurz berichten: „Fälle … ausgeführt; alle Ergebnisse passen“ oder „Bei Fall … weicht … ab“. Bei Problemen die konkrete Ausgabe mitgeben. Neue Technik darf die KI direkt erklären; Verständnisfragen gibt es nicht nach jedem Task. Fragen dürfen wir jederzeit selbst stellen.
 
 > [!TIPP] Wenn du etwas nicht verstehst
 > „Verfolge die Eingabe … durch diese Funktion.“ – „Welche Anforderung erfüllt sie?“ – „Verwende unsere bekannten Sprachmittel.“ – „Gib mir einen neuen Fall, dessen Ergebnis ich selbst vorhersage.“

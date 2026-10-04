@@ -2,7 +2,7 @@
 titel: SDD im Informatikunterricht
 datum: 2026-10-04
 kurs: Ab Klasse 10
-version: 3.1
+version: 3.2
 ---
 
 # Von der Idee zur geprüften Software – mit KI
@@ -40,3 +40,5 @@ Das ZIP entpacken und diesen Ordner im Markdown-Viewer öffnen; dann funktionier
 Version 3.0 bündelt Konzept, Handreichung, Unterrichtskonzept und Prompt-Anleitung. Die vier Aufgaben bleiben inhaltlich erhalten; veraltete Verweise und Pflicht-TDD wurden entfernt. Zeiten, Hilfen und Bewertungsformen sind Vorschläge zur Erprobung. Fachquellen und Unterrichtswirkung werden im Quellenanhang getrennt ausgewiesen.
 
 Version 3.1 verdichtet die vier KI-Prompts auf Englisch; Antworten bleiben in der Muttersprache des Schülers, standardmäßig Deutsch. Die sonstigen Unterrichtsmaterialien bleiben auf Stand 3.0.
+
+Version 3.2 entschärft die Abfragen beim Umsetzen: vorhandene Erwartungen weiterverwenden, neue APIs erklären, Prüffälle gesammelt rückmelden und höchstens eine zusätzliche Verständnisfrage pro Projekt. Die Prompt-Anleitung erläutert, wann eine separate Spec-Datei entfallen kann und welcher Kontext erhalten bleiben muss. Lehrerleitfaden und Schüler-Arbeitsblatt sind entsprechend angepasst.

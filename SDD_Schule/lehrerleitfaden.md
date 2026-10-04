@@ -2,7 +2,7 @@
 titel: Lehrerleitfaden – SDD im Informatikunterricht
 datum: 2026-10-04
 kurs: Ab Klasse 10
-version: 3.0
+version: 3.2
 ---
 
 # Software-Engineering erlebbar machen
@@ -73,6 +73,8 @@ Die folgende Karte wird an Schüler und KI gegeben. Vorgaben des Schulfrontends 
 
 Die [Prompt-Anleitung](prompts/index.md) beschreibt die Einrichtung. Grundregeln und Karte können vom Frontend mitgegeben oder in den Chat kopiert werden. Der Chat sieht lokale Dateien und Ausführungen nicht automatisch. Schüler speichern, starten und melden tatsächliche Ausgaben zurück.
 
+Eine separate Spec-Datei ist entbehrlich, wenn die bestätigten Verhaltensregeln und Kriterien bereits im Chat, in `projekt.md` oder in einem vollständigen Task stehen. Der Kontext muss vom Frontend tatsächlich weiter mitgesendet werden. Die Prompt-Anleitung erläutert die Übergabe bei gleichem und neuem Chat.
+
 ## 4. Unterricht in zwei Zeitformaten
 
 Alle Zeiten sind Planungsansätze. **KURZ:** ein erstes Ergebnis in ein bis zwei Doppelstunden. **PROJEKT:** etwa fünf bis sechs Doppelstunden für mehrere Durchläufe; individuelle Nachweiszeit nach Klassengröße gesondert einplanen. TDD kann in beiden Formaten gewählt oder ausgelassen werden.
@@ -106,7 +108,7 @@ Eine gemeinsame `projekt.md` genügt. Bei größerem Umfang können Spec und Pla
 
 ## 5. Begleiten und vereinfachen
 
-**KI-Dialog:** jeweils eine gezielte Frage; an sinnvollen Haltepunkten zuerst ein Schülerbeispiel, eine Erwartung oder Entscheidung. Bei Schwierigkeiten Hinweise anbieten. Nicht jede Codezeile abfragen. Forschung zu KI-Code legt eine bewusste eigene Auseinandersetzung nahe; die konkrete Unterrichtsform bleibt zu erproben.[^lernen]
+**KI-Dialog:** Erwartungen und Entscheidungen werden beim Klären der Anforderungen gewonnen und während der Umsetzung weiterverwendet. Fehlendes gezielt klären, neue APIs kurz am Beispiel erklären. Zusätzliche Verständnis-/Transferfragen höchstens einmal pro Projekt, sofern die Lehrkraft keine weiteren festlegt; keine Abfrage nach jedem Task. Bei Schwierigkeiten helfen. Forschung zu KI-Code legt eine bewusste eigene Auseinandersetzung nahe; diese Dosierung ist eine Unterrichtsentscheidung zur Erprobung.[^lernen]
 
 **Code:** einfache Werte, Bedingungen, Schleifen und kurze benannte Funktionen; Eingabe, Fachlogik und Ausgabe erkennbar trennen. Zusätzliche Sprachmittel benötigen Einführung und Freigabe. Vorbereitete Infrastruktur wird kenntlich gemacht; Schüler erklären deren Verbindung zur Kernfunktion.
 
