@@ -1,0 +1,2 @@
+def ist_zu_warm(temperatur):
+    return temperatur > 30
