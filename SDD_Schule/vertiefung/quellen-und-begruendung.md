@@ -1,8 +1,8 @@
 ---
 titel: Quellen und didaktische Begründung
-datum: 2026-10-04
+datum: 2026-10-07
 kurs: Optionaler Hintergrund für Lehrkräfte
-version: 3.0
+version: 3.4
 ---
 
 # Was fachlich verankert ist – und was wir erproben
@@ -29,8 +29,6 @@ Weitere technische Primärquellen, geprüft am 04.10.2026:
 
 - Martin Fowler: [Unit Test](https://martinfowler.com/bliki/UnitTest.html) und [Integration Test](https://martinfowler.com/bliki/IntegrationTest.html), zur Einordnung der Begriffe und ihrer unterschiedlichen Verwendung in der Praxis.
 - Microsoft: [Playwright – Writing tests](https://playwright.dev/docs/writing-tests), als Beispiel automatisierter Browserhandlungen und Ergebnisprüfungen. Das Werkzeug wird hier nur als Ausblick genannt.
-- Python: [unittest](https://docs.python.org/3/library/unittest.html), als späterer Übergang zu einem Testframework; das beiliegende Beispiel verwendet ein einfaches Prüfskript.
-- MDN: [JavaScript-Funktionsdeklaration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function), technischer Bezug für benannte Funktionen.
 - RFC Editor: [RFC 4632](https://www.rfc-editor.org/rfc/rfc4632), CIDR, und [RFC 3021](https://www.rfc-editor.org/rfc/rfc3021), insbesondere Abschnitt 2.1. Die IPv4-Aufgabe begrenzt die Minus-zwei-Regel ausdrücklich auf /24 bis /30; /31 und /32 sind außerhalb des Auftrags.
 
 ## 3. Forschungsbefunde und didaktische Folgerungen
@@ -75,11 +73,13 @@ Diese Beobachtungen zeigen Durchführbarkeit und lokale Lernentwicklung. Ohne ge
 
 Bei den Forschungsquellen [1] wurde der Abstract geprüft; bei [2], [3] und [4] zusätzlich einschlägiger Volltext. Für [3] sind insbesondere Abschnitte 6.3–6.7 und 7.1 wichtig. Stichproben und Aufgaben lassen sich nicht pauschal auf jede Klasse übertragen.
 
-Die 13 Markdown-Dateien wurden auf relative Dateilinks, Frontmatter, Überschriftenhierarchie, geschlossene Codeblöcke und aufklappbare Bereiche, Fußnoten und veraltete Verweise geprüft. Die vier Diagrammquellen verwenden einfache Mermaid-Flussdiagramme gemäß der Viewer-Referenz; eine Ausführung im konkreten Viewer fand nicht statt.
+Die zwölf Markdown-Dateien wurden auf relative Dateilinks, Frontmatter, Überschriftenhierarchie, geschlossene Codeblöcke und aufklappbare Bereiche, Fußnoten und veraltete Verweise geprüft. Die vier Diagrammquellen verwenden einfache Mermaid-Flussdiagramme gemäß der Viewer-Referenz; eine Ausführung im konkreten Viewer fand nicht statt. Die Prozessdiagramme zeigen die drei tatsächlichen Promptphasen und die Prüfungsschleife über alle Tasks.
 
-Python: Platzhalter mit erwartetem Fehlschlag bei 31 und Status 1; Lehrkraftlösung mit drei bestandenen Fällen und Status 0; fehlerhafte Grenzbehandlung `>=` mit erkanntem Fehler bei 30. JavaScript: dieselben Zustände unter Node mit einer minimalen DOM-Attrappe geprüft; die Skriptreihenfolge in der Testseite wurde kontrolliert. Die Startdateien bleiben absichtlich Platzhalter. Ein echter Browser-/Live-Server-Durchlauf war hier nicht verfügbar. Schulgeräte, Frontend, Modellverhalten und Unterrichtszeit bleiben vor Ort zu prüfen.
+In Paket 3.4 bleiben die vier SDD-Prompts bytegenau auf Stand 3.3 erhalten. Der Lehrer berichtet von erfolgreichen ersten Unterrichtstests; dies ist lokale Praxiserfahrung, keine systematische Evaluation. Die separaten TDD-Demodateien entfallen. Schulgeräte, Frontend, Modellverhalten und Unterrichtszeit bleiben vor Ort zu prüfen.
 
 [^chi]: [1] Kazemitabaar et al. (2023): *Studying the effect of AI Code Generators on Supporting Novice Learners in Introductory Programming*. [Autorenversion](https://arxiv.org/abs/2302.07427); [CHI-Veröffentlichung](https://doi.org/10.1145/3544548.3580919).
 [^gap]: [2] Prather et al. (2024): *The Widening Gap: The Benefits and Harms of Generative AI for Novice Programmers*. [Autorenversion](https://arxiv.org/abs/2405.17739); [Volltext](https://arxiv.org/html/2405.17739v1).
 [^engagement]: [3] Kazemitabaar et al.: *Exploring the Design Space of Cognitive Engagement Techniques with AI-Generated Code for Enhanced Learning*. [Autorenversion 2024](https://arxiv.org/abs/2410.08922); [Volltext](https://arxiv.org/html/2410.08922v1); [IUI 2025](https://doi.org/10.1145/3708359.3712104).
 [^cs1]: [4] Andleeb, Kantorski und Carver (2025): *ChatGPT in Introductory Programming: Counterbalanced Evaluation of Code Quality, Conceptual Learning, and Student Perceptions*. Laut Autorenversion für SIGCITE’25 angenommen. [Autorenversion](https://arxiv.org/abs/2510.00946); [Volltext](https://arxiv.org/html/2510.00946v1).
+
+Die Fassung 3.4 vereinfacht die wiederkehrende Anleitung: drei Schritte mit Start-Eingaben, notwendigen Dateien und Ergebnissen sowie deutsche Erklärungen der verdichteten Prompts. Das Schüler-Arbeitsblatt wird gekürzt; ein zusätzliches Glossar-Arbeitsblatt und separate Demonstrationsdateien entfallen. Dies sind organisatorische und didaktische Anpassungen, keine neuen Wirkungsbehauptungen.

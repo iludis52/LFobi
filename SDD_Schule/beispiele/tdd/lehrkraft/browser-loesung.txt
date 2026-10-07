@@ -1,3 +1,0 @@
-function istZuWarm(temperatur) {
-    return temperatur > 30;
-}

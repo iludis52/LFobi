@@ -1,8 +1,8 @@
 ---
 titel: Vier kleine Softwareprojekte mit KI
-datum: 2026-10-04
+datum: 2026-10-07
 kurs: Ab Klasse 10
-version: 3.0
+version: 3.3
 ---
 
 # Vier Projektaufgaben zur Auswahl
@@ -13,7 +13,7 @@ Du entwickelst eine kleine Anwendung für andere. Die KI darf beim Klären, Plan
 
 Verwendet das [Schüler-Arbeitsblatt](schuelerarbeitsblatt.md): Idee und Anforderungen klären, Spec bestätigen, kleine Tasks planen und umsetzen, nach jedem Schritt prüfen, andere ausprobieren lassen und über die Freigabe entscheiden. **Eigene Erwartungen stehen vor der Umsetzung.** TDD ist optional.
 
-Die vier Aufgaben sind Wahlmöglichkeiten. Die Zahlensystem-App bietet den einfachsten Einstieg; die anderen benötigen zusätzliches Vorwissen oder Gerüst. Hinweise für Lehrkräfte lassen sich bei Bedarf einklappen. Für KURZ wird ausdrücklich ein kleiner Ausschnitt gewählt; er muss nicht den vollständigen Umfang der Projektfassung erfüllen.
+Die vier Aufgaben sind Wahlmöglichkeiten. Die Zahlensystem-App bietet den einfachsten Einstieg; die anderen benötigen zusätzliches Vorwissen oder Gerüst. Hinweise für Lehrkräfte lassen sich bei Bedarf einklappen. Für KURZ wird vorab ein passender kleinerer Auftrag vereinbart. Dieser Auftrag wird vollständig umgesetzt; die Spec verspricht keine Funktionen, die im Unterricht nur als unfertige Erweiterung zurückbleiben.
 
 ## 1. Zahlensysteme üben
 
@@ -21,7 +21,7 @@ Die vier Aufgaben sind Wahlmöglichkeiten. Die Zahlensystem-App bietet den einfa
 
 Entwickle eine Lern-App, mit der Mitschüler die Umwandlung zwischen Binär- und Dezimalzahlen üben können. Die App soll eine Antwort prüfen und bei Fehlern so helfen, dass der Nutzer etwas versteht.
 
-### Eure erste Fassung
+### Euer vereinbarter Funktionsumfang
 
 - Die App stellt eine Umwandlungsaufgabe für nichtnegative ganze Zahlen.
 - Der Nutzer gibt eine Antwort ein und erhält eine passende Rückmeldung.
@@ -56,7 +56,7 @@ Die zweite Umwandlungsrichtung, Hexadezimalzahlen, abgestufte Hinweise oder eine
 
 Entwickle eine App, die Mitschülern hilft, den Zusammenhang zwischen einer IPv4-Adresse und ihrem Netzwerk zu verstehen. Der Nutzer gibt eine Adresse und eine Präfixlänge ein, beispielsweise `192.168.10.42` und `/24`.
 
-### Eure erste Fassung
+### Euer vereinbarter Funktionsumfang
 
 - Die App unterstützt Präfixlängen von `/24` bis `/30`.
 - Sie zeigt die zugehörige Netzmaske, Netzwerkadresse und Broadcastadresse.
@@ -93,7 +93,7 @@ Eingabe einer Netzmaske statt der Präfixlänge, weitere Präfixlängen oder ein
 
 Entwickle eine Anwendung, die Mitschülern zeigt, wie Bubble Sort eine kurze Zahlenliste aufsteigend sortiert. Die Nutzer sollen einzelne Vergleiche und Vertauschungen verfolgen können.
 
-### Eure erste Fassung
+### Euer vereinbarter Funktionsumfang
 
 - Eine kurze Liste ganzer Zahlen wird angezeigt; eine vorbereitete Liste genügt.
 - Eine Schaltfläche führt jeweils den nächsten Vergleichsschritt aus.
@@ -128,7 +128,7 @@ Eigene Zahlen eingeben, Vergleiche zählen oder einen automatischen Ablauf mit P
 
 Entwickle eine kleine lokale Browserfassung von Pong für zwei Personen. Zwei Schläger bewegen sich auf gegenüberliegenden Seiten; ein Ball wird zurückgespielt. Euer Spiel soll einfache, verständliche Regeln haben.
 
-### Eure erste Fassung
+### Euer vereinbarter Funktionsumfang
 
 - Zwei Personen bewegen ihre Schläger mit festgelegten Tasten nach oben und unten.
 - Der Ball bewegt sich und prallt an den oberen und unteren Spielfeldrändern ab.

@@ -1,8 +1,8 @@
 ---
 titel: Testen und TDD – ein Blick in die Qualitätssicherung
-datum: 2026-10-04
+datum: 2026-10-07
 kurs: Optionale Vertiefung
-version: 3.0
+version: 3.4
 ---
 
 # Vom eigenen Prüffall zur systematischen Qualitätssicherung
@@ -79,47 +79,16 @@ flowchart TD
 
 Rot bedeutet: Der Test ist lauffähig, scheitert aber am noch fehlenden Verhalten. Syntax- oder Ladefehler werden vorher behoben. Grün bedeutet: die tatsächlich ausgeführten Fälle bestehen. Refactoring verbessert bei Bedarf die Struktur, ohne das Verhalten zu ändern. Ein Test nach bereits fertigem Code ist nachträgliches Testen; ein absichtlich eingebauter Fehler demonstriert Testqualität.
 
-### Ein kleines Beispiel vorbereiten
+### Am eigenen Projekt ausprobieren
 
-Die beiliegenden Dateien verwenden eine Temperaturregel: **Warnung nur oberhalb von 30 °C.** Schüler bestimmen für 29, 30 und 31 die Ergebnisse selbst. Dieses Beispiel dient allein dem Testverfahren; anschließend wird es auf eine passende Projektfunktion übertragen.
+Wählt eine kleine Fachfunktion und einen vereinbarten Prüffall aus eurer Spec. Die Projektkarte legt fest, wie ihr Tests ausführt; zusätzliche Demodateien braucht ihr nicht.
 
-| Umgebung | Dateien und Start |
-| --- | --- |
-| Python | `beispiele/tdd/python/app.py` und `test_app.py`; im selben Ordner `python test_app.py`, je nach Schulinstallation `python3` oder `py` |
-| Browser | `beispiele/tdd/browser/tests.html`, `app.js`, `tests.js`; Testseite mit vorbereitetem Live Server öffnen; Änderungen speichern und neu laden |
+1. Eingabe und erwartetes Ergebnis unabhängig vom Code begründen.
+2. Test und aufrufbares Gerüst erstellen; ausführen und fachliches Rot tatsächlich beobachten.
+3. Verhalten implementieren; erneut ausführen und Grün tatsächlich beobachten.
+4. Struktur bei Bedarf verbessern und erneut prüfen; anschließend die Verbindung zur App ausprobieren.
 
-Die Lösung liegt getrennt unter `beispiele/tdd/lehrkraft/`. **Für Schüler nur den gewählten Ordner `python` oder `browser` ausgeben.** Die Ausgangsfunktion ist absichtlich ein Platzhalter. Es werden keine zusätzlichen Pakete benötigt.
-
-Python nutzt ein kleines Prüfskript; das eingebaute Framework `unittest` bleibt ein späterer Ausblick.[^python] Das Browserbeispiel nutzt benannte Funktionen und zeigt die Ausgabe auf der Seite.[^javascript] Fehlerzählung und Browseranbindung sind vorbereitete Infrastruktur.
-
-### Vorschlag für 45 Minuten
-
-| Minuten | Handlung |
-| --- | --- |
-| 0–8 | Regel und eigene Erwartungen für 29, 30 und 31 klären |
-| 8–18 | Gerüst und Tests unterscheiden; tatsächlich starten |
-| 18–25 | Rot verstehen: Der Fall 31 scheitert am fehlenden Verhalten |
-| 25–35 | Minimale Umsetzung erhalten, speichern und Grün prüfen |
-| 35–42 | Struktur besprechen; optional auf einer Kopie `>` durch `>=` ersetzen und Testreaktion beobachten |
-| 42–45 | Erklären, welchen Fehler der Grenzwerttest erkennt und was noch ungeprüft ist |
-
-Ist Dateiablage oder Ausführung neu, mehr Zeit einplanen. Die absichtliche Fehländerung ist optional; danach die richtige Fassung wiederherstellen und erneut prüfen.
-
-### Rückmeldung an die KI
-
-:::prompt Tatsächliche Beobachtung berichten
-Task: …
-
-Datei und Startverfahren: …
-
-Eingabe und Erwartung: …
-
-Tatsächliche Ausgabe: …
-
-Übernommener Stand: nur Test und Platzhalter / Umsetzung / Strukturänderung.
-:::
-
-Bei Browserproblemen zusätzlich Ladefehler in der Konsole prüfen. Fachliche Erwartungen nicht abschwächen, damit ein fehlerhaftes Programm besteht.
+Der Umsetzungs-Prompt unterstützt diesen Ablauf, wenn die Lehrkraft TDD gewählt hat. Meldet der KI jeweils **Datei und Startverfahren, Eingabe, Erwartung und tatsächliche Ausgabe**. Bei Lade- oder Syntaxfehlern zunächst die Ausführung klären. Fachliche Erwartungen nicht abschwächen, damit ein fehlerhaftes Programm besteht.
 
 ## 5. Ein kurzer Transfer reicht
 
@@ -136,5 +105,3 @@ Ziel dieses Ausblicks ist, den Nutzen unterschiedlicher Prüfungen zu erkennen. 
 [^integration]: Martin Fowler, [Integration Test](https://martinfowler.com/bliki/IntegrationTest.html).
 [^e2e]: Microsoft, [Playwright: Writing tests](https://playwright.dev/docs/writing-tests), aktuelle technische Primärquelle, geprüft am 04.10.2026.
 [^tdd]: Martin Fowler, [Test Driven Development](https://martinfowler.com/bliki/TestDrivenDevelopment.html), aktualisiert 2023; fachlicher Bezug für den Zyklus, kein Nachweis schulischer Lernwirkung.
-[^python]: Python, [unittest](https://docs.python.org/3/library/unittest.html), geprüft am 04.10.2026.
-[^javascript]: MDN, [Benannte JavaScript-Funktionen](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function), geprüft am 04.10.2026.

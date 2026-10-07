@@ -1,8 +1,8 @@
 ---
 titel: Glossar – Software entwickeln und prüfen
-datum: 2026-10-04
+datum: 2026-10-07
 kurs: Schüler und Lehrkräfte
-version: 3.0
+version: 3.3
 ---
 
 # Begriffe an unserem Projekt verstehen
@@ -25,7 +25,7 @@ Die Erklärungen sind bewusst vereinfacht. Die fachliche Einordnung folgt den im
 | **Anforderungsanalyse** | Wünsche prüfen, präzisieren, auf Widersprüche untersuchen und begrenzen. | Was heißt „verständlich“? Wann erscheint welcher Hinweis? |
 | **Funktionale Anforderung** | Beschreibt, was die Software tun soll. | Nach „Prüfen“ erscheint eine Rückmeldung. |
 | **Qualitätsanforderung** | Beschreibt, wie gut eine Eigenschaft erfüllt sein soll. | Ein Nutzer versteht den Hinweis ohne Erklärung des Entwicklerteams. |
-| **Scope / Umfang** | Vereinbarte Grenze der aktuellen Fassung. | Eine feste Binärzahl; noch keine Zufallsaufgaben. |
+| **Scope / Umfang** | Vereinbarter Funktionsumfang und seine Grenzen. | Trainer mit Aufgaben, Prüfung und Rückmeldung; ohne Benutzerkonten. |
 | **Spec / Spezifikation** | Festgehaltene Vereinbarung über das gewünschte Verhalten. | Zweck, Eingaben, Regeln und Kriterien in unserer Projektseite. |
 | **Akzeptanzkriterium / AK** | Beobachtbare Bedingung für die Erfüllung einer Anforderung. | Bei Antwort `11` zeigt die App „Richtig“. |
 
@@ -86,7 +86,7 @@ Ein E2E-Test kann zugleich Akzeptanzkriterien prüfen. Regression beschreibt den
 - **EARS:** Easy Approach to Requirements Syntax; Satzmuster für Anforderungen. Unsere KI-Fragen greifen Auslöser, Bedingungen und Reaktionen auf; formale EARS-Muster sind optional.[^ears]
 - **Definition of Done:** gemeinsame Fertigregel für Arbeitspakete. Hier etwa: vereinbartes Verhalten tatsächlich geprüft und wesentliche Abweichungen geklärt. Akzeptanzkriterien gelten dagegen für konkrete Anforderungen.
 - **Prototyp:** vorläufige Lösung, um eine konkrete Unsicherheit zu klären; Erkenntniszweck und Grenzen werden benannt.
-- **MVP:** Minimum Viable Product; kleinste Fassung, die eine Nutzenannahme bei Nutzern prüfen kann. Im Unterricht sagen wir meist schlicht „erste kleine Fassung“.
+- **MVP:** Minimum Viable Product; kleinste Fassung, die eine Nutzenannahme bei Nutzern prüfen kann. Professioneller Ausblick; unser Unterrichtsauftrag ist eine vollständige vereinbarte App.
 - **Verifikation:** prüfen, ob die Lösung vereinbarte Vorgaben erfüllt.
 - **Validierung:** prüfen, ob die Lösung zum tatsächlichen Bedarf passt.
 - **Continuous Integration / CI:** Änderungen regelmäßig zusammenführen und automatisierte Prüfungen ausführen; professioneller Ausblick, hier keine Einrichtungspflicht.
@@ -95,7 +95,7 @@ Ein E2E-Test kann zugleich Akzeptanzkriterien prüfen. Regression beschreibt den
 
 ## 5. Begriffe selbst verwenden
 
-Wähle drei Begriffe, die in deinem Projekt tatsächlich vorkamen. Erkläre jeweils: **Was bedeutet der Begriff? Wo haben wir das erlebt? Welche Entscheidung oder Prüfung wurde dadurch klarer?** Das [Glossar-Arbeitsblatt](vertiefung/glossar-arbeitsblatt.md) bietet weitere kurze Aufgaben.
+Wähle drei Begriffe, die in deinem Projekt tatsächlich vorkamen. Erkläre jeweils: **Was bedeutet der Begriff? Wo haben wir das erlebt? Welche Entscheidung oder Prüfung wurde dadurch klarer?**
 
 [^anforderungen]: IEEE Computer Society, [SWEBOK V4: Themenübersicht](https://www.computer.org/education/bodies-of-knowledge/software-engineering/topics). Fachliche Orientierung; kurze Definitionen und Schulbeispiele sind eigene Vereinfachungen.
 [^sdd]: GitHub, [Spec Kit](https://github.github.com/spec-kit/). SDD wird hier als Unterrichtsarbeitsweise definiert, ohne Bindung an das Werkzeug.

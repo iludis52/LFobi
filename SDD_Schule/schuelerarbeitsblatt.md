@@ -1,146 +1,76 @@
 ---
 titel: Unsere Software mit KI – Arbeitsblatt
-datum: 2026-10-04
+datum: 2026-10-07
 kurs: Ab Klasse 10
-version: 3.2
+version: 3.4
 ---
 
-# Von unserer Idee zur geprüften Anwendung
+# Von unserer Idee zur geprüften App
 
-## Drei Fragen begleiten uns
+**Wir entscheiden, die KI hilft, wir prüfen wirklich.** SDD gibt Orientierung bei neuen oder unklaren Aufgaben. Die vollständige vereinbarte App ist das Ziel; kleine Tasks machen den Weg überschaubar.
 
-**Was soll unsere App für jemanden leisten? Woran erkennen wir richtiges Verhalten? Können wir die Lösung erklären?**
-
-Die KI hilft beim Klären, Planen, Programmieren und Verstehen. Wir treffen Entscheidungen und führen App und Prüfungen selbst aus. Neue Begriffe können wir im [Glossar](glossar.md) nachschlagen.
+Die benötigten Dateien und Start-Eingaben stehen im [Prompt-Index](prompts/prompts-index.md). Übernehmt die Projektkarte der Lehrkraft. Begriffe erklärt das [Glossar](glossar.md).
 
 ```mermaid
 flowchart TD
-  A["Idee und Anforderungen klären"] --> B["Spec: Verhalten vereinbaren"]
-  B --> C["Plan: Kleine Tasks festlegen"]
-  C --> D["Task: Erwartung nennen, umsetzen, ausprobieren"]
-  D --> E{"Passt das Ergebnis?"}
-  E -- "Codefehler" --> D
-  E -- "Vereinbarung unklar" --> B
-  E -- "Ja, nächster Task" --> D
-  E -- "Alle Tasks geprüft" --> F["Anderes Team testet; Befunde klären"]
-  F --> G{"Bereit zur Freigabe?"}
-  G -- "Noch korrigieren" --> D
-  G -- "Regel klären" --> B
-  G -- "Ja" --> H["Fassung freigeben und zurückblicken"]
+  S["01-spec-erstellen: Idee und Anforderungen klären"] --> V["spec.md lesen und bestätigen"]
+  V --> P["02-plan-erstellen: Aufbau und Tasks planen"]
+  P --> B["plan.md lesen und bestätigen"]
+  B --> T["03-tasks-umsetzen: aktuellen Task bauen"]
+  T --> Q{"Ergebnis tatsächlich geprüft?"}
+  Q -- "Abweichung korrigieren" --> T
+  Q -- "Ja, weiterer Task" --> T
+  Q -- "Alle Tasks geprüft" --> U["Anderes Team testet; Befunde klären"]
+  U --> F{"Bereit zur Freigabe?"}
+  F -- "Code korrigieren" --> T
+  F -- "Ja" --> R["Menschen geben die App frei"]
 ```
 
-> [!MERKE] Immer zuerst eine Erwartung
-> Bevor die KI eine Funktion umsetzt, nennen wir eine konkrete Eingabe und das erwartete Ergebnis. Danach speichern und starten wir die App und vergleichen. Eine KI-Aussage „funktioniert“ ersetzt diese Prüfung nicht.
+Wenn eine Anforderung unklar ist, klärt sie zuerst und passt Spec, Plan und Prüfungen an. Die Phasenwechsel startet ihr selbst; innerhalb der Umsetzung begleitet die KI alle Tasks.
 
-## 1. Idee und Anforderungen
+## 1. Vereinbaren und planen
 
-Wählt den vorgegebenen [Auftrag](aufgaben.md) und übernehmt die ausgefüllte Projektkarte der Lehrkraft. Nutzt den [Spec-Prompt](prompts/02-spezifikation.md).
+- **Spec:** Für wen bauen wir was? Welche Eingaben, Ergebnisse und Regeln gelten? Nennt eigene Beispiele mit erwarteten Ergebnissen und wenige wichtige Fehler-/Grenzfälle. Sagt anschließend: „Erstelle jetzt unsere Vereinbarung.“ Lest, korrigiert und bestätigt die `spec.md`.
+- **Plan:** Besprecht ein bis zwei sinnvolle Entscheidungen zur Aufteilung oder Reihenfolge. Versteht Dateien, Zuständigkeiten und Tasks, bevor ihr die `plan.md` bestätigt.
 
-- Wer soll die App in welcher Situation nutzen?
-- Was braucht diese Person? Was gehört in unsere erste kleine Fassung?
-- Welche Regeln, Fehlerfälle oder Grenzen müssen wir klären?
+Beide Dateien stellt ihr später vor. Eine zusätzliche `task.md` braucht ihr nicht.
 
-Beispiel: „Die App hilft beim Lernen“ ist noch unklar. „Bei einer falschen Antwort zeigt sie einen Stellenwerthinweis“ beschreibt beobachtbares Verhalten. Entscheidet selbst, wie ein hilfreicher Hinweis aussehen soll.
+## 2. Alle Tasks umsetzen und prüfen
 
-## 2. Eine kurze Projektseite führen
-
-Die Vorlage unten kann in eine `projekt.md` übernommen werden. Die KI darf beim Formulieren helfen; wir lesen und korrigieren ihre Vorschläge. Wenige verständliche Einträge genügen. Die Lehrkraft legt den Umfang fest.
-
-### Spec – unsere Vereinbarung
-
-- **Name, Zweck und Nutzer:** …
-- **Erste Fassung:** …
-- **Spätere Wünsche:** …
-- **Eingaben, Ergebnisse und wichtige Regeln:** …
-- **AK-1:** Wenn …, zeigt/tut die App …
-- **AK-2:** …
-- **AK-3:** …
-- **Offene Fragen:** … / keine
-- **Von uns inhaltlich bestätigt:** …
-
-AK bedeutet Akzeptanzkriterium: eine beobachtbare Bedingung, an der wir die Erfüllung einer Anforderung prüfen. Eigene Beispiele ergänzen die Kriterien.
-
-### Plan – Aufbau und kleine Tasks
-
-Nutzt den [Plan-Prompt](prompts/03-plan.md). Versteht den Vorschlag, bevor ihr ihn bestätigt.
-
-- **Dateien und Zuständigkeiten:** …
-- **Eine wichtige Entscheidung und ihr Grund:** …
-- **App starten / Prüfungen ausführen:** … / …
-- **Task 1:** …; erfüllt AK-…; fertig, wenn …
-- **Task 2:** …; erfüllt AK-…; fertig, wenn …
-- **Weitere Tasks nur bei Bedarf:** …
-
-### Prüffälle und Beobachtungen
-
-Erwartungen vor der Umsetzung eintragen, Beobachtungen danach. Behält eine Änderung Einfluss auf bestehende Funktionen, prüfen wir deren Fälle erneut.
-
-| Task / Kriterium | Eingabe oder Handlung | Vorher erwartetes Ergebnis | Tatsächliche Beobachtung |
-| --- | --- | --- | --- |
-| … | Typischer Fall: … | … | … |
-| … | Fehlerfall: … | … | … |
-| … | Grenze, falls passend: … | … | … |
-
-### Eine wichtige Entscheidung oder Änderung
-
-**Unklar war … / Wir haben entschieden … / Deshalb änderten wir … / Geprüft haben wir …**
-
-## 3. Jeweils einen Task umsetzen
-
-Nutzt den [Umsetzungs-Prompt](prompts/04-umsetzung.md) mit dem aktuellen Task. Vor der Änderung verwenden wir unsere vereinbarten Erwartungen. Fehlt ein passender Fall, nennen wir eine eigene Eingabe mit erwartetem Ergebnis. Bereits Besprochenes muss nicht erneut erklärt werden. Danach:
+Startet den Umsetzungs-Prompt **einmal**. Vor jeder Änderung liegt eine konkrete Erwartung vor; vorhandene Beispiele aus der Spec werden weiterverwendet.
 
 1. Code in die angegebene Datei übertragen und speichern.
-2. App oder Test mit dem vereinbarten Verfahren starten.
-3. Beobachtung mit unserer Erwartung vergleichen.
-4. Bei Abweichung Datei, Eingabe, Erwartung und tatsächliche Ausgabe an die KI geben.
-5. Korrektur prüfen; dann den nächsten Task beginnen.
+2. App oder Test starten und Ergebnis mit der Erwartung vergleichen.
+3. Tatsächliches Ergebnis an die KI melden; bei Abweichungen Eingabe, Erwartung, Ausgabe und betroffene Datei nennen.
+4. Korrekturen erneut prüfen. Nach einem geprüften Task führt die KI zum nächsten weiter.
 
-Die KI sieht unsere lokalen Dateien und unseren Bildschirm nicht automatisch. Bei einer vollständigen Datei nur den Code übernehmen, keine Markdown-Zäune. Bei einer Teiländerung genau die benannte Stelle ersetzen. Für einen neuen Chat Projektkarte, Regeln, Projektseite und betroffene aktuelle Dateien mitgeben.
+Mehrere Prüffälle dürft ihr gesammelt rückmelden. Die KI sieht euren Bildschirm und aktuelle Dateien nicht automatisch. Der Prüfstand bleibt in `plan.md`:
 
-Mehrere Fälle können wir gesammelt prüfen und kurz berichten: „Fälle … ausgeführt; alle Ergebnisse passen“ oder „Bei Fall … weicht … ab“. Bei Problemen die konkrete Ausgabe mitgeben. Neue Technik darf die KI direkt erklären; Verständnisfragen gibt es nicht nach jedem Task. Fragen dürfen wir jederzeit selbst stellen.
+| Task / Kriterium | Eingabe oder Handlung | Erwartung | Tatsächliche Beobachtung |
+| --- | --- | --- | --- |
+| … | … | … | … |
 
-> [!TIPP] Wenn du etwas nicht verstehst
-> „Verfolge die Eingabe … durch diese Funktion.“ – „Welche Anforderung erfüllt sie?“ – „Verwende unsere bekannten Sprachmittel.“ – „Gib mir einen neuen Fall, dessen Ergebnis ich selbst vorhersage.“
+> [!MERKE] Selbst ausführen
+> „Funktioniert“ von der KI ist kein Prüfergebnis. Nach Änderungen auch betroffene bisherige Fälle erneut prüfen. Bei Fragen lasst euch eine konkrete Eingabe durch den Code erklären.
 
-## 4. Andere ausprobieren lassen
+## 3. Andere ausprobieren lassen und freigeben
 
-Ein anderes Team bekommt den Zweck und eine typische Aufgabe. Es probiert auch einen Fehler- oder Grenzfall und sagt, ob die Rückmeldung verständlich ist. Die Entwickler erklären den Bedienweg zunächst nicht vor; beobachtet, wo Hilfe nötig wird.
+Gebt einem anderen Team den Zweck und eine typische Aufgabe. Lasst es auch einen Fehler- oder Grenzfall ausprobieren. Erklärt den Bedienweg zunächst nicht vor.
 
-- **Aufgabe für das andere Team:** …
-- **Ein konkreter Befund:** Eingabe/Handlung …; erwartet …; beobachtet …
-- **Unsere Einordnung:** Codefehler / unklare Anforderung / neuer Wunsch
-- **Unsere Reaktion und erneute Prüfung:** …
+**Befund:** Eingabe/Handlung …; erwartet …; beobachtet …
 
-Neue Wünsche dürfen in die nächste Fassung. Eine unklare Anforderung wird erst gemeinsam geklärt, dann werden Spec, Plan, Code und Prüffälle passend geändert.
+**Unsere Reaktion:** Codefehler korrigieren / Anforderung klären / neuen Wunsch notieren. Danach betroffene Fälle erneut prüfen.
 
-## 5. Über die Freigabe entscheiden
-
-- [ ] Unsere vereinbarten Kriterien wurden tatsächlich geprüft.
-- [ ] Wesentliche Befunde wurden geklärt; offene Einschränkungen sind benannt.
-- [ ] Wir können die vereinbarte Kernfunktion und einen passenden Prüffall erklären.
+- [ ] Vereinbarte Kriterien tatsächlich geprüft.
+- [ ] Wesentliche Befunde geklärt; offene Einschränkungen benannt.
+- [ ] Kernfunktion und einen Prüffall selbst erklären können.
 
 **Entscheidung:** freigegeben / nach Korrektur erneut prüfen.
 
-**Verbleibende Einschränkung oder nächster Wunsch:** …
+## 4. Das eigene Verständnis zeigen
 
-Freigabe bedeutet: Diese vereinbarte Fassung ist bereit. Sie bedeutet keine garantierte Fehlerfreiheit.
+Die Lehrkraft kündigt den individuellen Nachweis an. Erkläre selbst: Welche Anforderung erfüllt die Kernfunktion? Wie verarbeitet sie eine neue Eingabe? Warum erwartest du dieses Ergebnis? Was müsste sich bei einer kleinen Regeländerung ändern?
 
-## 6. Das eigene Verständnis zeigen
+**Rückblick:** Eine hilfreiche Rückfrage … / unsere wichtigste Entscheidung … / das zeigte eine Prüfung …
 
-Die Lehrkraft kündigt die Nachweisform an. Bereite dich mit KI vor. Im individuellen Nachweis erklärst du selbst; der Code darf sichtbar bleiben.
-
-- Welche Anforderung erfüllt die Kernfunktion?
-- Was geht hinein, wie werden Werte verarbeitet, was kommt heraus?
-- Welche Ausgabe erwartest du bei einer neuen Eingabe – und warum?
-- Was müsste sich bei einer kleinen Regeländerung ändern?
-
-**Mein Rückblick:** Welche Rückfrage half mir? Welche Entscheidung traf ich? Was zeigte eine Prüfung? Was würde ich beim nächsten Durchlauf früher klären?
-
-<details>
-<summary>Optional: Wenn wir TDD verwenden</summary>
-
-**Erwartung → Test zuerst → ausführen und Rot beobachten → umsetzen → ausführen und Grün beobachten → Struktur bei Bedarf verbessern und erneut testen.**
-
-Rot heißt: Der lauffähige Test scheitert am noch fehlenden Verhalten. Eine nicht gefundene Datei ist zunächst ein Umgebungsproblem. Grün betrifft nur die tatsächlich geprüften Fälle. Den Test nicht an fehlerhaften Code anpassen. Mehr dazu: [Testen und TDD](vertiefung/testen-und-tdd.md).
-
-</details>
+Optional: [Testen und TDD](vertiefung/testen-und-tdd.md) erklärt Test zuerst, Rot, Grün und Refactoring sowie Unit-, Integrations- und E2E-Tests.

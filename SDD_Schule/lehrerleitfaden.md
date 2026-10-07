@@ -1,15 +1,15 @@
 ---
 titel: Lehrerleitfaden – SDD im Informatikunterricht
-datum: 2026-10-04
+datum: 2026-10-07
 kurs: Ab Klasse 10
-version: 3.2
+version: 3.4
 ---
 
 # Software-Engineering erlebbar machen
 
 ## 1. Die Grundidee
 
-**Mit SDD erleben Schüler, wie aus einer Idee überprüfbare Software entsteht.** Sie klären Anforderungen, vereinbaren gewünschtes Verhalten, planen eine Lösung, setzen kleine Arbeitspakete mit KI um und prüfen das Ergebnis. Die KI unterstützt durch Rückfragen, Vorschläge, Code und Erklärungen. Schüler entscheiden, begründen und verstehen.
+**Mit SDD erleben Schüler, wie aus einer Idee überprüfbare Software entsteht.** Sie klären Anforderungen, vereinbaren gewünschtes Verhalten, planen eine Lösung, setzen kleine Arbeitspakete mit KI um und prüfen das Ergebnis. Die KI unterstützt durch Rückfragen, Vorschläge, Code und Erklärungen. Schüler entscheiden, begründen und verstehen. **SDD gibt Orientierung und Sicherheit, wenn eine Lösung noch nicht offensichtlich ist:** Was wollen wir bauen, welche Entscheidungen fehlen, und woran prüfen wir das Ergebnis?
 
 Spec-Driven Development bedeutet hier: Eine kurze, gemeinsam geprüfte **Spezifikation steuert die Entwicklung**. Sie verbindet Nutzerbedarf, Umsetzung und Prüfung. Das Lernziel ist der Zusammenhang der Tätigkeiten im Softwareentwicklungsprozess; die Promptfolge hilft, ihn praktisch zu erleben.[^sdd]
 
@@ -18,23 +18,22 @@ Spec-Driven Development bedeutet hier: Eine kurze, gemeinsam geprüfte **Spezifi
 
 ```mermaid
 flowchart TD
-  I["Idee: Wem hilft unsere App?"] --> A["Anforderungen klären: Was wird gebraucht?"]
-  A --> S["Spec: Verhalten und Akzeptanzkriterien vereinbaren"]
-  S --> P["Plan: Aufbau und kleine Tasks festlegen"]
-  P --> T["Task: Erwartung nennen und mit KI umsetzen"]
-  T --> Q{"Schritt tatsächlich geprüft?"}
-  Q -- "Fehler" --> T
-  Q -- "Regel unklar" --> S
+  S["01-spec-erstellen: Idee und Anforderungen klären"] --> V["spec.md lesen und bestätigen"]
+  V --> P["02-plan-erstellen: Aufbau und Tasks planen"]
+  P --> B["plan.md lesen und bestätigen"]
+  B --> T["03-tasks-umsetzen: aktuellen Task bauen"]
+  T --> Q{"Ergebnis tatsächlich geprüft?"}
+  Q -- "Abweichung korrigieren" --> T
   Q -- "Ja, weiterer Task" --> T
-  Q -- "Alle Tasks geprüft" --> U["User-Testing: Anderes Team probiert aus"]
-  U --> F{"Kriterien erfüllt und Befunde geklärt?"}
-  F -- "Codefehler" --> T
-  F -- "Spec-Lücke" --> S
-  F -- "Ja" --> R["Freigabe der vereinbarten Fassung"]
-  R -. "Nächste Idee oder Erweiterung" .-> A
+  Q -- "Alle Tasks geprüft" --> U["Anderes Team testet; Befunde klären"]
+  U --> F{"Bereit zur Freigabe?"}
+  F -- "Code korrigieren" --> T
+  F -- "Ja" --> R["Menschen geben die App frei"]
 ```
 
-Die Stationen strukturieren den Einstieg. Rückmeldungen führen zu Korrekturen und neuen Durchläufen. Testfälle werden schon beim Klären der Anforderungen bedacht.[^prozess]
+Die drei Prompts strukturieren den Einstieg: Anforderungen und Spec, Aufbau und Task-Planung, danach die Umsetzung aller Tasks. Die Grundregeln gelten durchgehend. Rückmeldungen führen zu Korrekturen und neuen Durchläufen. Testfälle werden schon beim Klären der Anforderungen bedacht.[^prozess]
+
+Die Spec beschreibt den vollständigen vereinbarten Funktionsumfang. Dieser muss zur verfügbaren Unterrichtszeit passen. Kleine Tasks sind prüfbare Arbeitsschritte zu dieser App, keine Pflicht zu mehreren Produktfassungen.
 
 ## 2. Was Schüler dabei lernen
 
@@ -59,7 +58,7 @@ Die folgende Karte wird an Schüler und KI gegeben. Vorgaben des Schulfrontends 
 | Feld | Vor Ausgabe ausfüllen |
 | --- | --- |
 | Auftrag und Nutzer | … |
-| Erste Fassung und spätere Wünsche | … / … |
+| Projektziel und vollständiger vereinbarter Funktionsumfang | … |
 | Format und Entwicklungszeit | KURZ / PROJEKT; … Unterrichtsstunden |
 | Sprache, Umgebung, Gerüst | …; bereitgestellte Dateien: … |
 | Start und Prüfung | App starten: …; Prüffälle ausführen: … |
@@ -71,17 +70,17 @@ Die folgende Karte wird an Schüler und KI gegeben. Vorgaben des Schulfrontends 
 
 **Vorab einmal praktisch durchspielen:** Gerüst starten, Codeübertragung testen und mit dem tatsächlichen Schulfrontend einen kleinen Task bearbeiten. Kann die KI knapp nachfragen, auf echte Ergebnisse warten und verständlichen Code erzeugen? Das Modellverhalten muss beobachtet werden.
 
-Die [Prompt-Anleitung](prompts/index.md) beschreibt die Einrichtung. Grundregeln und Karte können vom Frontend mitgegeben oder in den Chat kopiert werden. Der Chat sieht lokale Dateien und Ausführungen nicht automatisch. Schüler speichern, starten und melden tatsächliche Ausgaben zurück.
+Der [Prompt-Index](prompts/prompts-index.md) zeigt den Grundprozess mit Start-Eingaben und benötigten Dateien und erklärt alle vier Prompts auf Deutsch. Er ist die wiederkehrende Anleitung für Schüler; die Prompttexte bleiben unverändert. Grundregeln und Karte können vom Frontend mitgegeben oder in den Chat kopiert werden. Der Chat sieht lokale Dateien und Ausführungen nicht automatisch. Schüler speichern, starten und melden tatsächliche Ausgaben zurück.
 
-Eine separate Spec-Datei ist entbehrlich, wenn die bestätigten Verhaltensregeln und Kriterien bereits im Chat, in `projekt.md` oder in einem vollständigen Task stehen. Der Kontext muss vom Frontend tatsächlich weiter mitgesendet werden. Die Prompt-Anleitung erläutert die Übergabe bei gleichem und neuem Chat.
+Die neu erstellten Ergebnisse heißen `spec.md` und `plan.md`. Eine separate Spec muss bei der Umsetzung nicht erneut angehängt werden, wenn ihre bestätigten Inhalte schon im Modellkontext verfügbar sind; bestehende vollständige Auszüge sind ebenfalls nutzbar. Der Kontext muss vom Frontend tatsächlich weiter mitgesendet werden. Die Prompt-Anleitung erläutert die Übergabe bei gleichem und neuem Chat.
 
 ## 4. Unterricht in zwei Zeitformaten
 
-Alle Zeiten sind Planungsansätze. **KURZ:** ein erstes Ergebnis in ein bis zwei Doppelstunden. **PROJEKT:** etwa fünf bis sechs Doppelstunden für mehrere Durchläufe; individuelle Nachweiszeit nach Klassengröße gesondert einplanen. TDD kann in beiden Formaten gewählt oder ausgelassen werden.
+Alle Zeiten sind Planungsansätze. **KURZ:** ein überschaubarer vollständiger Auftrag in ein bis zwei Doppelstunden. **PROJEKT:** etwa fünf bis sechs Doppelstunden für die vollständige vereinbarte App; individuelle Nachweiszeit nach Klassengröße gesondert einplanen. TDD kann in beiden Formaten gewählt oder ausgelassen werden.
 
 ### KURZ: ein kleiner vollständiger Durchlauf
 
-Empfohlener Zuschnitt: feste Binärzahl `1011`, Dezimalantwort prüfen, hilfreiche Rückmeldung und leere/ungültige Eingabe behandeln. Zufall, Fortschrittsanzeige und Arrays werden zunächst weggelassen. Die kurze Projektseite aus dem [Schüler-Arbeitsblatt](schuelerarbeitsblatt.md) hält Spec, Mini-Plan und Prüfungen zusammen.
+Empfohlener Zuschnitt: feste Binärzahl `1011`, Dezimalantwort prüfen, hilfreiche Rückmeldung und leere/ungültige Eingabe behandeln. Zufall, Fortschrittsanzeige und Arrays werden zunächst weggelassen. Die Promptfolge liefert `spec.md` und `plan.md`; das [Schüler-Arbeitsblatt](schuelerarbeitsblatt.md) hält Arbeitsweg und Prüfstand knapp fest. Auch dieser kleine Auftrag wird als vollständige vereinbarte Anwendung umgesetzt.
 
 | Minuten | Schülerhandlung |
 | --- | --- |
@@ -92,19 +91,19 @@ Empfohlener Zuschnitt: feste Binärzahl `1011`, Dezimalantwort prüfen, hilfreic
 | 65–80 | Anderes Team ausprobieren lassen; wichtigsten Befund bearbeiten |
 | 80–90 | Über Freigabe entscheiden; Kernfunktion und eine Entscheidung erläutern |
 
-Bei Problemen Umfang reduzieren oder mehr Zeit geben. Ein laufendes Produkt nach 90 Minuten ist kein Versprechen. Eine zweite Doppelstunde schafft Raum für Korrekturen, einen neuen Prüffall, Verständnisaufgaben und eine kleine Erweiterung. Optional lässt sich ein automatisierter Test oder TDD ergänzen.
+Bei Problemen Umfang reduzieren oder mehr Zeit geben. Der Abschluss nach 90 Minuten ist kein Versprechen; der vereinbarte Auftrag bleibt das Ziel. Eine zweite Doppelstunde schafft Raum für Korrekturen, einen neuen Prüffall, Verständnisaufgaben und eine kleine Erweiterung. Optional lässt sich ein automatisierter Test oder TDD ergänzen.
 
 ### PROJEKT: denselben Zyklus vertiefen
 
 | Abschnitt | Planungsansatz |
 | --- | --- |
-| Kleiner erster Durchlauf | 1 Doppelstunde |
-| Anforderungen und Struktur vertiefen | 1 Doppelstunde; Normal-, Fehler- und Grenzfälle, kleine Architekturzeichnung |
+| Auftrag, Spec und Voraussetzungen | 1 Doppelstunde |
+| Aufbau und Task-Planung | 1 Doppelstunde; wichtige Regeln, kleine Architekturzeichnung, begründete Task-Aufteilung |
 | Tasks umsetzen und prüfen | 1–2 Doppelstunden; optional neue Datenstruktur oder TDD |
 | User-Testing, Korrektur und Änderung | 1 Doppelstunde; mindestens einen Befund nachvollziehbar bearbeiten |
 | Verständnis und Reflexion sichern | 1 Doppelstunde; individuelle Nachweise gegebenenfalls zusätzlich |
 
-Eine gemeinsame `projekt.md` genügt. Bei größerem Umfang können Spec und Plan auf zwei Dateien verteilt werden. Tasks stehen im Plan, Ergebnisse bei den Prüffällen. Ein zusätzliches Review-Dokument ist nicht erforderlich.
+Zwei kurze Dokumente machen die Schülerentscheidungen präsentierbar: `spec.md` beschreibt die vollständige vereinbarte App, `plan.md` trennt den Aufbau der Lösung von den Tasks. In der Planung werden ein bis zwei sinnvolle Entscheidungen zur Task-Aufteilung oder Reihenfolge geklärt. Tasks und Prüfergebnisse bleiben im Plan; ein zusätzliches Task- oder Review-Dokument ist nicht erforderlich. Spec- und Plan-Chat enden nach Bestätigung. Der Umsetzungs-Prompt begleitet anschließend alle Tasks, jeweils mit tatsächlicher Prüfung.
 
 ## 5. Begleiten und vereinfachen
 
@@ -143,7 +142,7 @@ KI-Hilfe ist bei der Vorbereitung erlaubt. Im kurzen individuellen Nachweis antw
 
 ## 7. Nur bei Bedarf nachlesen
 
-Das [Glossar](glossar.md) erklärt die Begriffe. [Testen und TDD](vertiefung/testen-und-tdd.md) ergänzt Unit-, Integrations- und E2E-Tests sowie ein praktisches Beispiel. [Quellen und Begründung](vertiefung/quellen-und-begruendung.md) trennt Fachgrundlagen, Studienbefunde und eigene Unterrichtsentscheidungen.
+Das [Glossar](glossar.md) erklärt die Begriffe. [Testen und TDD](vertiefung/testen-und-tdd.md) ergänzt Unit-, Integrations- und E2E-Tests sowie einen optionalen Rot–Grün-Zyklus am eigenen Projekt. [Quellen und Begründung](vertiefung/quellen-und-begruendung.md) trennt Fachgrundlagen, Studienbefunde und eigene Unterrichtsentscheidungen.
 
 [^sdd]: GitHub, [Spec Kit](https://github.github.com/spec-kit/), technische Primärquelle, geprüft am 04.10.2026. Das Unterrichtsmodell vereinfacht den technischen Workflow.
 [^prozess]: IEEE Computer Society, [SWEBOK V4: Themenübersicht](https://www.computer.org/education/bodies-of-knowledge/software-engineering/topics), insbesondere Anforderungserhebung, Analyse, Spezifikation, Validierung und iterative Anforderungsarbeit; geprüft am 04.10.2026 über die indexierte offizielle Übersicht.

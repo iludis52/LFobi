@@ -1,8 +1,8 @@
 ---
 titel: SDD im Informatikunterricht
-datum: 2026-10-04
+datum: 2026-10-07
 kurs: Ab Klasse 10
-version: 3.2
+version: 3.4
 ---
 
 # Von der Idee zur geprüften Software – mit KI
@@ -17,11 +17,10 @@ version: 3.2
 | Material | Verwendung |
 | --- | --- |
 | [Lehrerleitfaden](lehrerleitfaden.md) | Einzige zusammenhängende Pflichtlektüre zur Vorbereitung |
-| [Schüler-Arbeitsblatt](schuelerarbeitsblatt.md) | Arbeitsweg, knappe Projektvorlage und gegenseitiges Ausprobieren |
+| [Schüler-Arbeitsblatt](schuelerarbeitsblatt.md) | Kurzer Arbeitsweg, Prüfstand und gegenseitiges Ausprobieren |
 | [Vier Projektaufgaben](aufgaben.md) | Nur die gewählte Aufgabe verwenden |
-| [KI-Prompts](prompts/index.md) | Grundregeln und drei direkt verwendbare Arbeitsaufträge |
+| [Prompt-Index](prompts/prompts-index.md) | Zentraler Einstieg: drei Schritte, benötigte Dateien und Erklärung der vier Prompts |
 | [Glossar](glossar.md) | Begriffe für Schüler und Lehrkräfte nachschlagen |
-| [Glossar-Arbeitsblatt](vertiefung/glossar-arbeitsblatt.md) | Optional: Begriffe am eigenen Projekt erschließen |
 | [Testen und TDD](vertiefung/testen-und-tdd.md) | Optional: Unit, Integration, E2E und ein praktischer Rot–Grün-Zyklus |
 | [Quellen und Begründung](vertiefung/quellen-und-begruendung.md) | Fachliche Verankerung und Forschungsstand |
 
@@ -37,8 +36,4 @@ Das ZIP entpacken und diesen Ordner im Markdown-Viewer öffnen; dann funktionier
 
 ## Stand dieser Fassung
 
-Version 3.0 bündelt Konzept, Handreichung, Unterrichtskonzept und Prompt-Anleitung. Die vier Aufgaben bleiben inhaltlich erhalten; veraltete Verweise und Pflicht-TDD wurden entfernt. Zeiten, Hilfen und Bewertungsformen sind Vorschläge zur Erprobung. Fachquellen und Unterrichtswirkung werden im Quellenanhang getrennt ausgewiesen.
-
-Version 3.1 verdichtet die vier KI-Prompts auf Englisch; Antworten bleiben in der Muttersprache des Schülers, standardmäßig Deutsch. Die sonstigen Unterrichtsmaterialien bleiben auf Stand 3.0.
-
-Version 3.2 entschärft die Abfragen beim Umsetzen: vorhandene Erwartungen weiterverwenden, neue APIs erklären, Prüffälle gesammelt rückmelden und höchstens eine zusätzliche Verständnisfrage pro Projekt. Die Prompt-Anleitung erläutert, wann eine separate Spec-Datei entfallen kann und welcher Kontext erhalten bleiben muss. Lehrerleitfaden und Schüler-Arbeitsblatt sind entsprechend angepasst.
+Paket 3.4 vereinfacht die Anleitung und das Schüler-Arbeitsblatt. Die vier erprobten SDD-Prompts bleiben auf Stand 3.3 unverändert: **Feature-Freeze**. Das zusätzliche Glossar-Arbeitsblatt und die separaten TDD-Demodateien entfallen; Glossar und optionale Testvertiefung bleiben erhalten.
