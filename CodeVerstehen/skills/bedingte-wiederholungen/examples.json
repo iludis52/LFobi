@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "template_id": "while-up-v1",
+      "parameters": {
+        "start": 1,
+        "distance": 2
+      },
+      "outputs": [
+        3
+      ],
+      "iterations": [
+        2
+      ],
+      "last": [
+        3
+      ],
+      "gaps": {
+        "count": "n:2",
+        "last": "n:3"
+      }
+    },
+    {
+      "template_id": "while-down-v1",
+      "parameters": {
+        "start": 3
+      },
+      "outputs": [
+        2,
+        1,
+        0,
+        0
+      ],
+      "iterations": [
+        3
+      ],
+      "last": [
+        0
+      ],
+      "gaps": {
+        "count": "n:3",
+        "last": "n:0"
+      }
+    },
+    {
+      "template_id": "while-jump-v1",
+      "parameters": {
+        "start": 0,
+        "distance": 3
+      },
+      "outputs": [
+        2,
+        4,
+        4
+      ],
+      "iterations": [
+        2
+      ],
+      "last": [
+        4
+      ],
+      "gaps": {
+        "count": "n:2",
+        "last": "n:4"
+      }
+    }
+  ]
+}

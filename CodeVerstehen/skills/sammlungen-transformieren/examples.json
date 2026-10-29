@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "template_id": "transform-filter-v1",
+      "parameters": {
+        "start": 2
+      },
+      "last_outputs": [
+        2,
+        3
+      ]
+    },
+    {
+      "template_id": "transform-sort-v1",
+      "parameters": {
+        "large": 11
+      },
+      "last_outputs": [
+        1,
+        11
+      ]
+    },
+    {
+      "template_id": "transform-summary-v1",
+      "parameters": {
+        "start": 1
+      },
+      "last_outputs": [
+        6,
+        14
+      ]
+    }
+  ]
+}

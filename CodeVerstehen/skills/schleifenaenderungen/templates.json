@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "loop-boundary-v1",
+      "chapter": 3,
+      "mode": "loop-change",
+      "difficulty": 1,
+      "type": "gap-fill",
+      "title": "Eine weitere Runde am Grenzwert",
+      "context": "In B wird der Grenzwert durch <= eingeschlossen.",
+      "prompt": "Beide Programme starten getrennt. Welche letzte Ausgabe erscheint jeweils nach der Schleife?",
+      "choicePrompt": "Welche Antwort nennt die letzten Ausgaben von A und B richtig?",
+      "criteria": [
+        "loop-change",
+        "loop-trace"
+      ],
+      "hints": [
+        "Starte A mit eigenen Werten und prüfe nach jeder Änderung erneut.",
+        "Starte B getrennt. Beachte die geänderte Grenze, Schrittweite oder Reihenfolge."
+      ]
+    },
+    {
+      "id": "loop-stride-v1",
+      "chapter": 3,
+      "mode": "loop-change",
+      "difficulty": 2,
+      "type": "gap-fill",
+      "title": "Andere Schrittweite, anderer Endwert",
+      "context": "B erhöht den Zähler um 2 statt um 1.",
+      "prompt": "Beide Programme starten getrennt. Welche letzte Ausgabe erscheint jeweils nach der Schleife?",
+      "choicePrompt": "Welche Antwort nennt die letzten Ausgaben von A und B richtig?",
+      "criteria": [
+        "loop-change",
+        "loop-trace"
+      ],
+      "hints": [
+        "Starte A mit eigenen Werten und prüfe nach jeder Änderung erneut.",
+        "Starte B getrennt. Beachte die geänderte Grenze, Schrittweite oder Reihenfolge."
+      ]
+    },
+    {
+      "id": "loop-sum-order-v1",
+      "chapter": 3,
+      "mode": "loop-change",
+      "difficulty": 3,
+      "type": "gap-fill",
+      "title": "Dieselben Runden, andere Summen",
+      "context": "In B wird der Zähler zuerst erhöht und danach zur Summe addiert.",
+      "prompt": "Beide Programme starten getrennt. Welche letzte Ausgabe erscheint jeweils nach der Schleife?",
+      "choicePrompt": "Welche Antwort nennt die letzten Ausgaben von A und B richtig?",
+      "criteria": [
+        "loop-change",
+        "loop-trace"
+      ],
+      "hints": [
+        "Starte A mit eigenen Werten und prüfe nach jeder Änderung erneut.",
+        "Starte B getrennt. Beachte die geänderte Grenze, Schrittweite oder Reihenfolge."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "template_id": "continue-one-v1",
+      "parameters": {
+        "skip": 2
+      },
+      "last_outputs": [
+        8,
+        4
+      ]
+    },
+    {
+      "template_id": "continue-filter-v1",
+      "parameters": {
+        "skip": 2
+      },
+      "last_outputs": [
+        8,
+        3
+      ]
+    },
+    {
+      "template_id": "continue-break-v1",
+      "parameters": {
+        "limit": 4
+      },
+      "last_outputs": [
+        4,
+        4
+      ]
+    }
+  ]
+}

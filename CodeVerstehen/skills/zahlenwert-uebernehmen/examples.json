@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "cases": [
+    { "template_id": "copy-direct-v1", "parameters": { "start": 3, "replacement": 8 }, "states": [{"a":3},{"a":3,"b":3},{"a":8,"b":3},{"a":8,"b":3},{"a":8,"b":3}], "outputs": [3,8], "solution": {"first":3,"second":8}, "cards": [3,8,11] },
+    { "template_id": "copy-calculated-v1", "parameters": { "start": 3, "add": 2, "factor": 4 }, "states": [{"a":3},{"a":3,"b":5},{"a":12,"b":5},{"a":12,"b":5},{"a":12,"b":5}], "outputs": [5,12], "solution": {"first":5,"second":12}, "cards": [3,5,12,14] },
+    { "template_id": "copy-return-v1", "parameters": { "start": 3, "add": 2, "factor": 2 }, "states": [{"a":3},{"a":3,"b":5},{"a":10,"b":5},{"a":10,"b":6},{"a":10,"b":6},{"a":10,"b":6}], "outputs": [10,6], "solution": {"first":10,"second":6}, "cards": [5,6,10,12] }
+  ]
+}

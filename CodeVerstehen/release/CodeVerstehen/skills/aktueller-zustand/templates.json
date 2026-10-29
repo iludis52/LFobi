@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "state-direct-v1", "type": "gap-fill", "difficulty": 1, "mode": "current-state",
+      "title": "Welcher Wert gilt jetzt?",
+      "prompt": "Welchen Wert hat wert nach der genannten Zeile, und welche Zahl wird am Ende ausgegeben? Wähle für beide Lücken eine Zahl. Du darfst Zahlen mehrfach verwenden.",
+      "criteria": ["state-current-value", "state-output-unchanged"],
+      "hints": ["Welcher Wert entsteht bei der zweiten Zuweisung?", "Die Ausgabe liest den zuletzt zugewiesenen Wert."]
+    },
+    {
+      "id": "state-chain-v1", "type": "gap-fill", "difficulty": 2, "mode": "current-state",
+      "title": "Zwei Rechnungen verfolgen",
+      "prompt": "Welchen Wert hat wert nach der genannten Zeile, und welche Zahl wird am Ende ausgegeben? Wähle für beide Lücken eine Zahl. Du darfst Zahlen mehrfach verwenden.",
+      "criteria": ["state-current-value", "state-output-unchanged"],
+      "hints": ["Welchen Wert hat wert unmittelbar vor der Multiplikation?", "Welche Zuweisung steht direkt vor der letzten Ausgabe?"]
+    },
+    {
+      "id": "state-output-between-v1", "type": "gap-fill", "difficulty": 3, "mode": "current-state",
+      "title": "Ausgabe oder neuer Zustand?",
+      "prompt": "Welchen Wert hat wert nach der genannten Zeile, und welche Zahl wird am Ende ausgegeben? Wähle für beide Lücken eine Zahl. Du darfst Zahlen mehrfach verwenden.",
+      "criteria": ["state-current-value", "state-output-unchanged"],
+      "hints": ["Enthält die dritte Zeile eine Zuweisung an wert?", "Die Ausgabe verändert wert nicht. Verfolge danach die nächste Zuweisung."]
+    }
+  ]
+}

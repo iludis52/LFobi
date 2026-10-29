@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "decisions-independent-v1",
+      "chapter": 2,
+      "mode": "decision-chain",
+      "difficulty": 1,
+      "type": "gap-fill",
+      "title": "Dürfen sich zwei Rabatte addieren?",
+      "context": "Ein Shop vergibt zwei Rabatte mit unabhängigen Bedingungen.",
+      "prompt": "Bestimme den gesamten Rabatt und den ausgegebenen Endpreis.",
+      "choicePrompt": "Bestimme den gesamten Rabatt und den ausgegebenen Endpreis. Wähle genau ein Antwortpaar.",
+      "criteria": [
+        "decision-chain",
+        "trace-selected-path"
+      ],
+      "hints": [
+        "Jedes eigenständige if wird geprüft, auch nach einem Treffer.",
+        "Der Endpreis wird aus preis minus dem gesamten rabatt berechnet."
+      ]
+    },
+    {
+      "id": "decisions-exclusive-v1",
+      "chapter": 2,
+      "mode": "decision-chain",
+      "difficulty": 2,
+      "type": "gap-fill",
+      "title": "Nur der erste passende Rabatt",
+      "context": "Der Shop stellt seine Rabattregel auf eine Entscheidungskette um.",
+      "prompt": "Bestimme den gesamten Rabatt und den ausgegebenen Endpreis.",
+      "choicePrompt": "Bestimme den gesamten Rabatt und den ausgegebenen Endpreis. Wähle genau ein Antwortpaar.",
+      "criteria": [
+        "decision-chain",
+        "trace-selected-path"
+      ],
+      "hints": [
+        "Nach dem ersten zutreffenden Zweig endet die Auswahl der Kette.",
+        "Der zweite Rabatt wird bei einem Treffer im ersten Zweig nicht hinzugefügt."
+      ]
+    },
+    {
+      "id": "decisions-compare-v1",
+      "chapter": 2,
+      "mode": "decision-chain",
+      "difficulty": 3,
+      "type": "gap-fill",
+      "title": "Zwei Rabattregeln im Vergleich",
+      "context": "Programm A addiert unabhängige Rabatte. Programm B verwendet eine Kette.",
+      "prompt": "Beide Programme starten getrennt. Bestimme den Rabatt aus A und aus B.",
+      "choicePrompt": "Beide Programme starten getrennt. Bestimme den Rabatt aus A und aus B. Wähle genau ein Antwortpaar.",
+      "criteria": [
+        "decision-chain",
+        "trace-selected-path"
+      ],
+      "hints": [
+        "In A können beide Blöcke ausgeführt werden.",
+        "In B wird nur der erste passende Block ausgeführt."
+      ]
+    }
+  ]
+}

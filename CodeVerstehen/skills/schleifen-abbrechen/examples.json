@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "template_id": "break-first-v1",
+      "parameters": {
+        "limit": 3
+      },
+      "last_outputs": [
+        3,
+        3
+      ]
+    },
+    {
+      "template_id": "break-sum-v1",
+      "parameters": {
+        "limit": 3
+      },
+      "last_outputs": [
+        3,
+        3
+      ]
+    },
+    {
+      "template_id": "break-search-v1",
+      "parameters": {
+        "start": 2
+      },
+      "last_outputs": [
+        6,
+        2
+      ]
+    }
+  ]
+}

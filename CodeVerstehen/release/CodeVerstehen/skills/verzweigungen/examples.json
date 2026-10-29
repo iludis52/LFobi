@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "template_id": "branch-stock-v1",
+      "parameters": {
+        "stock": 5,
+        "order": 3
+      },
+      "outputs": [
+        "Versand",
+        2
+      ],
+      "finalStates": [
+        {
+          "bestand": 2,
+          "bestellung": 3
+        }
+      ],
+      "solution": {
+        "message": "text:Versand",
+        "stock": "n:2"
+      }
+    },
+    {
+      "template_id": "branch-heating-v1",
+      "parameters": {
+        "temperature": -1
+      },
+      "outputs": [
+        "Heizen",
+        1
+      ],
+      "finalStates": [
+        {
+          "temperatur": 1,
+          "status": "Heizen"
+        }
+      ],
+      "solution": {
+        "status": "text:Heizen",
+        "temperature": "n:1"
+      }
+    },
+    {
+      "template_id": "branch-stamps-v1",
+      "parameters": {
+        "stamps": 7
+      },
+      "outputs": [
+        0,
+        9
+      ],
+      "finalStates": [
+        {
+          "stempel": 9,
+          "gutschein": 0
+        }
+      ],
+      "solution": {
+        "coupon": "n:0",
+        "stamps": "n:9"
+      }
+    }
+  ]
+}

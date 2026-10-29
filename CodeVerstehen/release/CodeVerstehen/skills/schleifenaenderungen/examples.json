@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "template_id": "loop-boundary-v1",
+      "parameters": {
+        "limit": 3
+      },
+      "outputs": [
+        3,
+        4
+      ],
+      "iterations": [
+        3,
+        4
+      ],
+      "last": [
+        3,
+        4
+      ],
+      "gaps": {
+        "a": "n:3",
+        "b": "n:4"
+      }
+    },
+    {
+      "template_id": "loop-stride-v1",
+      "parameters": {
+        "limit": 5
+      },
+      "outputs": [
+        5,
+        6
+      ],
+      "iterations": [
+        5,
+        3
+      ],
+      "last": [
+        5,
+        6
+      ],
+      "gaps": {
+        "a": "n:5",
+        "b": "n:6"
+      }
+    },
+    {
+      "template_id": "loop-sum-order-v1",
+      "parameters": {
+        "stop": 3
+      },
+      "outputs": [
+        6,
+        9
+      ],
+      "iterations": [
+        3,
+        3
+      ],
+      "last": [
+        6,
+        9
+      ],
+      "gaps": {
+        "a": "n:6",
+        "b": "n:9"
+      }
+    }
+  ]
+}

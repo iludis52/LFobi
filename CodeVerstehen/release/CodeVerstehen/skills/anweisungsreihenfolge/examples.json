@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "cases": [
+    { "template_id": "order-replace-v1", "parameters": { "start": 3, "replacement": 8 }, "states": [{"wert":3},{"wert":8},{"wert":8},{"wert":8},{"wert":3},{"wert":3}], "outputs": [8,3], "solution": {"a":8,"b":3}, "cards": [3,8,11] },
+    { "template_id": "order-add-multiply-v1", "parameters": { "start": 3, "add": 2, "factor": 4 }, "states": [{"wert":3},{"wert":5},{"wert":20},{"wert":20},{"wert":3},{"wert":12},{"wert":14},{"wert":14}], "outputs": [20,14], "solution": {"a":20,"b":14}, "cards": [5,12,14,20] },
+    { "template_id": "order-copy-point-v1", "parameters": { "start": 3, "add": 2, "factor": 4 }, "states": [{"a":3},{"a":3,"b":5},{"a":12,"b":5},{"a":12,"b":5},{"a":3},{"a":12},{"a":12,"b":14},{"a":12,"b":14}], "outputs": [5,14], "solution": {"a":5,"b":14}, "cards": [3,5,12,14] }
+  ]
+}

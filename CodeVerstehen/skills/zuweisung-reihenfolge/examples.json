@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "cases": [
+    {"mode":"assignment","parameters":{"start":3,"add":2},"states":[3,5,5],"outputs":[5]},
+    {"mode":"transfer","parameters":{"start":3,"add":2},"states":[3,3,3],"outputs":[5,3]}
+  ],
+  "invalid": [
+    {"reason":"nicht zugelassene Zahl","parameters":{"start":0,"add":2}},
+    {"reason":"kein freier Code","parameters":{"start":"eval()","add":2}}
+  ]
+}

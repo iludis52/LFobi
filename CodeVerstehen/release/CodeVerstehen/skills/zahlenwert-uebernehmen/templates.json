@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "copy-direct-v1", "type": "gap-fill", "difficulty": 1, "mode": "value-copy",
+      "title": "Zwei Namen, welche Werte?",
+      "prompt": "Welche Zahlen werden ausgegeben? Wähle für die erste und die zweite Ausgabe jeweils eine Zahl. Du darfst Zahlen mehrfach verwenden.",
+      "criteria": ["copy-value-at-assignment", "copy-independent-update"],
+      "hints": ["Welche spätere Zeile weist b einen neuen Wert zu?", "Welche Zahl wurde a zuletzt zugewiesen?"]
+    },
+    {
+      "id": "copy-calculated-v1", "type": "gap-fill", "difficulty": 2, "mode": "value-copy",
+      "title": "Eine berechnete Zahl übernehmen",
+      "prompt": "Welche Zahlen werden ausgegeben? Wähle für die erste und die zweite Ausgabe jeweils eine Zahl. Du darfst Zahlen mehrfach verwenden.",
+      "criteria": ["copy-value-at-assignment", "copy-independent-update"],
+      "hints": ["Mit welchem damaligen Wert von a wurde b berechnet?", "Die Zuweisung an b verändert a nicht. Verfolge die spätere Zuweisung an a."]
+    },
+    {
+      "id": "copy-return-v1", "type": "gap-fill", "difficulty": 3, "mode": "value-copy",
+      "title": "Werte in beide Richtungen verwenden",
+      "prompt": "Welche Zahlen werden ausgegeben? Wähle für die erste und die zweite Ausgabe jeweils eine Zahl. Du darfst Zahlen mehrfach verwenden.",
+      "criteria": ["copy-value-at-assignment", "copy-independent-update"],
+      "hints": ["Welchen Wert hatte b, als a neu berechnet wurde?", "Welche Anweisung verändert b zuletzt? Die vorherige Zuweisung an a verändert b nicht."]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "template_id": "map-key-v1",
+      "parameters": {
+        "points": 4
+      },
+      "last_outputs": [
+        4,
+        2
+      ]
+    },
+    {
+      "template_id": "map-update-v1",
+      "parameters": {
+        "points": 4
+      },
+      "last_outputs": [
+        6,
+        2
+      ]
+    },
+    {
+      "template_id": "record-loop-v1",
+      "parameters": {
+        "points": 4
+      },
+      "last_outputs": [
+        10,
+        "Ben"
+      ]
+    },
+    {
+      "template_id": "map-total-v1",
+      "parameters": {
+        "points": 4
+      },
+      "last_outputs": [
+        6,
+        2
+      ]
+    }
+  ]
+}

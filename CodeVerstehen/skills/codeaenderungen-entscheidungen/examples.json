@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "template_id": "change-boundary-v1",
+      "parameters": {
+        "points": 5
+      },
+      "outputs": [
+        "Weiter",
+        "Warten"
+      ],
+      "finalStates": [
+        {
+          "punkte": 5
+        },
+        {
+          "punkte": 5
+        }
+      ],
+      "solution": {
+        "a": "text:Weiter",
+        "b": "text:Warten"
+      }
+    },
+    {
+      "template_id": "change-stock-v1",
+      "parameters": {
+        "stock": 4
+      },
+      "outputs": [
+        0,
+        4
+      ],
+      "finalStates": [
+        {
+          "bestand": 0,
+          "bestellung": 4
+        },
+        {
+          "bestand": 4,
+          "bestellung": 4
+        }
+      ],
+      "solution": {
+        "a": "n:0",
+        "b": "n:4"
+      }
+    },
+    {
+      "template_id": "change-priority-v1",
+      "parameters": {
+        "points": 20
+      },
+      "outputs": [
+        "Gold",
+        "Silber"
+      ],
+      "finalStates": [
+        {
+          "punkte": 20
+        },
+        {
+          "punkte": 20
+        }
+      ],
+      "solution": {
+        "a": "text:Gold",
+        "b": "text:Silber"
+      }
+    }
+  ]
+}

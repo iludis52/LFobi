@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "skills": [
+    "zuweisung-reihenfolge",
+    "aktueller-zustand",
+    "anweisungsreihenfolge",
+    "zahlenwert-uebernehmen",
+    "bedingungen-grenzfaelle",
+    "verzweigungen",
+    "entscheidungsketten",
+    "codeaenderungen-entscheidungen",
+    "feste-wiederholungen",
+    "bedingte-wiederholungen",
+    "zaehler-und-summen",
+    "schleifenaenderungen",
+    "schleifen-abbrechen",
+    "schleifen-fortsetzen",
+    "listen-lesen",
+    "listen-aendern",
+    "listen-durchlaufen",
+    "zuordnungen-datensaetze",
+    "texte-verarbeiten",
+    "sammlungen-transformieren",
+    "funktionen-aufrufen",
+    "rueckgabe-ausgabe",
+    "gueltigkeitsbereiche",
+    "seiteneffekte",
+    "funktionen-verknuepfen",
+    "module-schnittstellen"
+  ]
+}

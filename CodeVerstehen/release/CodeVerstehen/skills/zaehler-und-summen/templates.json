@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "sum-fixed-v1",
+      "chapter": 3,
+      "mode": "loop-accumulator",
+      "difficulty": 1,
+      "type": "gap-fill",
+      "title": "Beträge sammeln und Runden zählen",
+      "context": "Jede Runde fügt denselben Betrag zur Gesamtsumme hinzu.",
+      "prompt": "Wie oft läuft der Rumpf, und was zeigt die letzte Ausgabe nach der Schleife?",
+      "choicePrompt": "Welche Antwort nennt Durchlaufzahl und letzte Ausgabe richtig?",
+      "criteria": [
+        "loop-accumulator",
+        "loop-trace"
+      ],
+      "hints": [
+        "Zähle nur tatsächlich betretene Rumpfdurchläufe. Die letzte falsche Prüfung ist keine weitere Runde.",
+        "Verfolge alle Neuzuweisungen. Die Ausgabe nach der Schleife läuft einmal und verändert keine Variable."
+      ]
+    },
+    {
+      "id": "sum-counter-v1",
+      "chapter": 3,
+      "mode": "loop-accumulator",
+      "difficulty": 2,
+      "type": "gap-fill",
+      "title": "Mit dem aktuellen Zähler addieren",
+      "context": "Die Summe übernimmt in jeder Runde zuerst den aktuellen Zähler.",
+      "prompt": "Wie oft läuft der Rumpf, und was zeigt die letzte Ausgabe nach der Schleife?",
+      "choicePrompt": "Welche Antwort nennt Durchlaufzahl und letzte Ausgabe richtig?",
+      "criteria": [
+        "loop-accumulator",
+        "loop-trace"
+      ],
+      "hints": [
+        "Zähle nur tatsächlich betretene Rumpfdurchläufe. Die letzte falsche Prüfung ist keine weitere Runde.",
+        "Verfolge alle Neuzuweisungen. Die Ausgabe nach der Schleife läuft einmal und verändert keine Variable."
+      ]
+    },
+    {
+      "id": "sum-after-v1",
+      "chapter": 3,
+      "mode": "loop-accumulator",
+      "difficulty": 3,
+      "type": "gap-fill",
+      "title": "Erst erhöhen, dann aufsummieren",
+      "context": "Der Zähler wird vor der Summierung verändert.",
+      "prompt": "Wie oft läuft der Rumpf, und was zeigt die letzte Ausgabe nach der Schleife?",
+      "choicePrompt": "Welche Antwort nennt Durchlaufzahl und letzte Ausgabe richtig?",
+      "criteria": [
+        "loop-accumulator",
+        "loop-trace"
+      ],
+      "hints": [
+        "Zähle nur tatsächlich betretene Rumpfdurchläufe. Die letzte falsche Prüfung ist keine weitere Runde.",
+        "Verfolge alle Neuzuweisungen. Die Ausgabe nach der Schleife läuft einmal und verändert keine Variable."
+      ]
+    }
+  ]
+}

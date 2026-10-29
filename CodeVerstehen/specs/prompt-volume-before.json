@@ -1,0 +1,27 @@
+{
+  "scenario": "Five map-record tasks, stage 1, Python; seed 42; correct first submissions; mocked responses",
+  "measurement": "Message content only; characters and UTF-8 bytes, not provider tokens",
+  "requests": 15,
+  "byPurpose": [
+    {
+      "purpose": "skill-selection",
+      "requests": 5,
+      "characters": 1820,
+      "utf8Bytes": 1840
+    },
+    {
+      "purpose": "task-selection",
+      "requests": 5,
+      "characters": 16649,
+      "utf8Bytes": 17016
+    },
+    {
+      "purpose": "answer-explanation",
+      "requests": 5,
+      "characters": 6212,
+      "utf8Bytes": 6301
+    }
+  ],
+  "totalCharacters": 24681,
+  "totalUtf8Bytes": 25157
+}

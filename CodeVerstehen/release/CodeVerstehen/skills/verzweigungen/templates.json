@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "branch-stock-v1",
+      "chapter": 2,
+      "mode": "branch-choice",
+      "difficulty": 1,
+      "type": "gap-fill",
+      "title": "Kann der Shop die Bestellung versenden?",
+      "context": "Ein Shop versendet nur, wenn genügend Stück auf Lager sind.",
+      "prompt": "Bestimme die erste Ausgabe und den Bestand am Ende.",
+      "choicePrompt": "Bestimme die erste Ausgabe und den Bestand am Ende. Wähle genau ein Antwortpaar.",
+      "criteria": [
+        "branch-choice",
+        "trace-selected-path"
+      ],
+      "hints": [
+        "Wähle genau einen Zweig anhand der ursprünglichen Bestellung und des Bestands.",
+        "Nur im Versandzweig wird der Bestand verringert."
+      ]
+    },
+    {
+      "id": "branch-heating-v1",
+      "chapter": 2,
+      "mode": "branch-choice",
+      "difficulty": 2,
+      "type": "gap-fill",
+      "title": "Heizen oder pausieren?",
+      "context": "Eine Steuerung hebt eine negative Temperatur um zwei Grad an.",
+      "prompt": "Bestimme den ausgegebenen Heizstatus und die Temperatur am Ende.",
+      "choicePrompt": "Bestimme den ausgegebenen Heizstatus und die Temperatur am Ende. Wähle genau ein Antwortpaar.",
+      "criteria": [
+        "branch-choice",
+        "trace-selected-path"
+      ],
+      "hints": [
+        "Die ursprüngliche Temperatur entscheidet über den Zweig.",
+        "Verfolge die Temperaturänderung ausschließlich im ausgeführten Block."
+      ]
+    },
+    {
+      "id": "branch-stamps-v1",
+      "chapter": 2,
+      "mode": "branch-choice",
+      "difficulty": 3,
+      "type": "gap-fill",
+      "title": "Die Stempelkarte im Café",
+      "context": "Ab acht Stempeln wird ein Gutschein eingelöst. Sonst gibt es zwei neue Stempel.",
+      "prompt": "Bestimme die Anzahl der Gutscheine und Stempel am Ende.",
+      "choicePrompt": "Bestimme die Anzahl der Gutscheine und Stempel am Ende. Wähle genau ein Antwortpaar.",
+      "criteria": [
+        "branch-choice",
+        "trace-selected-path"
+      ],
+      "hints": [
+        "Ein if wird nach einer Änderung im else-Block nicht erneut geprüft.",
+        "Nur einer der beiden Zweige verändert die Stempelzahl."
+      ]
+    }
+  ]
+}

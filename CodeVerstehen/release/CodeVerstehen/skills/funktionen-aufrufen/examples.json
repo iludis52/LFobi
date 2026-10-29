@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "template_id": "function-definition-v1",
+      "parameters": {
+        "start": 3
+      },
+      "last_outputs": [
+        3,
+        5
+      ]
+    },
+    {
+      "template_id": "function-arguments-v1",
+      "parameters": {
+        "start": 3,
+        "bonus": 1
+      },
+      "last_outputs": [
+        7,
+        5
+      ]
+    },
+    {
+      "template_id": "function-repeat-v1",
+      "parameters": {
+        "start": 3
+      },
+      "last_outputs": [
+        5,
+        3
+      ]
+    }
+  ]
+}

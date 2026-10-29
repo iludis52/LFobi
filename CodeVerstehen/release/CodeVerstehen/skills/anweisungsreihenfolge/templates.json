@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "order-replace-v1", "type": "gap-fill", "difficulty": 1, "mode": "statement-order",
+      "title": "Welche Zuweisung kommt zuletzt?",
+      "prompt": "Die Programme A und B starten getrennt. Welche Zahl gibt Programm A aus, welche Programm B? Wähle für beide Lücken eine Zahl. Du darfst Zahlen mehrfach verwenden.",
+      "criteria": ["K1", "order-dependent-result"],
+      "hints": ["Welche Zuweisung steht in Programm A direkt vor der Ausgabe?", "Beginne Programm B neu. Welche Zuweisung steht dort direkt vor der Ausgabe?"]
+    },
+    {
+      "id": "order-add-multiply-v1", "type": "gap-fill", "difficulty": 2, "mode": "statement-order",
+      "title": "Erst addieren oder multiplizieren?",
+      "prompt": "Die Programme A und B starten getrennt. Welche Zahl gibt Programm A aus, welche Programm B? Wähle für beide Lücken eine Zahl. Du darfst Zahlen mehrfach verwenden.",
+      "criteria": ["K1", "state-current-value", "order-dependent-result"],
+      "hints": ["Verwende in Programm A nach jeder Zuweisung den neuen Wert.", "Beginne Programm B wieder beim Anfangswert und beachte die vertauschte Reihenfolge."]
+    },
+    {
+      "id": "order-copy-point-v1", "type": "gap-fill", "difficulty": 3, "mode": "statement-order",
+      "title": "Wann wird der Wert übernommen?",
+      "prompt": "Die Programme A und B starten getrennt. Welche Zahl gibt Programm A aus, welche Programm B? Wähle für beide Lücken eine Zahl. Du darfst Zahlen mehrfach verwenden.",
+      "criteria": ["K1", "copy-value-at-assignment", "order-dependent-result"],
+      "hints": ["Welchen Wert hat a in Programm A, wenn b berechnet wird?", "Welchen Wert hat a in Programm B, wenn b berechnet wird?"]
+    }
+  ]
+}

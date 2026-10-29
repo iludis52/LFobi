@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "template_id": "sum-fixed-v1",
+      "parameters": {
+        "count": 3,
+        "amount": 2
+      },
+      "outputs": [
+        6
+      ],
+      "iterations": [
+        3
+      ],
+      "last": [
+        6
+      ],
+      "gaps": {
+        "count": "n:3",
+        "last": "n:6"
+      }
+    },
+    {
+      "template_id": "sum-counter-v1",
+      "parameters": {
+        "stop": 3
+      },
+      "outputs": [
+        6
+      ],
+      "iterations": [
+        3
+      ],
+      "last": [
+        6
+      ],
+      "gaps": {
+        "count": "n:3",
+        "last": "n:6"
+      }
+    },
+    {
+      "template_id": "sum-after-v1",
+      "parameters": {
+        "stop": 3
+      },
+      "outputs": [
+        2,
+        5,
+        9,
+        9
+      ],
+      "iterations": [
+        3
+      ],
+      "last": [
+        9
+      ],
+      "gaps": {
+        "count": "n:3",
+        "last": "n:9"
+      }
+    }
+  ]
+}

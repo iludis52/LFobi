@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "template_id": "condition-level-v1",
+      "parameters": {
+        "points": 5,
+        "goal": 5
+      },
+      "outputs": [
+        true
+      ],
+      "finalStates": [
+        {
+          "punkte": 5,
+          "ziel": 5
+        }
+      ],
+      "solution": {
+        "condition": "true",
+        "points": "n:5"
+      }
+    },
+    {
+      "template_id": "condition-zero-v1",
+      "parameters": {
+        "temperature": 0
+      },
+      "outputs": [
+        false,
+        true
+      ],
+      "finalStates": [
+        {
+          "temperatur": 0
+        }
+      ],
+      "solution": {
+        "strict": "false",
+        "inclusive": "true"
+      }
+    },
+    {
+      "template_id": "condition-bonus-v1",
+      "parameters": {
+        "points": 3,
+        "bonus": 2,
+        "goal": 5
+      },
+      "outputs": [
+        true
+      ],
+      "finalStates": [
+        {
+          "punkte": 3,
+          "bonus": 2
+        }
+      ],
+      "solution": {
+        "condition": "true",
+        "points": "n:3"
+      }
+    }
+  ]
+}

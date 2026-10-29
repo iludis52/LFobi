@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "text-split-v1",
+      "chapter": 4,
+      "mode": "text-processing",
+      "difficulty": 1,
+      "type": "gap-fill",
+      "title": "Texte zerlegen und zusammensetzen · Einstieg",
+      "context": "split zerlegt den Text am Trennzeichen. Die resultierende Liste bzw. das Array hat wieder Indizes ab 0.",
+      "prompt": "Verfolge das Programm. Welche Werte zeigen die beiden letzten Ausgaben? Frühere Ausgaben aus Aufrufen sind zusätzliche Beobachtungen.",
+      "choicePrompt": "Welche Antwort nennt die beiden letzten Ausgaben richtig?",
+      "criteria": [
+        "text-processing",
+        "trace-observations"
+      ],
+      "hints": [
+        "split zerlegt den Text am Trennzeichen. Die resultierende Liste bzw. das Array hat wieder Indizes ab 0.",
+        "split zerlegt den Text am Trennzeichen. Die resultierende Liste bzw. das Array hat wieder Indizes ab 0."
+      ]
+    },
+    {
+      "id": "text-join-v1",
+      "chapter": 4,
+      "mode": "text-processing",
+      "difficulty": 2,
+      "type": "gap-fill",
+      "title": "Texte zerlegen und zusammensetzen · Ablauf verfolgen",
+      "context": "join setzt Teile mit einem Trennzeichen zusammen. upper bzw. toUpperCase liefert neuen Text; find/indexOf liefert eine Position ab 0 oder −1.",
+      "prompt": "Verfolge das Programm. Welche Werte zeigen die beiden letzten Ausgaben? Frühere Ausgaben aus Aufrufen sind zusätzliche Beobachtungen.",
+      "choicePrompt": "Welche Antwort nennt die beiden letzten Ausgaben richtig?",
+      "criteria": [
+        "text-processing",
+        "trace-observations"
+      ],
+      "hints": [
+        "join setzt Teile mit einem Trennzeichen zusammen. upper bzw. toUpperCase liefert neuen Text; find/indexOf liefert eine Position ab 0 oder −1.",
+        "join setzt Teile mit einem Trennzeichen zusammen. upper bzw. toUpperCase liefert neuen Text; find/indexOf liefert eine Position ab 0 oder −1."
+      ]
+    },
+    {
+      "id": "text-replace-v1",
+      "chapter": 4,
+      "mode": "text-processing",
+      "difficulty": 3,
+      "type": "gap-fill",
+      "title": "Texte zerlegen und zusammensetzen · Übertragen",
+      "context": "Text wird nicht an Ort und Stelle verändert. Python replace ersetzt hier alle Vorkommen; die JavaScript-Fassung split/join tut dasselbe. Nicht gefunden ergibt −1.",
+      "prompt": "Verfolge das Programm. Welche Werte zeigen die beiden letzten Ausgaben? Frühere Ausgaben aus Aufrufen sind zusätzliche Beobachtungen.",
+      "choicePrompt": "Welche Antwort nennt die beiden letzten Ausgaben richtig?",
+      "criteria": [
+        "text-processing",
+        "trace-observations"
+      ],
+      "hints": [
+        "Text wird nicht an Ort und Stelle verändert. Python replace ersetzt hier alle Vorkommen; die JavaScript-Fassung split/join tut dasselbe. Nicht gefunden ergibt −1.",
+        "Text wird nicht an Ort und Stelle verändert. Python replace ersetzt hier alle Vorkommen; die JavaScript-Fassung split/join tut dasselbe. Nicht gefunden ergibt −1."
+      ]
+    }
+  ]
+}

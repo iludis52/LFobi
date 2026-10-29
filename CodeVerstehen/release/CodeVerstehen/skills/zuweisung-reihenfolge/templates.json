@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "assignment-single-v1", "type": "single-choice", "difficulty": 1, "mode": "assignment",
+      "title": "Was geschieht zuerst?", "prompt": "In welcher Reihenfolge geschieht die zweite Anweisung?",
+      "criteria": ["K4"],
+      "options": [
+        {"id":"calculate-first","text":"Zuerst rechts berechnen, danach das Ergebnis links zuweisen.","correct":true},
+        {"id":"assign-first","text":"Zuerst links zuweisen, danach den Ausdruck rechts berechnen.","correct":false,"hint":"Woher kommt der neue Wert? Betrachte zuerst die rechte Seite."},
+        {"id":"compare","text":"Beide Seiten vergleichen, danach die Gleichheit direkt ausgeben.","correct":false,"hint":"Das Zeichen = ordnet einen Wert zu. Es prüft hier keine Gleichheit."}
+      ]
+    },
+    {
+      "id": "assignment-multiple-v1", "type": "multiple-choice", "difficulty": 1, "mode": "assignment",
+      "title": "Lesen, rechnen, zuweisen", "prompt": "Kreuze alle richtigen Aussagen zur zweiten Anweisung an.",
+      "criteria": ["K4", "K2"],
+      "options": [
+        {"id":"read-old","text":"Rechts wird zuerst mit dem bisherigen Wert gerechnet.","correct":true},
+        {"id":"assign-result","text":"Links wird anschließend das Ergebnis der Berechnung zugewiesen.","correct":true},
+        {"id":"unknown-value","text":"Links wird zuerst ein noch unbekannter Wert eingesetzt.","correct":false,"hint":"Der neue Wert entsteht durch die Berechnung; er wird nicht vorher eingesetzt."},
+        {"id":"equality","text":"Beide Seiten müssen bereits vor der Ausführung übereinstimmen.","correct":false,"hint":"Eine Zuweisung verändert die Zuordnung. Beide Seiten müssen vorher nicht gleich sein."}
+      ]
+    },
+    {
+      "id": "assignment-code-v1", "type": "code-selection", "difficulty": 1, "mode": "assignment",
+      "title": "Wo beginnt die Berechnung?", "prompt": "Wähle in der zweiten Zeile den Ausdruck, der zuerst ausgewertet wird. Wähle zusätzlich den Wert, der dabei für wert eingesetzt wird.",
+      "criteria": ["K4", "K2"]
+    },
+    {
+      "id": "assignment-gaps-v1", "type": "gap-fill", "difficulty": 2, "mode": "assignment",
+      "title": "Welcher Wert gehört wohin?", "prompt": "Wähle für jede Lücke den passenden Wert. Du darfst einen Wert mehrfach verwenden.",
+      "criteria": ["K4", "K2"]
+    },
+    {
+      "id": "assignment-order-v1", "type": "ordering", "difficulty": 2, "mode": "assignment",
+      "title": "Ordne den Ablauf", "prompt": "Ordne die Schritte der zweiten Anweisung von oben nach unten.",
+      "criteria": ["K4", "K2"],
+      "steps": [
+        {"id":"read","text":"Bisherigen Wert von wert lesen."},
+        {"id":"calculate","text":"Addition berechnen und Ergebnis erhalten."},
+        {"id":"assign","text":"Ergebnis dem Namen wert zuordnen."}
+      ]
+    },
+    {
+      "id": "assignment-diagram-v1", "type": "diagram-choice", "difficulty": 2, "mode": "assignment",
+      "title": "Welches Ablaufbild passt?", "prompt": "Wähle das Diagramm, das die zweite Anweisung von links nach rechts beschreibt.",
+      "criteria": ["K4"],
+      "diagrams": [
+        {"id":"read-calculate-assign","nodes":["Bisherigen Wert lesen","Neues Ergebnis berechnen","Ergebnis neu zuweisen"],"correct":true},
+        {"id":"assign-read-calculate","nodes":["Ergebnis neu zuweisen","Bisherigen Wert lesen","Neues Ergebnis berechnen"],"correct":false,"hint":"Das Ergebnis kann erst zugewiesen werden, nachdem es berechnet wurde."},
+        {"id":"calculate-assign-read","nodes":["Neues Ergebnis berechnen","Ergebnis neu zuweisen","Bisherigen Wert lesen"],"correct":false,"hint":"Für die Addition wird zuerst der bisherige Wert benötigt."}
+      ]
+    },
+    {
+      "id": "transfer-multiple-v1", "type": "multiple-choice", "difficulty": 3, "mode": "transfer",
+      "title": "Zwei Ausgaben, welcher Zustand?", "prompt": "Kreuze alle richtigen Aussagen zu den beiden Ausgaben an.",
+      "criteria": ["expression-vs-assignment"],
+      "options": [
+        {"id":"first-sum","text":"Die erste Ausgabe zeigt das berechnete Ergebnis {sum}.","correct":true},
+        {"id":"second-old","text":"Die zweite Ausgabe zeigt den unveränderten Wert {start}.","correct":true},
+        {"id":"first-assigns","text":"Die erste Ausgabe weist der Variable {sum} zu.","correct":false,"hint":"Die zweite Zeile berechnet und zeigt einen Wert. Eine Neuzuweisung fehlt."},
+        {"id":"second-sum","text":"Die zweite Ausgabe zeigt ebenfalls den Wert {sum}.","correct":false,"hint":"Welche Anweisung hätte wert verändern müssen? Suche nach einer Neuzuweisung."}
+      ]
+    },
+    {
+      "id": "transfer-diagram-v1", "type": "diagram-choice", "difficulty": 3, "mode": "transfer",
+      "title": "Berechnung oder neuer Zustand?", "prompt": "Welches Diagramm zeigt die beiden Ausgaben und den Wert am Ende?",
+      "criteria": ["expression-vs-assignment"],
+      "diagrams": [
+        {"id":"unchanged","nodes":["Erste Ausgabe {sum}","Zweite Ausgabe {start}","wert bleibt {start}"],"correct":true},
+        {"id":"assigned","nodes":["Erste Ausgabe {sum}","Zweite Ausgabe {sum}","wert wird {sum}"],"correct":false,"hint":"Ausgeben allein verändert wert nicht. Wo steht eine Neuzuweisung?"},
+        {"id":"no-calculation","nodes":["Erste Ausgabe {start}","Zweite Ausgabe {start}","wert bleibt {start}"],"correct":false,"hint":"Auch innerhalb der ersten Ausgabe wird der Ausdruck rechts berechnet."}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "template_id": "compose-nested-v1",
+      "parameters": {
+        "start": 3
+      },
+      "last_outputs": [
+        8,
+        3
+      ]
+    },
+    {
+      "template_id": "compose-order-v1",
+      "parameters": {
+        "start": 3
+      },
+      "last_outputs": [
+        8,
+        7
+      ]
+    },
+    {
+      "template_id": "compose-loop-v1",
+      "parameters": {
+        "start": 2
+      },
+      "last_outputs": [
+        18,
+        3
+      ]
+    }
+  ]
+}

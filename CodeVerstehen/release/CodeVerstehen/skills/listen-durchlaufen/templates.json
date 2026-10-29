@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "list-sum-v1",
+      "chapter": 4,
+      "mode": "list-iteration",
+      "difficulty": 1,
+      "type": "gap-fill",
+      "title": "Listen elementweise durchlaufen · Einstieg",
+      "context": "Die Schleife besucht Werte, nicht Indizes. Jede Zahl trägt einmal zur Summe bei.",
+      "prompt": "Verfolge das Programm. Welche Werte zeigen die beiden letzten Ausgaben? Frühere Ausgaben aus Aufrufen sind zusätzliche Beobachtungen.",
+      "choicePrompt": "Welche Antwort nennt die beiden letzten Ausgaben richtig?",
+      "criteria": [
+        "list-iteration",
+        "trace-observations"
+      ],
+      "hints": [
+        "Die Schleife besucht Werte, nicht Indizes. Jede Zahl trägt einmal zur Summe bei.",
+        "Die Schleife besucht Werte, nicht Indizes. Jede Zahl trägt einmal zur Summe bei."
+      ]
+    },
+    {
+      "id": "list-map-v1",
+      "chapter": 4,
+      "mode": "list-iteration",
+      "difficulty": 2,
+      "type": "gap-fill",
+      "title": "Listen elementweise durchlaufen · Ablauf verfolgen",
+      "context": "Die Transformation baut eine neue Sammlung auf; die ursprünglichen Werte werden nicht ersetzt.",
+      "prompt": "Verfolge das Programm. Welche Werte zeigen die beiden letzten Ausgaben? Frühere Ausgaben aus Aufrufen sind zusätzliche Beobachtungen.",
+      "choicePrompt": "Welche Antwort nennt die beiden letzten Ausgaben richtig?",
+      "criteria": [
+        "list-iteration",
+        "trace-observations"
+      ],
+      "hints": [
+        "Die Transformation baut eine neue Sammlung auf; die ursprünglichen Werte werden nicht ersetzt.",
+        "Die Transformation baut eine neue Sammlung auf; die ursprünglichen Werte werden nicht ersetzt."
+      ]
+    },
+    {
+      "id": "list-count-v1",
+      "chapter": 4,
+      "mode": "list-iteration",
+      "difficulty": 3,
+      "type": "gap-fill",
+      "title": "Listen elementweise durchlaufen · Übertragen",
+      "context": "Anzahl und Summe sind verschiedene Akkumulatoren. Nur Elemente mit wahrer Bedingung verändern sie.",
+      "prompt": "Verfolge das Programm. Welche Werte zeigen die beiden letzten Ausgaben? Frühere Ausgaben aus Aufrufen sind zusätzliche Beobachtungen.",
+      "choicePrompt": "Welche Antwort nennt die beiden letzten Ausgaben richtig?",
+      "criteria": [
+        "list-iteration",
+        "trace-observations"
+      ],
+      "hints": [
+        "Anzahl und Summe sind verschiedene Akkumulatoren. Nur Elemente mit wahrer Bedingung verändern sie.",
+        "Anzahl und Summe sind verschiedene Akkumulatoren. Nur Elemente mit wahrer Bedingung verändern sie."
+      ]
+    }
+  ]
+}

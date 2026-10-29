@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Code verstehen · Entscheidungen</title><link rel="stylesheet" href="./styles.css"><script type="module" src="./app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./">Lernlabor <span id="lab-language">Python</span></a>
+    <div class="model-monitor" aria-label="Modellstatus und Tokenverbrauch">
+      <button id="settings-open" class="quiet">Verbindung <span id="provider-label">Demo</span></button>
+      <div class="model-connection"><span id="model-status" class="model-status" role="status">Demo · ohne LLM</span><span id="model-identity" class="model-identity">Lokale Aufgaben</span><span id="model-last-check" class="model-last-check"></span></div>
+      <button id="token-details-open" class="token-meter" aria-label="Tokenverbrauch und Debugging öffnen"><span>Tokens <strong id="token-total">0</strong><span id="token-incomplete"></span></span><small id="token-split">Ein 0 · Aus 0</small></button>
+    </div>
+    <div class="compact-selection" role="group" aria-label="Lernauswahl">
+      <label for="chapter">Kapitel<select id="chapter" disabled aria-label="Kapitel"><option value="2">2 · Entscheidungen</option></select></label>
+      <label for="learning-objective">Thema<select id="learning-objective" disabled aria-label="Thema"><option value="condition-check">Bedingungen</option></select></label>
+      <label for="language">Sprache<select id="language" aria-label="Sprache"><option value="python">Python</option><option value="javascript">JavaScript</option></select></label>
+      <button id="difficulty" type="button" value="1" aria-label="Schwierigkeit 1 von 3: Einfach. Klicken für Mittel." aria-describedby="selection-note"><span id="difficulty-label">1/3</span></button>
+    </div>
+    <button id="selection-apply" class="secondary" disabled>Auswahl bestätigen</button>
+  </header>
+  <main class="layout">
+    <aside class="learning-panel" aria-label="Kapitelinhalt und Erklärung">
+      <button id="teacher-open" class="secondary overview-button">Lernübersicht</button>
+      <p class="eyebrow" id="chapter-eyebrow">KAPITEL 02 · ENTSCHEIDUNGEN</p>
+      <h1>Schritt für Schritt verstehen.</h1>
+      <p class="lead" id="chapter-lead">Welcher Zweig läuft? Was wird übersprungen?</p>
+      <div id="chapter-content"><p>Erklärung wird geladen …</p></div>
+      <p class="aside-note">Die Erklärung bleibt für dich sichtbar. Du darfst sie jederzeit nutzen.</p>
+    </aside>
+    <section class="practice" aria-label="Aufgaben">
+      <div class="practice-heading"><h2 id="topic-heading">Bedingungen und Grenzwerte</h2><span id="chapter-tag" class="chapter-tag">Kapitel 2</span></div>
+      <span id="selection-note" class="selection-status small" role="status">Änderungen bestätigen, um die aktuelle Aufgabe sofort zu ersetzen.</span>
+      <div class="progress" id="progress" aria-label="Bisherige Ergebnisse"></div>
+      <div id="notice" role="status" aria-live="polite"></div>
+      <article class="task-card" id="task-card" aria-busy="true">
+        <div class="task-meta"><span id="task-type" class="tag">Aufgabe wird geladen</span><span id="task-difficulty" class="tag"></span><span id="task-kind" class="tag" hidden></span><span id="task-source" class="source"></span></div>
+        <h3 id="task-title" tabindex="-1">Deine erste Aufgabe</h3><p id="task-context" class="task-context" hidden></p><p id="task-prompt"></p>
+        <div class="task-body"><div class="code-panel"><div class="code-header"><span id="file-name">lektion.py</span><span id="code-note">Vorhersagen vor dem Absenden</span></div><pre id="code" aria-label="Programm"></pre><section id="short-explanation" class="short-explanation" aria-live="polite" hidden></section></div>
+        <div class="answer-column"><form id="answer-form"><div id="answer-fields"></div><div class="answer-actions"><button id="submit" type="submit" class="primary" disabled>Absenden</button><span id="submit-note">Eine Abgabe zählt als eine Aufgabe.</span></div></form>
+        <section id="feedback" class="feedback" aria-live="polite" hidden></section></div></div>
+      </article>
+      <div class="next-row"><button id="next" class="primary" disabled>Nächste Aufgabe →</button><span id="next-note">Gleicher Lerninhalt, neue Variante.</span></div>
+      <div class="adaptation-controls"><span id="adaptation-note" aria-live="polite"></span><button id="learning-reset" class="quiet" type="button">Übungsgedächtnis zurücksetzen</button></div>
+        <p id="scope-note" class="scope-note">5 Kapitel · 26 Aufgabenfamilien · 84 Vorlagen · 3 Schwierigkeiten</p>
+    </section>
+  </main>
+  <dialog id="settings"><form id="settings-form">
+    <div class="dialog-heading"><h2>Dein KI-Modell</h2><button type="button" id="settings-close" class="quiet" aria-label="Verbindung schließen">✕</button></div>
+    <p>Bei Verzweigungen entwirft das Modell neue Programme und Situationen innerhalb des eingeführten Lernumfangs. Bei den übrigen Themen variiert es geprüfte Vorlagen. Die App prüft Aufgaben und berechnet Ablauf und richtige Antworten selbst.</p>
+    <label>Anbieter<select id="provider"><option value="demo">Demo · geprüfte Vorlagen</option><option value="lmstudio">LM Studio · lokal</option><option value="deepinfra">DeepInfra · API</option></select></label>
+    <div id="lm-fields" hidden><label>Lokale API-Adresse<input id="base-url" value="http://127.0.0.1:1234/v1" type="url"></label><p class="small">Der Browser verbindet sich direkt mit deinem LM Studio. Aktiviere dort „Enable CORS“. Beim Verbindungstest kann dein Browser um Zugriff auf lokale Dienste bitten.</p></div>
+    <div id="model-fields" hidden><label>Modell-ID<input id="model" autocomplete="off" placeholder="Modell-ID aus LM Studio"></label><label>API-Key <small id="key-note">Optional</small><input id="api-key" type="password" autocomplete="off"></label><p class="small">Der persönliche Key bleibt im Arbeitsspeicher dieses Tabs. Modellanfragen gehen direkt vom Browser an den Anbieter. Ein gemeinsamer Kurs-Key gehört nicht in diese Seite. Für die Aufgabenwahl werden kompakte Befunde der letzten drei Aufgaben übermittelt. Für die Kurzerklärung werden die aktuelle Antwort und die geprüfte Referenz übertragen. Jede Kurzerklärung benötigt einen zusätzlichen Modellaufruf. Falls der Anbieter Browserzugriff blockiert, bleibt die Demo verfügbar.</p></div>
+    <p id="settings-status" role="status"></p><div class="button-row"><button type="button" id="connect" class="secondary" disabled>Verbindung testen</button><button type="submit" class="primary">Übernehmen</button></div>
+    <p class="small">Ohne Modell funktioniert der vollständige Übungsablauf mit kuratierten Vorlagen.</p>
+  </form></dialog>
+  <dialog id="teacher">
+    <div class="dialog-heading"><h2>Lernübersicht</h2><button id="teacher-close" class="quiet" aria-label="Lernübersicht schließen">✕</button></div>
+    <p>Jede angenommene Abgabe zählt einmal. Wiederholungen werden gekennzeichnet. Die Ergebnisse sind keine Noten.</p>
+    <div id="summary" class="summary"></div><div id="level-summary"></div>
+    <div class="button-row"><button id="export" class="primary">Sitzung exportieren</button><label class="import-button">Sitzungen importieren<input id="import" type="file" accept="application/json,.json" multiple></label></div>
+    <div id="records"></div><p id="teacher-status" role="status"></p><p id="legacy-note" class="small"></p>
+  </dialog>
+  <dialog id="model-details">
+    <div class="dialog-heading"><h2>Modellverbrauch</h2><button id="token-details-close" class="quiet" aria-label="Modellverbrauch schließen">✕</button></div>
+    <p>Gezählt werden die vom Anbieter gemeldeten Tokens aller Modellaufrufe dieser App, einschließlich Verbindungstests und verworfener Modellantworten. Ein- und Ausgabe werden getrennt erfasst.</p>
+    <div id="token-summary"></div><p id="token-storage-note" class="small"></p>
+    <h3>Nach Anbieter und Modell</h3><div id="token-models"></div>
+    <h3>Letzte Anfragen</h3><div id="token-requests"></div>
+    <p class="small">Verbindungsstatus: letzte erfolgreiche Modellantwort. Nach fünf Minuten ohne neue Antwort wird „Zuletzt verbunden“ angezeigt. Es werden keine automatischen kostenpflichtigen Prüfaufrufe gesendet. Fehlende Verbrauchsdaten sind als offen gekennzeichnet, nicht als kostenlos.</p>
+    <button id="token-export" class="secondary">Verbrauchsdaten exportieren</button>
+  </dialog>
+</body>
+</html>

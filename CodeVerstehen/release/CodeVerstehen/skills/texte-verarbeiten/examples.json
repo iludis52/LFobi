@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "template_id": "text-split-v1",
+      "parameters": {
+        "index": 1
+      },
+      "last_outputs": [
+        "blau",
+        3
+      ]
+    },
+    {
+      "template_id": "text-join-v1",
+      "parameters": {
+        "index": 1
+      },
+      "last_outputs": [
+        "ROT-BLAU",
+        4
+      ]
+    },
+    {
+      "template_id": "text-replace-v1",
+      "parameters": {
+        "missing": 1
+      },
+      "last_outputs": [
+        "rot-rot",
+        -1
+      ]
+    }
+  ]
+}

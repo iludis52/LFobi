@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "template_id": "repeat-fixed-v1",
+      "parameters": {
+        "count": 3
+      },
+      "outputs": [
+        3
+      ],
+      "iterations": [
+        3
+      ],
+      "last": [
+        3
+      ],
+      "gaps": {
+        "count": "n:3",
+        "last": "n:3"
+      }
+    },
+    {
+      "template_id": "repeat-step-v1",
+      "parameters": {
+        "count": 3,
+        "amount": 2
+      },
+      "outputs": [
+        4,
+        6,
+        8,
+        8
+      ],
+      "iterations": [
+        3
+      ],
+      "last": [
+        8
+      ],
+      "gaps": {
+        "count": "n:3",
+        "last": "n:8"
+      }
+    },
+    {
+      "template_id": "repeat-range-v1",
+      "parameters": {
+        "start": 1,
+        "stop": 6
+      },
+      "outputs": [
+        1,
+        2,
+        3,
+        3
+      ],
+      "iterations": [
+        3
+      ],
+      "last": [
+        3
+      ],
+      "gaps": {
+        "count": "n:3",
+        "last": "n:3"
+      }
+    }
+  ]
+}

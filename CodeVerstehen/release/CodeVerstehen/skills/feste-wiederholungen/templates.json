@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "repeat-fixed-v1",
+      "chapter": 3,
+      "mode": "counted-loop",
+      "difficulty": 1,
+      "type": "gap-fill",
+      "title": "Wie oft werden Punkte hinzugefügt?",
+      "context": "Ein Spiel vergibt in jeder Runde einen Punkt.",
+      "prompt": "Wie oft läuft der Rumpf, und was zeigt die letzte Ausgabe nach der Schleife?",
+      "choicePrompt": "Welche Antwort nennt Durchlaufzahl und letzte Ausgabe richtig?",
+      "criteria": [
+        "counted-loop",
+        "loop-trace"
+      ],
+      "hints": [
+        "Zähle nur tatsächlich betretene Rumpfdurchläufe. Die letzte falsche Prüfung ist keine weitere Runde.",
+        "Verfolge alle Neuzuweisungen. Die Ausgabe nach der Schleife läuft einmal und verändert keine Variable."
+      ]
+    },
+    {
+      "id": "repeat-step-v1",
+      "chapter": 3,
+      "mode": "counted-loop",
+      "difficulty": 2,
+      "type": "gap-fill",
+      "title": "Mehrere Punkte pro Runde",
+      "context": "Jede Spielrunde erhöht die vorhandenen Punkte um einen festen Betrag.",
+      "prompt": "Wie oft läuft der Rumpf, und was zeigt die letzte Ausgabe nach der Schleife?",
+      "choicePrompt": "Welche Antwort nennt Durchlaufzahl und letzte Ausgabe richtig?",
+      "criteria": [
+        "counted-loop",
+        "loop-trace"
+      ],
+      "hints": [
+        "Zähle nur tatsächlich betretene Rumpfdurchläufe. Die letzte falsche Prüfung ist keine weitere Runde.",
+        "Verfolge alle Neuzuweisungen. Die Ausgabe nach der Schleife läuft einmal und verändert keine Variable."
+      ]
+    },
+    {
+      "id": "repeat-range-v1",
+      "chapter": 3,
+      "mode": "counted-loop",
+      "difficulty": 3,
+      "type": "gap-fill",
+      "title": "Die Stopgrenze zählt nicht mit",
+      "context": "Ein Trainingsplan besucht nur jeden zweiten Schleifenwert.",
+      "prompt": "Wie oft läuft der Rumpf, und was zeigt die letzte Ausgabe nach der Schleife?",
+      "choicePrompt": "Welche Antwort nennt Durchlaufzahl und letzte Ausgabe richtig?",
+      "criteria": [
+        "counted-loop",
+        "loop-trace"
+      ],
+      "hints": [
+        "Zähle nur tatsächlich betretene Rumpfdurchläufe. Die letzte falsche Prüfung ist keine weitere Runde.",
+        "Verfolge alle Neuzuweisungen. Die Ausgabe nach der Schleife läuft einmal und verändert keine Variable."
+      ]
+    }
+  ]
+}

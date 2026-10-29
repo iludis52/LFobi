@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "change-boundary-v1",
+      "chapter": 2,
+      "mode": "branch-change",
+      "difficulty": 1,
+      "type": "gap-fill",
+      "title": "Eine kleine Änderung an der Levelgrenze",
+      "context": "In B wird >= durch > ersetzt. Alles andere bleibt gleich.",
+      "prompt": "Beide Programme starten getrennt. Bestimme die Ausgabe von A und von B.",
+      "choicePrompt": "Beide Programme starten getrennt. Bestimme die Ausgabe von A und von B. Wähle genau ein Antwortpaar.",
+      "criteria": [
+        "branch-change",
+        "trace-selected-path"
+      ],
+      "hints": [
+        ">= schließt die Grenze ein, > schließt sie aus.",
+        "Prüfe B mit seinen eigenen Startpunkten. Gleiche Ausgaben sind möglich."
+      ]
+    },
+    {
+      "id": "change-stock-v1",
+      "chapter": 2,
+      "mode": "branch-change",
+      "difficulty": 2,
+      "type": "gap-fill",
+      "title": "Die letzte Bestellung aus dem Lager",
+      "context": "Die Bestellung ist genau so groß wie der Bestand. B verwendet < statt <=.",
+      "prompt": "Beide Programme starten getrennt. Bestimme den Bestand nach A und nach B.",
+      "choicePrompt": "Beide Programme starten getrennt. Bestimme den Bestand nach A und nach B. Wähle genau ein Antwortpaar.",
+      "criteria": [
+        "branch-change",
+        "trace-selected-path"
+      ],
+      "hints": [
+        "Bei Gleichheit ist <= wahr und die Bestellung wird abgezogen.",
+        "Bei Gleichheit ist < falsch und die Zuweisung wird übersprungen."
+      ]
+    },
+    {
+      "id": "change-priority-v1",
+      "chapter": 2,
+      "mode": "branch-change",
+      "difficulty": 3,
+      "type": "gap-fill",
+      "title": "Welche Auszeichnung hat Vorrang?",
+      "context": "In B wird zuerst Silber geprüft; in A steht die Gold-Prüfung an erster Stelle.",
+      "prompt": "Beide Programme starten getrennt. Bestimme die Ausgabe von A und von B.",
+      "choicePrompt": "Beide Programme starten getrennt. Bestimme die Ausgabe von A und von B. Wähle genau ein Antwortpaar.",
+      "criteria": [
+        "branch-change",
+        "trace-selected-path"
+      ],
+      "hints": [
+        "A nimmt den ersten passenden Zweig: prüfe die Gold-Schwelle zuerst.",
+        "B nimmt ebenfalls den ersten Treffer und prüft danach Gold nicht mehr."
+      ]
+    }
+  ]
+}

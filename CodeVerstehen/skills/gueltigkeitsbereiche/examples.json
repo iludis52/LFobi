@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "template_id": "scope-local-v1",
+      "parameters": {
+        "start": 3
+      },
+      "last_outputs": [
+        9,
+        3
+      ]
+    },
+    {
+      "template_id": "scope-parameter-v1",
+      "parameters": {
+        "start": 3
+      },
+      "last_outputs": [
+        6,
+        3
+      ]
+    },
+    {
+      "template_id": "scope-calls-v1",
+      "parameters": {
+        "start": 3
+      },
+      "last_outputs": [
+        4,
+        4
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "condition-level-v1",
+      "chapter": 2,
+      "mode": "condition-check",
+      "difficulty": 1,
+      "type": "gap-fill",
+      "title": "Reicht es für das nächste Level?",
+      "context": "Ein Spiel schaltet ein Level frei, sobald das Punkteziel erreicht ist.",
+      "prompt": "Bestimme den Wahrheitswert der Ausgabe und die anschließend gespeicherten Punkte.",
+      "choicePrompt": "Bestimme den Wahrheitswert der Ausgabe und die anschließend gespeicherten Punkte. Wähle genau ein Antwortpaar.",
+      "criteria": [
+        "condition-check",
+        "trace-selected-path"
+      ],
+      "hints": [
+        "Vergleiche die Punkte mit dem Ziel. >= schließt Gleichheit ein.",
+        "Eine Ausgabe enthält keine Neuzuweisung an punkte."
+      ]
+    },
+    {
+      "id": "condition-zero-v1",
+      "chapter": 2,
+      "mode": "condition-check",
+      "difficulty": 2,
+      "type": "gap-fill",
+      "title": "Was passiert genau bei null Grad?",
+      "context": "Ein Temperatursensor prüft zwei unterschiedliche Schwellen für Frostfreiheit.",
+      "prompt": "Bestimme die beiden Wahrheitswerte in der Reihenfolge der Ausgaben.",
+      "choicePrompt": "Bestimme die beiden Wahrheitswerte in der Reihenfolge der Ausgaben. Wähle genau ein Antwortpaar.",
+      "criteria": [
+        "condition-check",
+        "trace-selected-path"
+      ],
+      "hints": [
+        "Größer als null schließt null aus.",
+        "Mindestens null schließt null ein."
+      ]
+    },
+    {
+      "id": "condition-bonus-v1",
+      "chapter": 2,
+      "mode": "condition-check",
+      "difficulty": 3,
+      "type": "gap-fill",
+      "title": "Ein Bonus vor der Levelprüfung",
+      "context": "Ein Spiel prüft das Ziel mit Bonuspunkten, ohne die gespeicherte Punktzahl neu zuzuweisen.",
+      "prompt": "Bestimme den Wahrheitswert und die am Ende gespeicherten Punkte.",
+      "choicePrompt": "Bestimme den Wahrheitswert und die am Ende gespeicherten Punkte. Wähle genau ein Antwortpaar.",
+      "criteria": [
+        "condition-check",
+        "trace-selected-path"
+      ],
+      "hints": [
+        "Berechne die Summe, bevor du sie mit dem Ziel vergleichst.",
+        "Prüfe, ob eine neue Zuweisung an punkte vorhanden ist."
+      ]
+    }
+  ]
+}

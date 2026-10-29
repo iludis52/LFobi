@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "while-up-v1",
+      "chapter": 3,
+      "mode": "while-loop",
+      "difficulty": 1,
+      "type": "gap-fill",
+      "title": "Vor jeder Runde neu prüfen",
+      "context": "Ein Zähler steigt bis zu einer festgelegten Grenze.",
+      "prompt": "Wie oft läuft der Rumpf, und was zeigt die letzte Ausgabe nach der Schleife?",
+      "choicePrompt": "Welche Antwort nennt Durchlaufzahl und letzte Ausgabe richtig?",
+      "criteria": [
+        "while-loop",
+        "loop-trace"
+      ],
+      "hints": [
+        "Zähle nur tatsächlich betretene Rumpfdurchläufe. Die letzte falsche Prüfung ist keine weitere Runde.",
+        "Verfolge alle Neuzuweisungen. Die Ausgabe nach der Schleife läuft einmal und verändert keine Variable."
+      ]
+    },
+    {
+      "id": "while-down-v1",
+      "chapter": 3,
+      "mode": "while-loop",
+      "difficulty": 2,
+      "type": "gap-fill",
+      "title": "Ein Countdown läuft rückwärts",
+      "context": "Ein Countdown verringert den Zähler und zeigt ihn nach jeder Änderung.",
+      "prompt": "Wie oft läuft der Rumpf, und was zeigt die letzte Ausgabe nach der Schleife?",
+      "choicePrompt": "Welche Antwort nennt Durchlaufzahl und letzte Ausgabe richtig?",
+      "criteria": [
+        "while-loop",
+        "loop-trace"
+      ],
+      "hints": [
+        "Zähle nur tatsächlich betretene Rumpfdurchläufe. Die letzte falsche Prüfung ist keine weitere Runde.",
+        "Verfolge alle Neuzuweisungen. Die Ausgabe nach der Schleife läuft einmal und verändert keine Variable."
+      ]
+    },
+    {
+      "id": "while-jump-v1",
+      "chapter": 3,
+      "mode": "while-loop",
+      "difficulty": 3,
+      "type": "gap-fill",
+      "title": "Die Grenze überspringen",
+      "context": "Ein Zähler steigt in Zweierschritten und kann über die Grenze hinausgehen.",
+      "prompt": "Wie oft läuft der Rumpf, und was zeigt die letzte Ausgabe nach der Schleife?",
+      "choicePrompt": "Welche Antwort nennt Durchlaufzahl und letzte Ausgabe richtig?",
+      "criteria": [
+        "while-loop",
+        "loop-trace"
+      ],
+      "hints": [
+        "Zähle nur tatsächlich betretene Rumpfdurchläufe. Die letzte falsche Prüfung ist keine weitere Runde.",
+        "Verfolge alle Neuzuweisungen. Die Ausgabe nach der Schleife läuft einmal und verändert keine Variable."
+      ]
+    }
+  ]
+}

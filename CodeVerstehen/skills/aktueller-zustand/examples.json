@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "cases": [
+    { "template_id": "state-direct-v1", "parameters": { "start": 3, "add": 2 }, "states": [{"wert":3},{"wert":5},{"wert":5}], "outputs": [5], "solution": {"state":5,"output":5}, "cards": [3,5,7] },
+    { "template_id": "state-chain-v1", "parameters": { "start": 3, "add": 2, "factor": 4 }, "states": [{"wert":3},{"wert":5},{"wert":20},{"wert":20}], "outputs": [20], "solution": {"state":20,"output":20}, "cards": [5,12,20] },
+    { "template_id": "state-output-between-v1", "parameters": { "start": 3, "add": 2, "factor": 4 }, "states": [{"wert":3},{"wert":5},{"wert":5},{"wert":6},{"wert":6}], "outputs": [20,6], "solution": {"state":5,"output":6}, "cards": [5,6,20,21] }
+  ]
+}
