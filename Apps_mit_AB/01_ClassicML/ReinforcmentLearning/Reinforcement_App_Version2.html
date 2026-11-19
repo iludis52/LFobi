@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KI-Labor: Der stinkende Käse</title>
+<style>
+:root{
+  --ink:#2c3e50; --muted:#6b7a8a; --bg:#eef1f5; --panel:#ffffff; --line:#dde3ea;
+  --cR:#d35400; --cG:#8e44ad; --cV:#2471a3; --cMax:#1e8449;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--ink);display:flex;justify-content:center;padding:12px}
+#app{width:1200px;max-width:100%;background:var(--panel);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.15);display:grid;grid-template-areas:"header header" "sidebar main" "footer footer";grid-template-columns:350px 1fr;overflow:hidden}
+header{grid-area:header;background:var(--ink);color:#fff;padding:14px 20px}
+header h1{margin:0;font-size:21px;font-weight:600}
+header p{margin:4px 0 0;font-size:13px;opacity:.85;line-height:1.4}
+#sidebar{grid-area:sidebar;padding:16px 18px;background:#f8f9fb;border-right:1px solid var(--line);font-size:13px}
+main{grid-area:main;padding:18px;display:flex;flex-direction:column;gap:12px;align-items:center}
+footer{grid-area:footer;background:var(--ink);color:#ecf0f1;padding:12px 20px;font-size:12.5px;line-height:1.5}
+.group{margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.group:last-child{border-bottom:none;margin-bottom:0}
+.group h3{margin:0 0 5px;font-size:14px}
+.desc{color:var(--muted);font-size:12px;line-height:1.35;margin:0 0 5px}
+input[type=range]{width:100%;margin:3px 0}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.val{font-weight:700;min-width:3em;text-align:right}
+button{border:none;border-radius:5px;padding:5px 10px;font-size:12px;cursor:pointer;background:#dfe6ee;color:var(--ink)}
+button.primary{background:#2980b9;color:#fff}
+button.danger{background:#e74c3c;color:#fff}
+label.chk{display:inline-flex;align-items:center;gap:4px;margin-right:6px;cursor:pointer}
+input[type=number]{width:58px;padding:3px}
+select{padding:3px}
+.formula{font-family:'Cambria Math','Latin Modern Math',Georgia,serif;font-size:18px;text-align:center;padding:9px;background:#fff;border:1px solid var(--line);border-radius:8px;margin:0 0 6px}
+.tR{color:var(--cR);font-weight:700}.tG{color:var(--cG);font-weight:700}.tV{color:var(--cV);font-weight:700}.tM{color:var(--cMax);font-weight:700}
+.legend{font-size:12px;line-height:1.55}
+.status{font-size:12px;padding:6px 8px;border-radius:5px;background:#eaf2fb;color:#1b4f72;margin-top:8px;line-height:1.35}
+.status.ok{background:#e9f7ef;color:#145a32}
+
+#grid-wrap{position:relative;user-select:none}
+#grid{display:grid;gap:2px;background:#cfd8e3;border:2px solid var(--ink);border-radius:6px;padding:2px}
+.cell{position:relative;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:3px}
+.cell.sel{outline:3px solid #f39c12;outline-offset:-3px;z-index:2}
+.cell.nb{outline:2px dashed #f39c12;outline-offset:-2px}
+.cell .num{position:absolute;left:5px;top:3px;font-size:13px;font-weight:700;color:var(--ink)}
+.cell .num.zero{color:#b5bec8;font-weight:400}
+.cell .emo{font-size:calc(var(--cs) * .42);line-height:1}
+.cell .arrow{position:absolute;right:6px;bottom:2px;font-size:24px;color:#1f618d;font-weight:700;line-height:1}
+.cell .arrow.multi{font-size:15px;color:#7f8c8d;letter-spacing:-1px}
+.cell.trap{background:#2d3436}
+.cell.trap .num{color:#ddd}
+.cell .start{position:absolute;left:5px;bottom:3px;font-size:10px;color:#c0392b;font-weight:700}
+.mouse{position:absolute;left:0;top:0;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:34px;line-height:1;pointer-events:none;transition:transform .35s ease;filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+.mouse.cheese{animation:bounce .35s ease infinite alternate}
+@keyframes bounce{from{margin-top:0}to{margin-top:-8px}}
+
+#inspector{width:100%;background:#fff;border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:14px;min-height:170px;line-height:1.45}
+#inspector h3{margin:0 0 6px;font-size:14px}
+#inspector p{margin:4px 0}
+#inspector table{border-collapse:collapse;margin:4px 0}
+#inspector td,#inspector th{padding:3px 8px;text-align:right;font-size:13px;white-space:nowrap}
+#inspector th{font-weight:600;color:var(--muted)}
+#inspector tr.best td{background:#e9f7ef;font-weight:700}
+.calc{font-family:'Cambria Math','Latin Modern Math',Georgia,serif;font-size:17px;margin-top:4px;line-height:1.7}
+#stats{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+  <h1>KI-Labor: Der stinkende Käse 🐭 → 🧀</h1>
+  <p>Die Bellman-Gleichung, didaktisch reduziert: Jedes Feld bekommt einen Wert V(s), den „Käsegeruch“.
+     Der Geruch breitet sich Schritt für Schritt aus und wird pro Feld dünner. Die Maus läuft immer dorthin, wo es am stärksten riecht.</p>
+</header>
+
+<aside id="sidebar">
+  <div class="group">
+    <div class="formula"><span class="tV">V(s)</span> = <span class="tR">R(s)</span> + <span class="tG">γ</span> · <span class="tM">max</span> <span class="tV">V(Nachbar)</span></div>
+    <div class="legend">
+      <span class="tV">V(s)</span> Geruch auf dem Feld &nbsp;·&nbsp; <span class="tR">R(s)</span> Belohnung des Feldes<br>
+      <span class="tG">γ</span> Verdünnung pro Feld &nbsp;·&nbsp; <span class="tM">max</span> nur der stärkste Nachbar zählt
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>1. Reichweite des Käsegeruchs</h3>
+    <p class="desc">Wie viele Felder weit ist der Geruch schon gewandert? Jeder Ausbreitungsschritt ist eine Bellman-Iteration: Jedes Feld schaut einmal auf seine Nachbarn.</p>
+    <input type="range" id="kRange" min="0" max="40" value="3">
+    <div class="row">Reichweite: <span class="val" id="kVal">3</span> Felder (= Iterationen)</div>
+    <div class="row" style="margin-top:6px">
+      <button id="btnStep">+1 Schritt</button>
+      <button id="btnPlay" class="primary">▶ Ausbreiten</button>
+      <button id="btnReset" class="danger">↺ Auf 0</button>
+    </div>
+    <p class="desc" style="margin-top:8px">Tempo der Ausbreitung</p>
+    <input type="range" id="speedRange" min="1" max="10" value="4">
+    <div class="status" id="convStatus"></div>
+  </div>
+
+  <div class="group">
+    <h3>2. Verdünnung <span class="tG">γ</span> (Diskontierung)</h3>
+    <p class="desc">Welcher Anteil des Geruchs bleibt pro Feld übrig? Bei γ = 0,9 riecht man ein Feld weiter nur noch 90 % so stark.</p>
+    <input type="range" id="gammaRange" min="50" max="99" value="90">
+    <div class="row">γ = <span class="val" id="gammaVal">0,90</span></div>
+  </div>
+
+  <div class="group">
+    <h3>3. Belohnungen <span class="tR">R(s)</span></h3>
+    <div class="row">🧀 Käse <input type="number" id="rCheese" value="20" step="1"> &nbsp; 💀 Falle <input type="number" id="rTrap" value="-15" step="1"></div>
+    <p class="desc" style="margin-top:8px">Schrittkosten: Belohnung auf jedem normalen Feld. Bei 0 bleibt das reine Geruchsbild. Bei −1 kostet jeder Schritt etwas, dann lohnen sich kurze Wege auch ohne Verdünnung.</p>
+    <input type="range" id="stepRange" min="-30" max="0" value="0" step="5">
+    <div class="row">R(normales Feld) = <span class="val" id="stepVal">0,0</span></div>
+  </div>
+
+  <div class="group">
+    <h3>4. Ansicht</h3>
+    <label class="chk"><input type="checkbox" id="layNum" checked> Zahlen</label>
+    <label class="chk"><input type="checkbox" id="layHeat" checked> Heatmap</label>
+    <label class="chk"><input type="checkbox" id="layArr"> Pfeile</label>
+    <label class="chk"><input type="checkbox" id="layMice" checked> Mäuse</label>
+    <div class="row" style="margin-top:6px">Anzahl Mäuse <input type="range" id="miceRange" min="1" max="8" value="4" style="width:110px"> <span class="val" id="miceVal">4</span>
+      <button id="btnNewStarts">Neu verteilen</button></div>
+    <p class="desc" style="margin-top:6px">Die Mäuse lernen hier nicht selbst. Sie folgen der aktuellen Geruchskarte: immer zum Nachbarfeld mit dem höchsten Wert. Riechen sie nichts, irren sie zufällig umher.</p>
+  </div>
+
+  <div class="group">
+    <h3>5. Welt</h3>
+    <div class="row">
+      <label class="chk"><input type="radio" name="mode" value="inspect" checked> Feld untersuchen</label>
+      <label class="chk"><input type="radio" name="mode" value="trap"> Falle setzen / entfernen</label>
+      <label class="chk"><input type="radio" name="mode" value="cheese"> Käse versetzen</label>
+    </div>
+    <div class="row" style="margin-top:6px">Gittergröße
+      <select id="sizeSel"><option>5</option><option>6</option><option>7</option></select>
+    </div>
+  </div>
+</aside>
+
+<main>
+  <div id="grid-wrap"><div id="grid"></div></div>
+  <section id="inspector"></section>
+  <div id="stats"></div>
+</main>
+
+<footer>
+  <b>Fachlicher Hintergrund:</b> Die App rechnet <i>Value Iteration</i> für eine deterministische Gitterwelt.
+  Nach k Iterationen gilt V<sub>k</sub>(s) = R(s) + γ · max<sub>a</sub> V<sub>k−1</sub>(s′). Käse und Falle sind Endzustände mit V = R.
+  Am Rand gibt es weniger erlaubte Richtungen. Die Pfeile zeigen die gierige Strategie π(s) = argmax<sub>a</sub> V(s′).
+</footer>
+</div>
+
+<script>
+'use strict';
+const DIRS=[{dx:0,dy:-1,sym:'↑',name:'oben'},{dx:1,dy:0,sym:'→',name:'rechts'},{dx:0,dy:1,sym:'↓',name:'unten'},{dx:-1,dy:0,sym:'←',name:'links'}];
+const EPS=1e-9, KMAX=40, CONV_EPS=1e-4;
+
+const S={n:5,cheese:{x:4,y:4},traps:[{x:1,y:1},{x:3,y:2},{x:1,y:3}],k:3,gamma:0.9,
+  rCheese:20,rTrap:-15,rStep:0,layers:{num:true,heat:true,arr:false,mice:true},nMice:4,mode:'inspect',selected:null,speed:4};
+let V=[],Vprev=[],kConv=null,mice=[],stats={cheese:0,trap:0},playTimer=null;
+
+// ---------- Modell ----------
+const idx=(x,y)=>y*S.n+x;
+const inGrid=(x,y)=>x>=0&&y>=0&&x<S.n&&y<S.n;
+const isCheese=(x,y)=>S.cheese.x===x&&S.cheese.y===y;
+const isTrap=(x,y)=>S.traps.some(t=>t.x===x&&t.y===y);
+const isTerminal=(x,y)=>isCheese(x,y)||isTrap(x,y);
+const R=(x,y)=>isCheese(x,y)?S.rCheese:isTrap(x,y)?S.rTrap:S.rStep;
+const nbs=(x,y)=>DIRS.map(D=>({...D,x:x+D.dx,y:y+D.dy})).filter(p=>inGrid(p.x,p.y));
+
+function V0(){const a=[];for(let y=0;y<S.n;y++)for(let x=0;x<S.n;x++)a.push(isTerminal(x,y)?R(x,y):0);return a;}
+function sweep(Vc){
+  const a=[];
+  for(let y=0;y<S.n;y++)for(let x=0;x<S.n;x++){
+    if(isTerminal(x,y)){a.push(R(x,y));continue;}
+    const best=Math.max(...nbs(x,y).map(p=>Vc[idx(p.x,p.y)]));
+    a.push(R(x,y)+S.gamma*best);
+  }
+  return a;
+}
+function maxDiff(a,b){let m=0;for(let i=0;i<a.length;i++)m=Math.max(m,Math.abs(a[i]-b[i]));return m;}
+function compute(){
+  let cur=V0(),prev=cur;
+  for(let i=0;i<S.k;i++){prev=cur;cur=sweep(cur);}
+  V=cur;Vprev=prev;
+  let c=V0();kConv=null;
+  for(let i=1;i<=300;i++){const nx=sweep(c);if(maxDiff(nx,c)<CONV_EPS){kConv=i-1;break;}c=nx;}
+}
+const isConverged=()=>kConv!==null&&S.k>=kConv;
+
+function policy(x,y){
+  const ns=nbs(x,y),vals=ns.map(p=>V[idx(p.x,p.y)]);
+  const mx=Math.max(...vals),mn=Math.min(...vals);
+  return {best:ns.filter((p,i)=>Math.abs(vals[i]-mx)<EPS),decided:mx-mn>EPS};
+}
+
+// ---------- Mäuse ----------
+function freeCells(){const a=[];for(let y=0;y<S.n;y++)for(let x=0;x<S.n;x++)if(!isTerminal(x,y))a.push({x,y});return a;}
+function initMice(){
+  const free=freeCells().sort(()=>Math.random()-.5);
+  mice=[];
+  for(let i=0;i<S.nMice;i++){const p=free[i%free.length];mice.push({x:p.x,y:p.y,sx:p.x,sy:p.y,state:'walk',wait:0});}
+  stats={cheese:0,trap:0};
+}
+function miceTick(){
+  if(!S.layers.mice)return;
+  mice.forEach(m=>{
+    if(m.state!=='walk'){if(++m.wait>=3){m.x=m.sx;m.y=m.sy;m.state='walk';m.wait=0;}return;}
+    const p=policy(m.x,m.y);
+    const pick=p.best[Math.floor(Math.random()*p.best.length)];
+    m.x=pick.x;m.y=pick.y;
+    if(isCheese(m.x,m.y)){m.state='cheese';stats.cheese++;}
+    else if(isTrap(m.x,m.y)){m.state='trap';stats.trap++;}
+  });
+  renderMice();renderStats();
+}
+
+// ---------- Darstellung ----------
+const fmt=v=>(Math.abs(v)<EPS?0:v).toLocaleString('de-DE',{minimumFractionDigits:1,maximumFractionDigits:1});
+const fmt2=v=>(Math.abs(v)<EPS?0:v).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
+const cellSize=()=>Math.min(560,112*S.n)/S.n;
+
+function cellColor(v){
+  if(Math.abs(v)<EPS)return '#fff';
+  if(v>0){const t=Math.min(1,v/Math.max(1,S.rCheese));return `hsl(42,95%,${96-42*t}%)`;}
+  const t=Math.min(1,v/Math.min(-1,S.rTrap));return `hsl(210,60%,${96-40*t}%)`;
+}
+
+function renderGrid(){
+  const g=document.getElementById('grid'),cs=cellSize();
+  g.style.gridTemplateColumns=`repeat(${S.n},${cs}px)`;g.style.gridAutoRows=`${cs}px`;g.style.setProperty('--cs',cs+'px');
+  const sel=S.selected;
+  let html='';
+  for(let y=0;y<S.n;y++)for(let x=0;x<S.n;x++){
+    const v=V[idx(x,y)],trap=isTrap(x,y),cheese=isCheese(x,y);
+    let cls='cell';if(trap)cls+=' trap';
+    if(sel&&sel.x===x&&sel.y===y)cls+=' sel';
+    else if(sel&&S.mode==='inspect'&&!isTerminal(sel.x,sel.y)&&Math.abs(sel.x-x)+Math.abs(sel.y-y)===1)cls+=' nb';
+    const bg=(!trap&&S.layers.heat)?`background:${cellColor(v)};`:'';
+    let inner='';
+    if(S.layers.num)inner+=`<span class="num ${Math.abs(v)<EPS?'zero':''}">${fmt(v)}</span>`;
+    if(cheese)inner+='<span class="emo">🧀</span>';
+    if(trap)inner+='<span class="emo">💀</span>';
+    if(S.layers.arr&&!isTerminal(x,y)){
+      const p=policy(x,y);
+      if(p.decided)inner+=p.best.length===1?`<span class="arrow">${p.best[0].sym}</span>`:`<span class="arrow multi">${p.best.map(b=>b.sym).join('')}</span>`;
+    }
+    if(S.layers.mice&&mice.some(m=>m.sx===x&&m.sy===y))inner+='<span class="start">Start</span>';
+    html+=`<div class="${cls}" style="${bg}" data-x="${x}" data-y="${y}">${inner}</div>`;
+  }
+  g.innerHTML=html;
+  renderMice();
+}
+
+function renderMice(){
+  const w=document.getElementById('grid-wrap'),cs=cellSize();
+  let els=w.querySelectorAll('.mouse');
+  while(els.length<mice.length){const e=document.createElement('div');e.className='mouse';w.appendChild(e);els=w.querySelectorAll('.mouse');}
+  while(els.length>mice.length){els[els.length-1].remove();els=w.querySelectorAll('.mouse');}
+  mice.forEach((m,i)=>{
+    const e=els[i];
+    e.style.display=S.layers.mice?'flex':'none';
+    e.className='mouse '+m.state;
+    e.textContent=m.state==='trap'?'😵':m.state==='cheese'?'😋':'🐭';
+    e.style.transform=`translate(${4+m.x*(cs+2)+(cs-40)/2}px,${4+m.y*(cs+2)+(cs-40)/2}px)`;
+  });
+}
+
+function renderInspector(){
+  const el=document.getElementById('inspector'),s=S.selected;
+  if(!s){el.innerHTML=`<h3>Feld untersuchen</h3><p>Klicke auf ein Feld, um zu sehen, wie sein Wert aus der Bellman-Gleichung entsteht. Die gestrichelten Felder sind die Nachbarn, auf die das Feld schaut.</p>`;return;}
+  const {x,y}=s,v=V[idx(x,y)],name=`(Spalte ${x+1}, Zeile ${y+1})`;
+  if(isTerminal(x,y)){
+    el.innerHTML=`<h3>Feld ${name}: ${isCheese(x,y)?'🧀 Käse':'💀 Falle'} – ein Endfeld</h3>
+      <p>Hier endet der Lauf der Maus. Ein Endfeld schaut nicht auf seine Nachbarn, sein Wert ist einfach seine Belohnung:</p>
+      <div class="calc"><span class="tV">V(s)</span> = <span class="tR">R(s)</span> = <b>${fmt(v)}</b></div>`;
+    return;
+  }
+  if(S.k===0){
+    el.innerHTML=`<h3>Feld ${name} bei Reichweite 0</h3>
+      <p>Noch kein Ausbreitungsschritt: Der Geruch ist nur auf dem Käse selbst (und der Gestank nur auf den Fallen). Alle normalen Felder haben <span class="tV">V(s)</span> = 0.</p>
+      <p>Drücke <b>+1 Schritt</b>, dann schaut jedes Feld zum ersten Mal auf seine Nachbarn.</p>`;
+    return;
+  }
+  const ns=nbs(x,y),vals=ns.map(p=>Vprev[idx(p.x,p.y)]),mx=Math.max(...vals);
+  const rows=ns.map((p,i)=>`<tr class="${Math.abs(vals[i]-mx)<EPS?'best':''}"><td style="text-align:left">${p.sym} ${p.name}</td><td>(${p.x+1}, ${p.y+1})</td><td class="tV">${fmt2(vals[i])}</td></tr>`).join('');
+  const wallNote=ns.length<4?`<p class="desc">Am Rand gibt es weniger Nachbarn: In die Wand kann die Maus nicht laufen.</p>`:'';
+  const prevNote=isConverged()?'':`<p class="desc">Der Geruch braucht einen Schritt, um vom Nachbarn herüberzuziehen: Schritt ${S.k} rechnet mit den Nachbarwerten aus Schritt ${S.k-1}. Nach der Konvergenz sind beide gleich.</p>`;
+  el.innerHTML=`<h3>Feld ${name} bei Reichweite ${S.k}</h3>
+    <div style="display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start">
+      <table><tr><th style="text-align:left">Richtung</th><th>Nachbar</th><th>V(Nachbar) <small>Schritt ${S.k-1}</small></th></tr>${rows}</table>
+      <div class="calc">
+        <span class="tV">V(s)</span> = <span class="tR">R(s)</span> + <span class="tG">γ</span> · <span class="tM">max</span>( ${vals.map(w=>`<span class="tV">${fmt2(w)}</span>`).join(', ')} )<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = <span class="tR">${fmt2(S.rStep)}</span> + <span class="tG">${S.gamma.toLocaleString('de-DE')}</span> · <span class="tM">${fmt2(mx)}</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = <b>${fmt2(v)}</b>
+      </div>
+    </div>${wallNote}${prevNote}`;
+}
+
+function renderStatus(){
+  const el=document.getElementById('convStatus');
+  if(S.k===0){el.className='status';el.textContent='Noch kein Ausbreitungsschritt. Nur Käse und Fallen haben einen Wert.';return;}
+  if(isConverged()){el.className='status ok';el.textContent=`Geruch vollständig ausgebreitet: ab Reichweite ${kConv} ändert sich kein Wert mehr (Konvergenz).`;return;}
+  el.className='status';el.textContent=`Geruch breitet sich noch aus. Größte Änderung im letzten Schritt: ${fmt2(maxDiff(V,Vprev))}`;
+}
+function renderStats(){
+  document.getElementById('stats').textContent=S.layers.mice?`Mäuse: ${stats.cheese}× Käse gefunden · ${stats.trap}× in die Falle getappt`:'';
+}
+function renderLabels(){
+  document.getElementById('kVal').textContent=S.k;
+  document.getElementById('gammaVal').textContent=fmt2(S.gamma);
+  document.getElementById('stepVal').textContent=fmt(S.rStep);
+  document.getElementById('miceVal').textContent=S.nMice;
+}
+function renderAll(){renderLabels();renderGrid();renderInspector();renderStatus();renderStats();}
+
+// ---------- Steuerung ----------
+const $=id=>document.getElementById(id);
+function setK(k){S.k=Math.max(0,Math.min(KMAX,k));$('kRange').value=S.k;compute();renderAll();}
+const speedMs=()=>[0,1500,1000,700,500,350,250,160,100,60,30][S.speed];
+function stop(){if(playTimer){clearInterval(playTimer);playTimer=null;}$('btnPlay').textContent='▶ Ausbreiten';}
+function play(){
+  stop();
+  if(isConverged()||S.k>=KMAX)setK(0);
+  $('btnPlay').textContent='⏸ Pause';
+  playTimer=setInterval(()=>{if(S.k>=KMAX||isConverged()){stop();return;}setK(S.k+1);},speedMs());
+}
+function worldChanged(){
+  S.cheese.x=Math.min(S.cheese.x,S.n-1);S.cheese.y=Math.min(S.cheese.y,S.n-1);
+  S.traps=S.traps.filter(t=>inGrid(t.x,t.y)&&!isCheese(t.x,t.y));
+  if(S.selected&&!inGrid(S.selected.x,S.selected.y))S.selected=null;
+  initMice();compute();renderAll();
+}
+
+$('kRange').addEventListener('input',e=>{stop();setK(+e.target.value);});
+$('btnStep').addEventListener('click',()=>{stop();setK(S.k+1);});
+$('btnPlay').addEventListener('click',()=>playTimer?stop():play());
+$('btnReset').addEventListener('click',()=>{stop();setK(0);});
+$('speedRange').addEventListener('input',e=>{S.speed=+e.target.value;if(playTimer)play();});
+$('gammaRange').addEventListener('input',e=>{S.gamma=e.target.value/100;compute();renderAll();});
+$('rCheese').addEventListener('change',e=>{S.rCheese=+e.target.value||0;compute();renderAll();});
+$('rTrap').addEventListener('change',e=>{S.rTrap=+e.target.value||0;compute();renderAll();});
+$('stepRange').addEventListener('input',e=>{S.rStep=e.target.value/10;compute();renderAll();});
+[['layNum','num'],['layHeat','heat'],['layArr','arr'],['layMice','mice']].forEach(([id,key])=>$(id).addEventListener('change',e=>{S.layers[key]=e.target.checked;renderAll();}));
+$('miceRange').addEventListener('input',e=>{S.nMice=+e.target.value;initMice();renderAll();});
+$('btnNewStarts').addEventListener('click',()=>{initMice();renderAll();});
+document.querySelectorAll('input[name=mode]').forEach(r=>r.addEventListener('change',e=>{S.mode=e.target.value;renderAll();}));
+$('sizeSel').addEventListener('change',e=>{S.n=+e.target.value;S.selected=null;worldChanged();});
+
+$('grid').addEventListener('click',e=>{
+  const c=e.target.closest('.cell');if(!c)return;
+  const x=+c.dataset.x,y=+c.dataset.y;
+  if(S.mode==='inspect'){S.selected={x,y};renderAll();return;}
+  if(S.mode==='trap'){
+    if(isCheese(x,y))return;
+    const i=S.traps.findIndex(t=>t.x===x&&t.y===y);
+    if(i>=0)S.traps.splice(i,1);else S.traps.push({x,y});
+    worldChanged();return;
+  }
+  if(S.mode==='cheese'){if(isTrap(x,y))return;S.cheese={x,y};worldChanged();}
+});
+
+// ---------- Start ----------
+initMice();compute();renderAll();
+setInterval(miceTick,450);
+</script>
+</body>
+</html>
